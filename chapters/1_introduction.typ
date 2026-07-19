@@ -13,7 +13,7 @@
 == L'azienda
 #align(center, image(logo-bluebi, width: 35%))
 
-*Blue BI* è una società specializzata nel campo della Business Intelligence e Analytics con una consolidata esperienza nel disegno, implementazione e gestione di sistemi di analisi delle performance. 
+*Blue BI* è una società specializzata nel campo della _Business Intelligence_ e _Analytics_ con una consolidata esperienza nel disegno, implementazione e gestione di sistemi di analisi delle performance. 
 
 Opera sul territorio nazionale attraverso cinque sedi operative situate a Milano, Roma, Torino, Vicenza e Cesena. \ Le collaborazioni con i partner e i clienti si estendono su molteplici settori industriali, tra cui Fashion e Lusso, Media e Comunicazioni, Farmaceutica, Consulenza Business, Servizi Professionali, Assicurazioni e Banche, Trasporti e Logistica, Manifattura industriale e Hospitality.
 
@@ -21,14 +21,14 @@ L'azione e la cultura di Blue BI si fondano su un insieme di *valori portanti*. 
 
 
 Il portafoglio dei *servizi offerti* si articola principalmente su tre direttrici strategiche:
-+ _Consulenza_ \ attività che spaziano dalla realizzazione di Proof of Concept (PoC) alla selezione del software più idoneo, passando per il BI Assessment e la gestione del cambiamento tecnologico (_Change Management_).
-+ _Implementazione del sistema_ \ progettazione e sviluppo di architetture di Business Intelligence & Analytics, con un focus sulla rapidità di implementazione tramite soluzioni proprietarie e sul coordinamento di progetti di _roll-out_ internazionali.
++ _Consulenza_ \ attività che spaziano dalla realizzazione di _Proof of Concept_ (PoC) alla selezione del software più idoneo, passando per il _BI Assessment_ e la gestione del cambiamento tecnologico (_Change Management_).
++ _Implementazione del sistema_ \ progettazione e sviluppo di architetture di _Business Intelligence & Analytics_, con un focus sulla rapidità di implementazione tramite soluzioni proprietarie e sul coordinamento di progetti di _roll-out_ internazionali.
 + _Mantenimento e Infrastruttura_\ erogazione di servizi di assistenza continua e manutenzione applicativa, affiancati da soluzioni in ambienti _Cloud Computing_ e _Software as a Service_ (SaaS).
 
 
 L'azienda inoltre *investe nell'esplorazione di tecnologie emergenti* per anticipare le esigenze del mercato. Le principali linee di ricerca interne includono:
-- Mixed Reality: studio dell'integrazione di report e grafici 2D/3D all'interno di ambienti di realtà aumentata e virtuale (AR/VR), con l'obiettivo di abilitare l'ancoraggio spaziale dei dati e migliorare l'interattività delle dashboard.
-- Integrazione Chatbot: sviluppo di interfacce conversazionali avanzate con comandi vocali per rendere l'accesso ai dati aziendali e alla business intelligence più immediato e accessibile.
+- _Mixed Reality_: studio dell'integrazione di report e grafici 2D/3D all'interno di ambienti di realtà aumentata e virtuale (AR/VR), con l'obiettivo di abilitare l'ancoraggio spaziale dei dati e migliorare l'interattività delle _dashboard_.
+- Integrazione _Chatbot_: sviluppo di interfacce conversazionali avanzate con comandi vocali per rendere l'accesso ai dati aziendali e alla _business intelligence_ più immediato e accessibile.
 - GenAI: implementazione di use cases aziendali basati sui più recenti _Foundation Models_, sfruttando le API di ChatGPT e i servizi _cloud-native_ per l'estrazione di conoscenza.
 - Analisi predittive: applicazione di algoritmi di Machine Learning, alberi decisionali e reti neurali per l'analisi predittiva e la modellazione statistica dei dati storici dei clienti.
 
@@ -38,7 +38,7 @@ L'*obiettivo strategico* aziendale risiede proprio nel capitalizzare questi inve
 
 == Il progetto - ML per Campagne Omnicanale
 === Contesto
-Uno specifico ambito in cui l'azienda opera è quello delle campagne di *marketing omnicanale*, strategia che prevede l'uso integrato e sinergico di diversi canali di comunicazione per interagire con i clienti in modo coerente e personalizzato.\ Blue BI sta sviluppando soluzioni di gestione ed analisi dei dati per rispondere alle esigenze odierne del mercato.
+Uno specifico ambito in cui l'azienda opera è quello delle campagne di *marketing farmaceutico omnicanale*, strategia che prevede l'uso integrato e sinergico di diversi canali di comunicazione per interagire con i clienti in modo coerente e personalizzato.\ Blue BI sta sviluppando soluzioni di gestione ed analisi dei dati per rispondere alle esigenze odierne del mercato.
 
 Il progetto di tesi si concentra sull'applicazione di tecniche di Machine Learning per massimizzare l'efficacia delle campagne di marketing omnicanale sul singolo.\ L'*obiettivo principale* risiede nello sviluppo di modelli predittivi che consentano di segmentare i destinatari in base al loro comportamento digitale e alle preferenze manifestate, al fine di personalizzare le strategie di comunicazione e ottimizzare le interazioni complessive.
 
@@ -46,23 +46,23 @@ Il fulcro logico dell'attività predittiva è rappresentato dal concetto di *_Ne
 
 *Gli utenti finali* per i quali il progetto è stato pensato sono i *Rappresentanti Farmaceutici (REP)* o _Sales Representatives_.\ Figure professionali che interagiscono con i professionisti del settore sanitario per svolgere attività di informazione scientifica e presentare i prodotti dell'azienda farmaceutica per cui operano.
 
-*I destinatari* dell'attività dei REP vengono chiamati *Health Care Professionals (HCP)*. Rappresentano una categoria di professionisti che opera nel settore sanitario (medici, farmacisti, ecc.) e che interagisce con le campagne di marketing delle aziende farmaceutiche. \ Il modello predittivo analizza e intepreta i comportamenti multi-canale di questi ultimi al fine di suggerire al rappresentante l'azione statisticamente più efficace da intraprendere da intraprendere nella fase successiva del contatto, massimizzando così il livello di _engagement_ dell'HCP.
+*I destinatari* dell'attività dei REP vengono chiamati *Health Care Professionals (HCP)*. Rappresentano una categoria di professionisti che opera nel settore sanitario (medici, farmacisti, ecc.) e che interagisce con le campagne di marketing delle aziende farmaceutiche. \ Il modello predittivo analizza e intepreta i comportamenti multi-canale di questi ultimi al fine di suggerire al rappresentante l'azione statisticamente più efficace da intraprendere nella fase successiva dall-ultimo contatto, massimizzando così il livello di _engagement_ dell'HCP.
 
 === I Canali
-Le interazioni che i rappresentanti possono avere con gli HCP si articolano tra due principali macroaree: _visite dirette_ e le _comunicazioni digitali_.
+Le interazioni che i rappresentanti possono avere con gli HCP si articolano tra due principali macroaree: _visite dirette_ e _comunicazioni digitali_.
 
 *Le visite dirette* costituiscono il canale di interazione frontale tra il REP e il professionista sanitario. \ Questa categoria si suddivide a sua volta in tre specifici sottocanali:
-- *Visite F2F (_Face to Face)_*: rappresentano i colloqui in presenza, durante i quali il REP incontra fisicamente l'HCP. \ In questa sede, un rappresentante può supportare la conversazione attraverso strategie di _*CLM (Closed-Loop Marketing)*_, avvalendosi di dispositivi digitali per presentare contenuti multimediali o di supporto alla conversazione. L'utilizzo del CLM è molto importante, permettono di registrare in background dati dettagliati sul reazioni e sugli interessi dell'HCP; offrno una base informativa preziosa per personalizzare ulteriormente le future interazioni.
+- *Visite F2F (_Face to Face)_*: rappresentano i colloqui in presenza, durante i quali il REP incontra fisicamente l'HCP. \ In questa sede, un rappresentante può supportare la conversazione attraverso strategie di _*CLM (Closed-Loop Marketing)*_, avvalendosi di dispositivi digitali per presentare contenuti multimediali o di supporto alla conversazione. L'utilizzo del CLM è molto importante, permette infatti di registrare in background dati dettagliati sulle reazioni e sugli interessi dell'HCP; offrno una base informativa preziosa per personalizzare ulteriormente le future interazioni.
 - *_Phone Call_*: rappresentano le interazioni telefoniche tra il REP ed il professionista sanitario.
 - *_Video Call_*: colloqui da remoto tramite piattaforme di videoconferenza, costituiscono un indicatore rilevante del livello di digitalizzazione e della disponibilità dell'HCP all'uso di canali virtuali.
 
 *Le comunicazioni digitali* si configurano come punti di contatto (_touchpoint_) indiretti. Principalmente veicolati tramite posta elettronica.\ Questi contatti sono tracciati ed il tracciamento è cruciale per misurare il livello di coinvolgimento (_engagement_) del singolo professionista sia all'interno della campagna, che per valutarne il grado di maturità digitale.\ All'interno di questa macroarea si distinguono:
-- *DEM (Direct Email Marketing)*: comunicazioni inviate su scala più ampia, pianificate centralmente dal reparto marketing e indirizzate a specifici segmenti di target per supportare il lancio di prodotti o la diffusione di informative scientifiche. 
-- *RTE (Real-Time Email)*:comunicazioni elettroniche inviate in modo mirato e personalizzato al singolo HCP. Questa tipologia viene utilizzata proattivamente dal REP, solitamente a seguito di un incontro frontale (F2F o Video Call), per fornire materiali di approfondimento su richiesta o per dare continuità alla relazione informativa innescata dal contatto diretto.
+- *DEM (_Direct Email Marketing_)*: comunicazioni inviate su scala ampia, pianificate centralmente dal reparto marketing e indirizzate a specifici segmenti di target per supportare il lancio di prodotti o la diffusione di informative scientifiche. 
+- *RTE (_Real-Time Email_)*: comunicazioni elettroniche inviate in modo mirato e personalizzato al singolo HCP. Questa tipologia viene utilizzata proattivamente dal REP, solitamente a seguito di un incontro frontale (F2F o Video Call), per fornire materiali di approfondimento su richiesta o per dare continuità alla relazione informativa innescata dal contatto diretto.
 === Costruzione del Progetto
 Il progetto si articola in due macrofasi sequenziali di ricerca tecnologica e sviluppo.
 
-*_Prima fase: clustering e profilazione comportamentale_*\ In un primo momento, l'attività si concentra sull'analisi esplorativa dei dati storici al fine di identificare pattern comportamentali e segmentare gli utenti in gruppi (o cluster) omogenei. \ L'obiettivo di questa fase è lo sviluppo di un modello di clustering capace di mappare e misurare la _*Digital Attitude*_ (attitudine digitale) di ogni singolo HCP. \ Tale metrica consente al rappresentante di comprendere preventivamente il grado di ricettività digitale dell'HCP durante lo svolgimento delle campagne marketing.
+*_Prima fase: clustering e profilazione comportamentale_*\ In un primo momento, l'attività si concentra sull'analisi esplorativa dei dati storici al fine di identificare pattern comportamentali e segmentare gli utenti in gruppi (o _cluster_) omogenei. \ L'obiettivo di questa fase è lo sviluppo di un modello di _clustering_ capace di mappare e misurare la _*Digital Attitude*_ (attitudine digitale) di ogni singolo HCP. \ Tale metrica consente al rappresentante di comprendere preventivamente il grado di ricettività digitale dell'HCP durante lo svolgimento delle campagne marketing.
 
 *_Seconda fase: modellazione predittiva per la Next Best Action_* \ Una volta assegnato ciascun target a uno specifico profilo comportamentale, la conoscenza estratta viene utilizzata come base di partenza per la fase predittiva.\ L'obiettivo di questo secondo passo è l'implementazione di un modello di Machine Learining che proponga un azione da eseguire verso ogni HCP. Il sistema elabora una raccomandazione dinamica analizzando la sequenza cronologica delle ultime interazioni effettuate verso il medico e il rispettivo livello di risposta manifestato dal professionista a quegli specifici stimoli. 
 
