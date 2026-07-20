@@ -6,7 +6,7 @@
 
 = Introduzione <cap:introduzione>
 #text(style: "italic", [
-    Questo capitolo presenta una panoramica descrittiva dell'azienda Blue BI, la presentazione del progetto proposto dall'azienda e le motivazioni che hanno portato alla scelta dello stesso.
+    Il presente capitolo è dedicato alla contestualizzazione della realtà aziendale e del progetto. Viene delineato il profilo di Blue BI. Segue una descrizione approfondita della proposta progettuale, per poi concludere con l'analisi delle motivazioni che hanno indirizzato alla scelta del progetto.
 ])
 #v(1em)
 
