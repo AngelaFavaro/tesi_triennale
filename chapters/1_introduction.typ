@@ -6,7 +6,7 @@
 
 = Introduzione <cap:introduzione>
 #text(style: "italic", [
-    In uqesto capitolo sono presenti: panoramica descrittiva dell'azienda Blue BI; presentazione del progetto proposto dall'azienda e le motivazioni che hanno portato alla scelta di collaborazione al progetto.
+    Questo capitolo presenta una panoramica descrittiva dell'azienda Blue BI, la presentazione del progetto proposto dall'azienda e le motivazioni che hanno portato alla scelta dello stesso.
 ])
 #v(1em)
 
