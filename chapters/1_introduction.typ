@@ -49,7 +49,7 @@ Il fulcro logico dell'attività predittiva è rappresentato dal concetto di *_Ne
 
 *Gli utenti finali* per i quali il progetto è stato pensato sono i *Rappresentanti Farmaceutici (REP)* o _Sales Representatives_.\ Figure professionali che interagiscono con i professionisti del settore sanitario per svolgere attività di informazione scientifica e presentare i prodotti dell'azienda farmaceutica per cui operano.
 
-*I destinatari* dell'attività dei REP vengono chiamati *Health Care Professionals (HCP)*. Rappresentano una categoria di professionisti che opera nel settore sanitario (medici, farmacisti, ecc.) e che interagisce con le campagne di marketing delle aziende farmaceutiche. \ Il modello predittivo analizza e intepreta i comportamenti multi-canale di questi ultimi al fine di suggerire al rappresentante l'azione statisticamente più efficace da intraprendere nella fase successiva dall-ultimo contatto, massimizzando così il livello di _engagement_ dell'HCP.
+*I destinatari* dell'attività dei REP vengono chiamati *Health Care Professionals (HCP)*. Rappresentano una categoria di professionisti che opera nel settore sanitario (medici, farmacisti, ecc.) e che interagisce con le campagne di marketing delle aziende farmaceutiche. \ Il modello predittivo analizza e intepreta i comportamenti multi-canale di questi ultimi al fine di suggerire al rappresentante l'azione statisticamente più efficace da intraprendere nella fase successiva dall'ultimo contatto, massimizzando così il livello di _engagement_ dell'HCP.
 
 === I Canali
 Le interazioni che i rappresentanti possono avere con gli HCP si articolano tra due principali macroaree: _visite dirette_ e _comunicazioni digitali_.
