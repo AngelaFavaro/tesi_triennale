@@ -46,11 +46,11 @@ Gli obiettivi formativi del progetto sono:
 •	supportare l’ottimizzazione delle campagne attraverso logiche data-driven.
 
 === Obiettivi fissati
-*Notazione*
+*Notazione*\
 Si farà riferimento ai requisiti secondo le seguenti notazioni: 
-•	O per i requisiti obbligatori, vincolanti in quanto obiettivo primario;
-•	D per i requisiti desiderabili, non vincolanti o strettamente necessari, ma dal riconoscibile valore aggiunto.
-Le sigle precedentemente indicate saranno seguite da una coppia sequenziale di numeri, identificativo del requisito.
+- OO per gli obiettivi obbligatori, vincolanti in quanto obiettivo primario; sono presenti in @tab:obiettivi-obbligatori.
+- OD per i obiettivi desiderabili, non vincolanti o strettamente necessari, ma dal riconoscibile valore aggiunto; sono presenti in @tab:obiettivi-desiderabili.
+Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi del requisito.
 
 #[
 #show figure: set block(breakable: true)
@@ -66,7 +66,7 @@ Le sigle precedentemente indicate saranno seguite da una coppia sequenziale di n
     ),
     caption: "Tracciamento degli Obiettivi Obbligatori",
 )
-<tab:requisiti-funzionali>
+<tab:obiettivi-obbligatori>
 
 #v(2em)
 #figure(
@@ -77,21 +77,48 @@ Le sigle precedentemente indicate saranno seguite da una coppia sequenziale di n
     ),
     caption: "Tracciamento degli Obiettivi Desiderabili.",
 )
-<tab:requisiti-qualitativi>
+<tab:obiettivi-desiderabili>
 ]
-•	Obbligatori:
-
--	O01: Comprensione e analisi dei dati comportamentali digitali
--	O02: Sviluppo di un modello di Digital Attitude
--	O03: Implementazione di modelli di classificazione e regressione
--	O04: Valutazione delle performance tramite metriche statistiche.
-•	Desiderabili:
-
--	D01: Ottimizzazione dei modelli e miglioramento delle performance
--	D02: Definizione di segmentazioni utilizzabili per campagne omnicanale.
 
 
 == Pianificazione
-Totale 40 giorni, 320 ore
+Totale 40 giorni, 320 ore\
+Le comunicazioni tra studente e tutor aziendale avverranno tramite:
+- Email per comunicazioni formali, scambio documentale e condivisione dei materiali;
+- Google Chat per allineamenti rapidi, aggiornamenti operativi e confronto continuo sulle attività;
+- Whatsapp/Telegram per le comunicazioni veloci e informali.
+
+Ad ogni modo la comunicazione più frequente sarà quella fisica, lavorando a stretto contatto con il referente aziendale e colleghi del team di soluzione presso la sede di Blue BI in Via Carlo Mollino 90, Vicenza.
+
 === Pianificazione iniziale
+
+#v(1em)
+#set table(
+  align: (center+horizon, center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Pianificazione del lavoro.],
+  table(
+    columns: 3,
+    table.header([*Giorno*], [*Durata\ giorni*], [*Descrizione*]),
+    [18 maggio - \ 25 maggio],[sei], [Formazione e contestualizzazione. Introduzione al contesto omnicanale e al comportamento digitale degli utenti. Analisi dei dataset disponibili.],
+    [26 maggio - \ 9 giugno],[dieci], [Analisi esplorativa dei dati. Studio delle variabili comportamentali e costruzione della Digital Attitude. Identificazione delle feature rilevanti],
+    [10 giugno - \ 29 giugno], [quattordici], [Sviluppo modelli. Implementazione di modelli di classificazione e regressione per segmentazione e propensione ai canali],
+    [30 giugno - \ 8 luglio],[sette], [Validazione modelli. Valutazione performance, confronto approcci e interpretazione risultati in ottica business],
+    [9 luglio - \ 13 luglio], [tre], [Documentazione e presentazione finale. Redazione della documentazione tecnica e funzionale. Sintesi dei risultati ottenuti. Preparazione della presentazione finale del lavoro svolto.]
+  )
+)<fig:pianificazione-iniziale>
+#v(1em)
 === Discostamenti dalla pianificazione
+#v(1em)
+#set table(
+  align: (center+horizon, center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Pianificazione del lavoro.],
+  table(
+    columns: 3,
+    table.header([*Giorno*], [*Durata\ giorni*], [*Descrizione*]),
+    [18 maggio - \ 25 maggio],[sei], [Formazione e contestualizzazione. Introduzione al contesto omnicanale e al comportamento digitale degli utenti. Analisi dei dataset disponibili.],
+  )
+)<fig:lavoro-effeettivo>

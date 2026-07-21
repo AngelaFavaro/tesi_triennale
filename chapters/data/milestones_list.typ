@@ -3,15 +3,26 @@
   let OO = ()
   let m = "OO"
   let mandatory = 0
+  let fonte = "Referente aziendale"
   
   mandatory+=1
   OO.push((
-    (m + str(mandatory)), [L'utente non autenticato deve poter effettuare il login inserendo mail e password.],[]
+    (m + str(mandatory)), [Comprensione e analisi dei dati comportamentali digitali],[#fonte]
   ))
   
   mandatory+=1
   OO.push((
-    (m + str(mandatory)), [L'utente non autenticato deve poter inserire una mail e una password per potersi registrare.],[]
+    (m + str(mandatory)), [Sviluppo di un modello di Digital Attitude],[#fonte]
+  ))
+
+  mandatory+=1
+  OO.push((
+    (m + str(mandatory)), [Implementazione di modelli di classificazione e regressione],[#fonte]
+  ))
+
+  mandatory+=1
+  OO.push((
+    (m + str(mandatory)), [Valutazione delle performance tramite metriche statistiche.],[#fonte]
   ))
   
   if getLen == true {
@@ -25,10 +36,16 @@
   let OD = ()
   let d = "OD"
   let desirable = 0
+  let fonte = "Referente aziendale"
   
   desirable+=1
   OD.push((
-    (d + str(desirable)), [L'utente non autenticato deve poter effettuare il login inserendo mail e password.],[]
+    (d + str(desirable)), [Ottimizzazione dei modelli e miglioramento delle performance.],[#fonte]
+  ))
+
+  desirable+=1
+  OD.push((
+    (d + str(desirable)), [Definizione di segmentazioni utilizzabili per campagne omnicanale.],[#fonte]
   ))
   
   if getLen == true {
