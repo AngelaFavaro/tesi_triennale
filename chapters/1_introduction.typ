@@ -39,7 +39,7 @@ In quest'ottica, sono in atto *collaborazioni* strategiche con _OpenAI_, _Amazon
 
 L'*obiettivo strategico* aziendale risiede proprio nel capitalizzare questi investimenti per trasformare i dati in valore reale. \ L'estrazione di #gl("insight") accurati e la proposta di soluzioni fortemente innovative permettono infatti ai clienti di ottimizzare i processi interni, prosperare nel proprio settore e mantenere un solido vantaggio competitivo sul mercato.
 
-== Il progetto
+== Il progetto <cap:desc-prog>
 === Contesto
 Uno specifico ambito in cui l'azienda opera è quello delle campagne di *marketing farmaceutico omnicanale*, strategia che prevede l'uso integrato e sinergico di diversi canali di comunicazione per interagire con i clienti in modo coerente e personalizzato.\ Blue BI sta sviluppando soluzioni di gestione ed analisi dei dati per rispondere alle esigenze odierne del mercato.
 

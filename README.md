@@ -1,5 +1,3 @@
-> [!NOTE]
-> 🇦🇺 English localization is currently only supported via [constants.typ](https://github.com/tlazzarin/thesis-template/blob/main/config/constants.typ) as the documentation is written in Italian. Please use machine translation or read the code 🙂.
 # 🇮🇹 Introduzione
 Questa repository contiene un template Typst per la tesi di laurea all'Università di Padova. Pur avendo un forte bias per il corso di Scienze Informatiche (report di un progetto di stage) rimane adattabile per gli altri CdL.\
 Il template è basato su [questo template](https://github.com/eliapasquali/typst-thesis-template) e ampiamente modificato per scrivere la

@@ -15,9 +15,7 @@
 == Clustering
 Nel contesto dello sviluppo agile...
 
-== Next Best Action
-
-== Tracciamento dei requisiti
+== Next Best Action + esempi requisiti
 Ad ogni requisito è associato un codice costruito in base alle sue caratteristiche:
 #v(1em)
 #align(center)[*(F/Q/C)(M/D/O)R*]
