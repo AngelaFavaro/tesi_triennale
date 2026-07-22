@@ -7,7 +7,7 @@
 #show table: set block(breakable: true)
 #show table.cell: set block(breakable: false)
 
-= Descrizione stage<cap:descrizione-stage>
+= Descrizione stage<cap:desc-stage>
 #text(style: "italic", [
     In questo capitolo verrà approfondita l'organizzazione dello stage, le aspettative, gli obiettivi prefissati e il discostamento effettivo dall'organizzazione a monte.
 ])
@@ -33,29 +33,21 @@ _Integrazione di modelli analitici in contesti aziendali reali_;\ comprendere co
 A fianco dell'innalzamento delle competenze tecniche, un'aspettativa rilevante è rappresentata dalla *comprensione del contesto aziendale*. Il tirocinio costituisce un'opportunità preziosa per confrontarsi con l'organizzazione del lavoro in un'azienda di consulenza, apprendere le logiche della gestione dei progetti per obiettivi e comprendere come le esigenze dei clienti e degli utenti finali guidino ogni scelta architetturale e modellistica.\ Questa esperienza si propone dunque di affinare anche la capacità di comunicazione interpersonale, il lavoro in team e la flessibilità operativa necessarie per muoversi nel mondo professionale.
 
 == Obiettivi del progetto
-Lo stage vuole fare da tramite come l'introduzione alla Business Intelligence, Advanced Analytics e AI, grazie al coinvolgimento in un progetto orientato all’analisi del comportamento digitale degli utenti e all’ottimizzazione delle strategie omnicanale.
+Il percorso di stage si propone di introdurre e applicare le principali metodologie in uso negli ambiti della Business Intelligence, degli Advanced Analytics e dell'Intelligenza Artificiale, attraverso lo sviluppo di un progetto orientato all'analisi del comportamento digitale degli utenti e all'ottimizzazione delle strategie omnicanale.
 
-Il progetto prevede:
+Per raggiungere questo traguardo le attività progettuali sono volte all'ingegnerizzazione di un ciclo di vita del dato, che parte dalla fase di acquisizione e pre-elaborazione delle interazioni storiche degli HCP fino all'addestramento e alla validazione di algoritmi predittivi basati sul concetto di _Next Best Action_ (NBA). 
 
-- la costruzione di una Digital Attitude quantitativa, sintetica e interpretabile;
-- lo sviluppo di modelli di propensione all’utilizzo dei canali digitali;
-- la definizione di segmentazioni predittive utili per strategie di marketing personalizzato.
+In questo contesto, il lavoro da svolgere è stato strutturato attorno a tre macroaree operative, che delineano gli obiettivi tecnici e metodologici del progetto:
 
-Gli obiettivi formativi del progetto sono:
+*1. Ingegnerizzazione dei dati e Feature Engineering* \
+Il primo obiettivo riguarda la preparazione della base informativa. Questa fase prevede l'estrazione e l'integrazione dei dati storici relativi alle interazioni multi-canale, tra cui visite F2F, chiamate telefoniche, video call ed email (DEM e RTE). A seguito di un'accurata fase di pre-elaborazione orientata alla gestione dei dati mancanti, al trattamento degli outlier e alla normalizzazione delle variabili temporali e frequenziali. L'attività si concentra poi sulla costruzione di un set di feature aggregate e indicatori sintetici. Tale processo è indispensabile per quantificare in modo oggettivo e formalizzare matematicamente la _Digital Attitude_ del singolo professionista sanitario.
 
-_Analizzare dati anagrafici e comportamentali_ sulle alle interazioni digitali;
+*2. Modellazione analitica e Machine Learning*\
+La seconda macroarea costituisce il cuore algoritmico del progetto e si focalizza sullo sviluppo dei modelli analitici. In un primo momento, vengono applicate tecniche di apprendimento non supervisionato per analizzare i pattern comportamentali ed effettuare una segmentazione targettizzata degli HCP. Successivamente, la conoscenza estratta viene integrata all'interno di classificatori supervisionati e modelli di propensione, con il fine di stimare la probabilità di conversione sui diversi canali digitali e definire l'architettura predittiva in grado di raccomandare la _Next Best Action_ più efficace.
 
-_Costruire variabili e indicatori utili_ alla definizione della Digital Attitude;
+*3. Validazione e valutazione delle performance* \
+L'ultima macroarea è dedicata alla verifica e all'ottimizzazione della soluzione modellata, garantendo il rigore scientifico del lavoro svolto. A seguito di uno studio preventivo delle possibili architetture analitiche che ha condotto alla scelta del modello più idoneo al contesto applicativo, viene definito un quadro metodologico di valutazione basato su metriche quantitative specifiche per il tipo di algoritmo adottato. L'analisi continua delle metriche di performance permette così di guidare il processo iterativo di perfezionamento e taratura dei parametri del modello, garantendone la massima efficacia operativa.
 
-_Sviluppare modelli di classificazione_ (es. clustering, classificatori supervisionati) per segmentare gli utenti;
-
-_Implementare modelli di regressione_ per stimare la probabilità di utilizzo dei diversi canali;
-
-_Definire metriche di valutazione delle performance dei modelli_ (accuracy, precision, recall, AUC, ecc.);
-
-_Confrontare diversi approcci modellistici e selezionare le soluzioni più efficaci_;
-
-_Supportare l’ottimizzazione delle campagne attraverso logiche data-driven_.
 
 === Obiettivi fissati
 *Notazione*\
@@ -73,7 +65,7 @@ Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi 
 #v(1em)
 #figure(
     table(
-        table.header([*Codice*], [*Descrizione*], [*Fonti*]),
+        table.header([*Codice*], [*Descrizione*], [*Origine*]),
         ..getOO().flatten()
     ),
     caption: "Tracciamento degli Obiettivi Obbligatori",
@@ -84,7 +76,7 @@ Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi 
 #figure(
     table(
       align: (center+horizon, left+horizon, center+horizon),
-      table.header([*Codice*], [*Descrizione*], [*Fonti*]),
+      table.header([*Codice*], [*Descrizione*], [*Origine*]),
       ..getOD().flatten()
     ),
     caption: "Tracciamento degli Obiettivi Desiderabili.",
@@ -94,9 +86,9 @@ Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi 
 
 
 == Pianificazione
-Lo stage è pensato con una durata complessiva di quaranta giorni; in totale trecentoventi ore. \
+Lo stage è stato strutturato con una durata complessiva di quaranta giotrnate lavorative; per un totale di 320 ore. \
 
-Il lavoro è stato svolto a stretto contatto con il referente aziendale e colleghi del team di soluzione presso la sede di Blue BI di Vicenza.
+Il lavoro è stato svolto a stretto contatto con il referente aziendale e con i colleghi del team di soluzione presso la sede di Blue BI di Vicenza.
 
 === Pianificazione iniziale <cap:piano-iniziale>
 
@@ -108,7 +100,7 @@ Il lavoro è stato svolto a stretto contatto con il referente aziendale e colleg
   caption: [Pianificazione del lavoro.],
   table(
     columns: 4,
-    table.header([N°\ attività], [*Giorno*], [*Durata\ giorni*], [*Descrizione*]),
+    table.header([N°\ attività], [*Giorno*], [*Durata\ (giorni)*], [*Descrizione*]),
     [*1*],[18 maggio - \ 25 maggio],[sei], [#underline[Formazione e contestualizzazione]. Introduzione al contesto omnicanale e al comportamento digitale degli utenti. Analisi dei dataset disponibili.],
     [*2*],[26 maggio - \ 9 giugno],[dieci], [#underline[Analisi esplorativa] dei dati. Studio delle variabili comportamentali e costruzione della Digital Attitude. Identificazione delle feature rilevanti],
     [*3*],[10 giugno - \ 29 giugno], [quattordici], [#underline[Sviluppo modelli]. Implementazione di modelli di classificazione e regressione per segmentazione e propensione ai canali],
@@ -119,8 +111,9 @@ Il lavoro è stato svolto a stretto contatto con il referente aziendale e colleg
 #v(1em)
 === Discostamenti dalla pianificazione
 #v(1em)
-_Le attività che hanno subito *discostamenti sostanziali* rispetto alla programmazione inziale presentano un "\*" in apice al 'N° attività' in @fig:pianificazione-effettiva. _ \
-_Le attività che hanno subito *variazioni temporali* rispetto a quanto preventivato a monte presentano un "\*" in apice alla 'Durata giorni' in @fig:pianificazione-effettiva. _
+Nella @fig:pianificazione-effettiva, l'utilizzo dell'asterisco ($*$) in apice specifica le modifiche riorganizzative apportate rispetto al piano iniziale:
+- In corrispondenza del *N° attività*, indica una variazione sostanziale nella natura o nella struttura dell'attività;
+- In corrispondenza della *Durata (giorni)*, evidenzia una revisione della tempistica preventivata a monte.
 #set table(
   align: (center+horizon, center+horizon, center+horizon), 
 )
@@ -128,7 +121,7 @@ _Le attività che hanno subito *variazioni temporali* rispetto a quanto preventi
   caption: [Svolgimento effettivo del lavoro.],
   table(
     columns: 4,
-    table.header([N°\ attività], [*Giorno*], [*Durata\ giorni*], [*Descrizione*]),
+    table.header([N°\ attività], [*Giorno*], [*Durata\ (giorni)*], [*Descrizione*]),
     [*1*],[18 maggio - \ 25 maggio],[sei], [#underline[Formazione e contestualizzazione]. Introduzione al contesto omnicanale e al comportamento digitale degli utenti. Analisi dei dataset.],
     [*2*],[26 maggio - \ 28 maggio],[tre\*], [#underline[Analisi esplorativa] dei dati. Studio delle variabili comportamentali. Identificazione delle feature rilevanti],
     [*3*\*],[29 maggio - \ 12 giugno], [undici\*], [#underline[Costruzione della Digital Attitude]. Sviluppo modello di clustering. Confronto e studio approcci teorici, validazione; valutazione delle performance, intepretazione dei risultati in ottica business.],

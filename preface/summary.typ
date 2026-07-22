@@ -19,7 +19,7 @@ Questa tesi tratta la progettazione e lo sviluppo di *Nome progetto*, una piatta
 #v(1em)
 
 / #link(<cap:introduzione>)[Il primo capitolo]: introduce l'azienda, il progetto e le motivazioni che mi hanno portato a sceglierlo;
-/ #link(<cap:descrizione-stage>)[Il secondo capitolo]: descrive l'azienda, il progetto e l'organizzazione del lavoro, definendo gli obiettivi e analizzando i rischi;
+/ #link(<cap:desc-stage>)[Il secondo capitolo]: descrive l'azienda, il progetto e l'organizzazione del lavoro, definendo gli obiettivi e analizzando i rischi;
 
 #linebreak()
 #text(24pt, weight: "semibold", "Convenzioni tipografiche")

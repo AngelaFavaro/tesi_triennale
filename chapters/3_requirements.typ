@@ -10,6 +10,8 @@
 ])
 #v(1em)
 
+== Stack tecnologico 
+
 == Analisi dei dati
 
 == Clustering

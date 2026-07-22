@@ -3,7 +3,7 @@
   let OO = ()
   let m = "OO"
   let mandatory = 0
-  let fonte = "Referente aziendale"
+  let fonte = "Tutor aziendale"
   
   mandatory+=1
   OO.push((
@@ -36,7 +36,7 @@
   let OD = ()
   let d = "OD"
   let desirable = 0
-  let fonte = "Referente aziendale"
+  let fonte = "Tutor aziendale"
   
   desirable+=1
   OD.push((
