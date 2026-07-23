@@ -19,7 +19,7 @@
     [
         // Logo
         #align(center, image(logo, width: 50%))
-        #v(6em)
+        #v(4em)
         // Titolo
         #align(center, text(18pt, hyphenate: false, weight: "semibold", myTitle))
         #v(10pt)

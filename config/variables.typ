@@ -1,7 +1,7 @@
 #let myLang = "it" // it/en only
 #let myName = "Angela Favaro"
 #let myMatricola = "2111015"
-#let myTitle = "Applicazioni di ML, Clustering e Forecasting, per Campagne Omnicanale in contesto Aziendale."
+#let myTitle = "Applicazioni di ML, Clustering e predizione Next Best Action, per Campagne Omnicanale in contesto Aziendale."
 #let myProf = "Lamberto Ballan"
 #let myCompany = "Blue BI SRL"
 #let myLocation = "Padova"
