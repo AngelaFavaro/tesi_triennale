@@ -26,7 +26,7 @@ _Feature engineering e costruzione di indicatori sintetici_; \ sviluppare la cap
 
 _Valutazione delle performance dei modelli_; \ acquisire rigore nell'uso di metriche quantitative e metodologie di validazione per misurare l'accuratezza, la robustezza e la capacità di generalizzazione degli algoritmi sviluppati;
 
-_Interpretazione dei risultati (Data Visualization)_; \ apprendere le tecniche di rappresentazione grafica dei dati, indispensabili per tradurre gli output analitici in report e _dashboard_ chiare, rendendo i pattern emersi e le raccomandazioni logiche facilmente intellegibili anche a utenti non tecnici (ad esempio gli utenti);
+_Interpretazione dei risultati (#gl("data-visualization"))_; \ apprendere le tecniche di rappresentazione grafica dei dati, indispensabili per tradurre gli output analitici in report e _dashboard_ chiare, rendendo i pattern emersi e le raccomandazioni logiche facilmente intellegibili anche a utenti non tecnici (ad esempio gli utenti);
 
 _Integrazione di modelli analitici in contesti aziendali reali_;\ comprendere come un modello teorico possa trasformarsi in uno strumento operativo utilizzabile all'interno dei processi decisionali del cliente, rispettando vincoli di business e requisiti di efficienza.
 

@@ -53,5 +53,12 @@
   description: [
     Disciplina interdisciplinare che combina metodi scientifici, processi statistico-matematici, algoritmi di Machine Learning e sistemi informatici al fine di estrarre conoscenza, pattern complessi e insight di valore da grandi volumi di dati strutturati e non strutturati.
   ]
+),
+(
+  key: "data-visualization",
+  short: [Data Visualization],
+  description: [
+    Insieme di tecniche, metodologie e strumenti grafici volti a rappresentare visivamente dati e informazioni complesse. Attraverso l'uso di elementi visivi come grafici, mappe, diagrammi e dashboard interattive, la Trasforma dati grezzi o output di modelli analitici in formati intuitivi e di immediata comprensione.
+  ]
 )
 )
