@@ -24,13 +24,13 @@
   set page(margin: 1.75in, numbering: myNumbering, number-align: center)
   set par(
     leading: 0.55em,
-    spacing: 0.55em,
+    spacing: 1.2em,
     justify: true,
+    first-line-indent: (amount: 1.5em, all: false),
   )
   set text(font: "New Computer Modern", lang: myLang)
   set heading(numbering: myNumbering)
   show raw: set text(font: "DejaVu Sans Mono", size: 10pt)
-  set par(spacing: 0.55em)
   show heading: set block(above: 2em, below: 1.4em)
   show heading.where(level: 1): it => {
     stack(

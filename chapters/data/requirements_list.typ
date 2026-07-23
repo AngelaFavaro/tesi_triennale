@@ -10,12 +10,12 @@
   
   mandatory+=1
   FR.push((
-    (m + str(mandatory)), [L'utente non autenticato deve poter effettuare il login inserendo mail e password.],[@us:login]
+    (m + str(mandatory)), [L'utente non autenticato deve poter effettuare il login inserendo mail e password.],[]
   ))
   
   mandatory+=1
   FR.push((
-    (m + str(mandatory)), [L'utente non autenticato deve poter inserire una mail e una password per potersi registrare.],[@us:registrazione]
+    (m + str(mandatory)), [L'utente non autenticato deve poter inserire una mail e una password per potersi registrare.],[]
   ))
   
   if getLen == true {
