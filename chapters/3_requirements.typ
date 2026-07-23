@@ -10,14 +10,26 @@
 ])
 #v(1em)
 
-== Stack tecnologico 
+== Stack tecnologico ed ambiente di sviluppo
 
-== Analisi dei dati
+== Analisi ed esplorazione preliminare dei dati
 
-== Clustering
-Nel contesto dello sviluppo agile...
+== Profilazione della Digital Attitude tramite Clustering
 
-== Next Best Action + esempi requisiti
+=== Feature Engineering per la misura dell'attitudine digitale
+
+=== Sviluppo, addestramento e valutazione del modello
+
+== Modellazione predittiva per la Next Best Action (NBA)
+
+=== Ingegnerizzazione delle variabili
+
+=== Addestramento del classificatore e taratura dei parametri
+
+=== Valutazione delle performance
+
+== Caso d'uso applicativo ed integrazione nei processi aziendali
+
 Ad ogni requisito è associato un codice costruito in base alle sue caratteristiche:
 #v(1em)
 #align(center)[*(F/Q/C)(M/D/O)R*]
