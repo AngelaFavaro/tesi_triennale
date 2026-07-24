@@ -10,16 +10,17 @@
     // Intestazione
     [
         #align(center, text(18pt, weight: "semibold", myUni))
-        #v(1em)
+        
         #align(center, text(14pt, weight: "light", smallcaps(myDepartment)))
-        #v(1em)
+        
         #align(center, text(12pt, weight: "light", smallcaps(myFaculty)))
+        
     ],
     // Corpo
     [
         // Logo
         #align(center, image(logo, width: 50%))
-        #v(4em)
+        #v(2em)
         // Titolo
         #align(center, text(18pt, hyphenate: false, weight: "semibold", myTitle))
         #v(10pt)

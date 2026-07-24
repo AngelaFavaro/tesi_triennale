@@ -1,4 +1,4 @@
-#import "../config/thesis-config.typ": glpl, gl,
+#import "../config/thesis-config.typ": glpl, gl, linkfn
 #import "../config/variables.typ": myTutor
 #import "data/milestones_list.typ": *
 #pagebreak(to:"odd")
@@ -48,6 +48,7 @@ La seconda macroarea costituisce il cuore algoritmico del progetto e si focalizz
 *3. Validazione e valutazione delle performance* \
 L'ultima macroarea è dedicata alla verifica e all'ottimizzazione della soluzione modellata, garantendo il rigore scientifico del lavoro svolto. A seguito di uno studio preventivo delle possibili architetture analitiche che ha condotto alla scelta del modello più idoneo al contesto applicativo, viene definito un quadro metodologico di valutazione basato su metriche quantitative specifiche per il tipo di algoritmo adottato. L'analisi continua delle metriche di performance permette così di guidare il processo iterativo di perfezionamento e taratura dei parametri del modello, garantendone la massima efficacia operativa.
 
+Al fine di acquisire le competenze verticali necessarie all'utilizzo dello stack tecnologico di progetto, la fase iniziale prevede un percorso di formazione e autoapprendimento. Tale attività si è avvalsa della piattaforma #linkfn("https://business.udemy.com/it")[Udemy], messa a disposizione dall'azienda.
 
 === Obiettivi fissati
 *Notazione*\
