@@ -1,4 +1,4 @@
-#import "../config/thesis-config.typ": glpl, linkfn
+#import "../config/thesis-config.typ": glpl, gl, linkfn
 #import "data/requirements_list.typ": *
 
 #let logo-databricks = "../images/databricks_logo.svg"
@@ -17,7 +17,7 @@
   caption: [Logo di Databricks.],
   image(logo-databricks , width: 40%)
 )
-L'intero progetto è stato realizzato all'interno della piattaforma #linkfn("https://www.databricks.com")[*Databricks*], che ha fornito l'infrastruttura analitica e l'ambiente di sviluppo integrato.\ _Databricks_ è una piattaforma di analisi dati unificata su cloud che implementa l'architettura _Data Lakehouse_. Sviluppata dai creatori di #linkfn("https://spark.apache.org")[Apache Spark], la piattaforma consente di integrare in un unico ecosistema le attività di Data Engineering, Data Science e Business Intelligence. \ Grazie all'integrazione nativa con _Delta Lake_ (che garantisce la consistenza transazionale ACID e l'indicizzazione dei dati) e _MLflow_ (per il tracciamento, la riproducibilità e il _deployment_ dei modelli di Machine Learning), Databricks permette di gestire l'intero ciclo di vita del dato: dall'ingestione e pulizia delle sorgenti grezze fino all'addestramento degli algoritmi predittivi e alla loro integrazione nei processi aziendali.
+L'intero progetto è stato realizzato all'interno della piattaforma #linkfn("https://www.databricks.com")[*Databricks*], che ha fornito l'infrastruttura analitica e l'ambiente di sviluppo integrato.\ _Databricks_ è una piattaforma di analisi dati unificata su cloud che implementa l'architettura #gl("lakehouse"). Sviluppata dai creatori di #linkfn("https://spark.apache.org")[Apache Spark], la piattaforma consente di integrare in un unico ecosistema le attività di Data Engineering, Data Science e Business Intelligence. \ Grazie all'integrazione nativa con #gl("lake") (che garantisce la consistenza transazionale ACID e l'indicizzazione dei dati) e #gl("ml-flow") (per il tracciamento, la riproducibilità e il _deployment_ dei modelli di Machine Learning), Databricks permette di gestire l'intero ciclo di vita del dato: dall'ingestione e pulizia delle sorgenti grezze fino all'addestramento degli algoritmi predittivi e alla loro integrazione nei processi aziendali.
 
 La parte di sviluppo è stata svolta utilizzando i *notebook* nativi di Databricks. \ In questo ambiente è possibile impiegare simultaneamente diversi linguaggi (sia di programmazione che di gestione dei dati). L'implementazione ha combinato l'uso dei linguaggi #linkfn("https://www.python.org")[*Python*] e #linkfn("https://it.wikipedia.org/wiki/Structured_Query_Language")[*SQL*] grazie all'integrazione fornita da #linkfn("https://docs.databricks.com/aws/en/pyspark")[PySpark], l'API Python per *Apache Spark*.
 

@@ -60,5 +60,26 @@
   description: [
     Insieme di tecniche, metodologie e strumenti grafici volti a rappresentare visivamente dati e informazioni complesse. Attraverso l'uso di elementi visivi come grafici, mappe, diagrammi e dashboard interattive, la Trasforma dati grezzi o output di modelli analitici in formati intuitivi e di immediata comprensione.
   ]
+),
+(
+  key: "lakehouse",
+  short: [Data Lakehouse],
+  description: [
+    Architettura di gestione dati che combina gli elementi chiave dei Data Lake (scalabilità, flessibilità e costi contenuti nel salvataggio di dati strutturati e non) con le funzionalità tipiche dei Data Warehouse (prestazioni elevate, consistenza delle transazioni ACID, supporto a query SQL e governance del dato). Consente di eseguire sia analisi di Business Intelligence sia flussi di Data Science e Machine Learning su un'unica piattaforma integrata.
+  ]
+),
+(
+  key: "lake",
+  short: [Delta Lake],
+  description: [
+    Formato di archiviazione open-source basato su file Parquet che aggiunge un livello di affidabilità, governance e prestazioni ai Data Lake. Sviluppato da Databricks, abilita l'architettura Data Lakehouse introducendo il supporto alle transazioni ACID, l'applicazione rigida dello schema (schema enforcement), l'indicizzazione avanzata e il versionamento dei dati (time travel), consentendo di interrogare e ripristinare lo stato storico delle tabelle.
+  ]
+),
+(
+  key: "ml-flow",
+  short: [MLFlow],
+  description: [
+    Piattaforma open-source per la gestione end-to-end del ciclo di vita dei modelli di Machine Learning. Sviluppata da Databricks, offre strumenti integrati per il tracciamento degli esperimenti e dei parametri (MLflow Tracking), la riproducibilità del codice (MLflow Projects), il salvataggio e la gestione dei formati di modello (MLflow Models) e un registro centralizzato per il versionamento e il deployment (MLflow Model Registry).
+  ]
 )
 )
