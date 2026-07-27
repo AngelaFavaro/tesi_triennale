@@ -1,7 +1,13 @@
 #import "../config/thesis-config.typ": glpl, gl, linkfn
 #import "data/requirements_list.typ": *
 
+#show figure: set block(breakable: true)
+#show table: set block(breakable: true)
+#show table.cell: set block(breakable: false)
 #let logo-databricks = "../images/databricks_logo.svg"
+#let segmentation = "../images/segmentation.png"
+#let digital-attitude = "../images/digital_attitude.png"
+#let specialty = "../images/specialty.png"
 
 #pagebreak(to:"odd")
 
@@ -28,12 +34,143 @@ Per automatizzare e rendere riproducibili le fasi di trasformazione del dato, so
 == Analisi ed esplorazione preliminare dei dati
 All'interno del progetto sono state inizialmente analizzate quattro tabelle grezze. Da queste il passo iniziale è di leggerle, comprenderle ed estrapolarne le informazioni utili allo sviluppo dell'intero progetto.\ Si tratta quindi di un lavoro analitico di comprensione profonda e personale del dataset. \ È stato inotre necessario pulire le tabelle per poter comprendere meglio i dati a disposizione. 
 
-=== Analisi delle tabelle
-Le tabelle a disposizione si dividevano in due gruppi: anagrafica e tabelle delle azioni.
+I dataset sorgente, resi disponibili come file `.csv`, sono stati importati nell'ambiente Databricks e convertiti in tabelle (Delta Table / tabelle di _metastore_). Questa operazione ha consentito di accedere ai dataset direttamente tramite query SQL ed ecosistema PySpark.
 
-_Tabella anagrafica:_ nominata "`hcp_epi_in_scope_it`" presenta i dati sensibili degli HCP presenti, nello specifico non è stata resa disponibile l'anagrafica completa, ma solamente in riferimento ad una specifica campagna omnicanale (da qui `epi` nel titolo della tabella sta per '_epilessia_') già eseguita dall'azienda. Il riferimento è all'incirca a 700 HCP. \ La tabella anagrafica contiene all'interno i seguenti campi: 
+Le tabelle a disposizione si dividevano in due macro-gruppi: la tabella anagrafica e le tabelle delle azioni.
+=== Analisi Tabella Anagrafica
+La tabella, denominata "`hcp_epi_in_scope_it`", raccoglie le informazioni relative agli HCP (_Healthcare Professional_) coinvolti nel progetto. Nello specifico, non è stata resa disponibile l'intera anagrafica aziendale, ma soltanto un sottoinsieme riferito a una determinata campagna omnicanale svolta in precedenza sull'epilessia (da cui l'acronimo `epi` nel nome della tabella). Il campione comprende all'circa 800 HCP. Sulla tabella sono state condotte le prime attività di pulizia e analisi esplorativa.
 
-=== Pulizia preliminare
+*Prima fase: pulizia e selezione delle colonne*\
+In seguito a una prima analisi della struttura dati, lo studio si è focalizzato sulla comprensione del significato di ciascun campo, avvalendosi del supporto dei referenti aziendali. Una volta definiti i significati delle singole variabili, si è proceduto con una prima scrematura dei campi non rilevanti ai fini della modellazione.
+
+Di conseguenza a questa selezione iniziale, sono state mantenute le variabili riportate nella @tab:hcp.
+
+#set table(
+  align: (center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Campi della tabella `hcp_epi_in_scope_it`.],
+  table(
+    columns: 2,
+    table.header([*Campo*], [*Spiegazione*]),
+    [CONTACT_ID],[Codice identificativo unico alfanumerico del singolo HCP, strutturato su cinque blocchi separati da trattini (es. CN60556O-8V51-4667-9436-R7E5446799U9). Rappresenta la chiave primaria della tabella.],
+    [NAME],[Nome e cognome del professionista sanitario (unificati in un unico campo).],
+    [EMAIL],[Indirizzo di posta elettronica dell'HCP.],
+    [DIGITAL_ATTITUDE],[Indice del comportamento e della propensione digitale dell'HCP tracciato dall'azienda nel 2023. Sebbene la variabile non presenti aggiornamenti recenti, è stata mantenuta come potenziale feature per le analisi successive.],
+    [SEGMENTATION],[Classificazione del valore strategico dell'HCP per l'azienda farmaceutica, suddivisa nei seguenti target:
+    - _A_: HCP di primaria importanza ed elevato potenziale strategico.
+    - _B_: HCP di rilevanza medio-alta.
+    - _C_: HCP a medio-basso potenziale o con interazioni limitate.
+    - _D_: HCP a basso valore prioritario per la campagna.],
+    [ SPECIALTY_ONEKEY_1_DESC ],[Descrizione della specializzazione clinica primaria dell'HCP.],
+    [REP_ID],[Codice identificativo del REP (rappresentante) assegnato alla gestione dell'HCP per la specifica campagna.],
+    [ADOPTION_LADDER],[Indicatore dello stadio di adozione del farmaco o del brand da parte del medico (scala di adozione), categorizzato in:
+    - _Tiralist_: HCP che ha iniziato a prescrivere o testare il farmaco/prodotto su un numero limitato di pazienti.
+    - _Regular User_: HCP prescritore abituale che ha consolidato l'uso del prodotto nella propria pratica clinica.
+    - _Non User_: HCP che non prescrive o non ha ancora adottato il prodotto.],
+    [COUNTRY_ID],[Codice identificativo della nazione in cui l'HCP opera nell'ambito della campagna.],
+    [REGION],[Regione di appartenenza della struttura di operatività dell'HCP.],
+    [CITY],[Città in cui si trova la sede operativa dell'HCP per la campagna di riferimento.],
+    [BRICK],[Codice/denominazione della micro-area geografica o sotto-distretto di vendita in cui è suddiviso il territorio aziendale (es. PAVIA 03).],
+  )
+)<tab:hcp>
+
+*Seconda fase: pulizia dati mancanti o ridonanti* \
+Successivamente alla selezione dei campi di interesse, l'analisi si è focalizzata sullo studio puntuale dei record all'interno della tabella.  \ 
+Prima di procedere con la modellazione, si è reso necessario effettuare un'operazione di pulizia per garantire l'integrità dei dati, verificando la presenza di record duplicati e di valori nulli (`NULL`).
+
+Dall'analisi esplorativa è emerso che, in diversi campi, i valori mancanti non erano rappresentati dal classico `NULL` di sistema, bensì dal carattere speciale "`?`". Questa anomalia avrebbe compromesso sia la correttezza delle query SQL (invalidando le funzioni native di gestione dei valori nulli), sia la logica stessa dell'analisi, poiché il simbolo `?` viene interpretato come una stringa valida e non vuota.
+
+Il controllo prioritario è stato eseguito sul campo `CONTACT_ID`: trattandosi della *chiave primaria*, è stato fondamentale assicurarsi che non vi fossero identificativi nulli o ridondanti. Eventuali record duplicati o privi di chiave primaria sono stati eliminati.
+
+Per quanto riguarda i valori mancanti riscontrati in altri campi, si è deciso di non rimuoverli immediatamente, ma di conservarli temporaneamente per valutarne l'impatto e la gestione ottimale durante le successive fasi di _feature engineering_.
+
+#linebreak()
+#figure(caption: "Pulizia tabella anagrafica.")[
+```SQL
+CREATE OR REPLACE TABLE clean_hcp_epi_in_scope_it AS
+SELECT 
+    CONTACT_ID,
+    NULLIF(DIGITAL_ATTITUDE, '?') AS DIGITAL_ATTITUDE,
+    NULLIF(SEGMENTATION, '?') AS SEGMENTATION,
+    SPECIALTY_ONEKEY_1_DESC
+FROM hcp_epi_in_scope_it
+WHERE CONTACT_ID IS NOT NULL 
+  AND CONTACT_ID != '?';
+}
+```
+]
+
+*Terza fase: studio della tabella pulita* \
+L'ultimo passaggio ha riguardato l'analisi descrittiva dei singoli campi che componevano la tabella. Per ciascuna colonna sono state eseguite operazioni di aggregazione (`GROUP BY`) e conteggio dei valori distinti, al fine di valutarne la distribuzione e la rilevanza analitica. 
+
+A tal fine, dello strumento di data visualization interattiva *Databricks Genie* che opera all'interno delle _dashboard_ native in Databricks.\ L'impiego dei grafici si è rivelato fondamentale per comprendere la struttura del dataset, evidenziando trend, polarizzazioni e livelli di eterogeneità tra i gruppi di professionisti sanitari.
+
+Dall'analisi esplorativa sono emerse le seguenti considerazioni sintetiche:
+- DIGITAL_ATTITUDE: come evidenziato nella @fig:digital-attitude, il parametro presenta una buona variabilità tra gli HCP, confermandosi una variabile importante da considerare nelle analisi successive;
+- SEGMENTATION: la @fig:segmentation mostra una discreta distribuzione ed eterogeneità tra le classi, rendendo la variabile utile per l'addestramento dei modelli;
+- SPECIALTY_ONEKEY_1_DESC: la @fig:specialty evidenzia una forte polarizzazione delle specializzazioni, legata alla natura specifica della campagna incentrata sull'epilessia;
+- ADOPTION_LADDER: presenta una distribuzione equilibrata tra i vari stadi di adozione del farmaco;
+- COUNTRY_ID: privo di valore informativo ai fini della modellazione, in quanto costante su un unico Paese (Italia);
+- REGION, CITY, BRICK: mostrano una buona distribuzione geografica, rivelandosi campi promettenti per le successive fasi di _feature engineering_.
+
+#figure(
+  caption: [Analisi distribuzione della _DIGITAL ATTITUDE_.],
+  image(digital-attitude)
+)<fig:digital-attitude>
+
+#figure(
+  caption: [Analisi distribuzione della _SEGMENTATION_.],
+  image(segmentation)
+)<fig:segmentation>
+
+#figure(
+  caption: [Analisi distribuzione della _SPECIALTY_.],
+  image(specialty)
+)<fig:specialty>
+
+=== Analisi Tabelle delle Azioni
+abchdoioei
+
+*Prima fase: pulizia colonne*
+
+#set table(
+  align: (center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Campi della tabella `visit_epi_it`.],
+  table(
+    columns: 2,
+    table.header([*Campo*], [*Spiegazione*]),
+    [SLICE],[],
+    [KEY_COUNTRY_CONTACT],[],
+    [DATE_SQL],[],
+    [CALL_TYPE],[],
+    [HAS_CLM],[]
+  )
+)<tab:visit>
+
+#set table(
+  align: (center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Campi delle tabelle `dem_epi_it` e `rte_epi_it`.],
+  table(
+    columns: 2,
+    table.header([*Campo*], [*Spiegazione*]),
+    [SLICE],[],
+    [KEY_COUNTRY_CONTACT],[],
+    [ACTION],[],
+    [DATE_SQL],[]
+  )
+)<tab:dem-rte>
+
+*Seconda fase: pulizia dati mancanti o ridondanti*\
+Inoltre, una volta compreso il campo applicativo della tabella, tramite dei semplici ragionamenti logici, era possibile fare dei controlli per controllare eventuali altre anomalie.
+
+*Terza fase: studio tabelle pulite*
+=== Unione delle tabelle
+
 
 == Profilazione della Digital Attitude tramite Clustering
 

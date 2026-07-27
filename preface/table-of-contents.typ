@@ -11,21 +11,21 @@
     depth: 5
   )
 ]
-
+#pagebreak()
 #v(8em)
 
 #outline(
   title: figuresList,
   target: figure.where(kind: image)
 )
-
+#pagebreak()
 #v(8em)
 
 #outline(
     title: tablesList,
     target: figure.where(kind: table),
 )
-
+#pagebreak()
 #v(8em)
 
 #outline(
