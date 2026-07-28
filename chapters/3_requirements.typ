@@ -8,13 +8,21 @@
 #let segmentation = "../images/segmentation.png"
 #let digital-attitude = "../images/digital_attitude.png"
 #let specialty = "../images/specialty.png"
+#let perc-azioni = "../images/perc-azioni.png"
+#let distr-azioni = "../images/distr-azioni-tempo.png"
+#let distr-azioni-web = "../images/ditribuzione-azioni.png"
+#let distr-azioni-RTE = "../images/RTE-distr-azioni.png"
+#let distr-azioni-DEM = "../images/DEM-distr-azioni.png"
+#let distr-azioni-time-VISIT = "../images/visite-distr-azioni-tempo.png"
+#let distr-azioni-VISIT = "../images/visit-distr-azioni.png"
+
 
 #pagebreak(to:"odd")
 
 = Svolgimento del Progetto<cap:svolgimento-progetto>
 
 #text(style: "italic", [
-    In questo capitolo verranno illustrate le tappe della costruzione del progetto e dei modelli correlati. \ Prtendo con la ricerca per poi passare allo sviluppo  di una dashboard esplicativa. 
+    In questo capitolo verranno illustrate le tappe della costruzione del progetto e dei modelli correlati. \ Partendo con la ricerca per poi passare allo sviluppo  di una dashboard finale esplicativa. 
 ])
 #v(1em)
 
@@ -104,7 +112,7 @@ WHERE CONTACT_ID IS NOT NULL
 *Terza fase: studio della tabella pulita* \
 L'ultimo passaggio ha riguardato l'analisi descrittiva dei singoli campi che componevano la tabella. Per ciascuna colonna sono state eseguite operazioni di aggregazione (`GROUP BY`) e conteggio dei valori distinti, al fine di valutarne la distribuzione e la rilevanza analitica. 
 
-A tal fine, dello strumento di data visualization interattiva *Databricks Genie* che opera all'interno delle _dashboard_ native in Databricks.\ L'impiego dei grafici si è rivelato fondamentale per comprendere la struttura del dataset, evidenziando trend, polarizzazioni e livelli di eterogeneità tra i gruppi di professionisti sanitari.
+A tal fine, dello strumento di data visualization interattiva #linkfn("https://docs.databricks.com/aws/en/genie")[*Databricks Genie*] che opera all'interno delle _dashboard_ native in Databricks.\ L'impiego dei grafici si è rivelato fondamentale per comprendere la struttura del dataset, evidenziando trend, polarizzazioni e livelli di eterogeneità tra i gruppi di professionisti sanitari.
 
 Dall'analisi esplorativa sono emerse le seguenti considerazioni sintetiche:
 - DIGITAL_ATTITUDE: come evidenziato nella @fig:digital-attitude, il parametro presenta una buona variabilità tra gli HCP, confermandosi una variabile importante da considerare nelle analisi successive;
@@ -133,7 +141,7 @@ Dall'analisi esplorativa sono emerse le seguenti considerazioni sintetiche:
 Sono state esaminate tre tabelle contenenti lo storico delle diverse interazioni e azioni svolte con i professionisti sanitari:
 + `visit_epi_it`. raccoglie lo storico completo delle visite svolte dai rappresentanti verso gli HCP presenti nella tabella anaagrafica;
 + `dem_epi_it`. In cui sono presenti tutti gli invii di comunicazioni DEM (_Direct Email Marketing_) e le relative interazioni effettuate da e verso gli HCP (es. aperture, click ecc.);
-+ `rte_epi_it`. Analogamente al punto precedentetraccia analogamente le comunicazioni di tipo RTE (_Real-Time Email_) ovvero le e-mail inviate direttamente dai rappresentanti farmaceutici.
++ `rte_epi_it`. Analogamente al punto precedente traccia  le comunicazioni di tipo RTE (_Real-Time Email_) ovvero le e-mail inviate direttamente dai rappresentanti farmaceutici.
 Anche per questo gruppo di tabelle, le attività di pulizia e l'analisi esplorativa è stata suddivisa su più fasi.
 
 *Prima fase: comprensione del dominio e selezione delle colonne*\
@@ -207,13 +215,59 @@ Successivamente, si è scelta la rimozione dell'informazione relativa all'orario
 - *Riduzione del rumore*: per le tabelle delle e-mail (`dem_epi_it` e `rte_epi_it`), data la quantità complessiva di record a disposizione, un livello di granularità orario avrebbe introdotto un'eccessiva varianza, fungendo da rumore nei modelli di apprendimento.
 È opportuno precisare che la rinuncia al dettaglio orario rappresenta una scelta metodologica legata agli obiettivi e alla dimensione del dataset attuale; l'informazione oraria rimane un elemento potenzialmente utile per sviluppi futuri e modelli con una maggiore precisione.
 
-*Terza fase: studio tabelle pulite*\
-Come per la tabella anagrafica, grazie all'utilizzo degli strumenti di data visualization e dei notebook di Databricks si è passato allo studio dei dati. 
+In ultima battuta, si è deciso di unificare le tre tabelle delle azioni (`rte_epi_it`, `dem_epi_it` e `visit_epi_it`) all'interno di un unico dataset consolidato. Le colonne non presenti in tutte le tabelle sorgente sono state conservate nello schema finale, popolandole con valori `NULL` per le tipologie di azione in cui non trovarono applicazione.
 
-=== Unione delle Tabelle Azioni
+La scelta dell'unione è stata guidata da una motivazione metodologica: tutte e tre le sorgenti tracciano interazioni ed eventi direttamente afferenti al singolo HCP. Per poter studiare in modo organico l'attitudine del professionista sanitario e valutare la risposta alle diverse sollecitazioni, si è rivelato fondamentale disporre di una visione d'insieme dell'intero storico omnicanale.
+
+A tale scopo è stata creata la tabella `clean_all_epi_it`, che accentra l'insieme delle interazioni svolte e costituisce la base dati primaria per la successiva fase di modellazione.
+
+
+*Terza fase: analisi esplorativa del dataset unificato (`clean_all_epi_it`)*\
+Analogamente a quanto fatto per la tabella anagrafica, l'analisi esplorativa è stata condotta integrando i notebook di Databricks con gli strumenti di _Data Visualization_ aziendali.
+
+Dallo studio delle interazioni sono emerse le seguenti considerazioni sintetiche:
+- *Sbilanciamento del canale RTE*: le comunicazioni di tipo *RTE* rappresentano soltanto il 6,84% del totale delle azioni (@fig:perc-azioni). Pur riflettendo la realtà operativa (in cui gli invii personalizzati dei REP sono quantitativamente inferiori alle campagne massive), questo #underline[sproporzionato volume (_class imbalance_) costituisce una criticità per i futuri algoritmi di Machine Learning], che potrebbero faticare a trarre pattern significativi o scartare la variabile;
+- *Polarizzazione delle interazioni e-mail*: come evidenziato nella @fig:distr-azioni-web, #underline[le azioni sulle mail sono polarizzate sullo stadio di invio (`SENT`)]. Si riscontra inoltre la presenza di un #underline[numero non trascurabile di eventi `BOUNCED`] (indirizzi non raggiungibili). Confrontando le campagne *DEM* (@fig:distr-azioni-DEM) e *RTE* (@fig:distr-azioni-RTE), il trend rimane analogo (prevalenza di `SENT`), ad eccezione del #underline[tasso di `CLICK`, proporzionalmente più elevato negli RTE]: questo comportamento rispecchia la natura personalizzata del canale diretto;
+- *Predominanza e disallineamento temporale delle visite*: le visite tradizionali (@fig:distr-azioni-VISIT) mostrano una #underline[marcata preferenza per la modalità in presenza (*Face-to-Face*)], la quale copre circa l'87,80% delle 42.392 interazioni registrate. Tuttavia, dall'analisi temporale (@fig:distr-azioni-time-VISIT) emerge un disallineamento strutturale: i dati sulle visite in presenza partono da inizio 2019, mentre le altre tipologie di visita registrano eventi solo a partire da fine 2019 / inizio 2020;
+- *Disallineamento temporale macro-canale (Digital vs F2F)*: il divario temporale appare ancora più evidente nell'analisi aggregata delle macro-azioni (@fig:distr-azioni). Mentre lo storico delle visite gestite dagli ISF copre l'intero intervallo a partire dal 2019, i canali digitali (DEM e RTE) presentano volumi solo a partire da metà 2022. Questa asimmetria di circa due anni e mezzo attribuisce un peso sproporzionato al canale fisico rispetto a quello digitale, #underline[potendo introdurre un _bias_ nelle analisi storiche di ingaggio].
+
+#figure(
+  caption: [Analisi distribuzione delle possibili azioni.],
+  image(perc-azioni, height: 30%, width: 60%)
+)<fig:perc-azioni>
+
+#figure(
+  caption: [Analisi distribuzione delle azioni digitali.],
+  image(distr-azioni-web)
+)<fig:distr-azioni-web>
+
+#figure(
+  caption: [Analisi distribuzione delle azioni tra le visite.],
+  image(distr-azioni-VISIT, width: 90%)
+)<fig:distr-azioni-VISIT>
+
+#figure(
+  caption: [Analisi distribuzione delle azioni tra gli RTE nel tempo.],
+  image(distr-azioni-RTE)
+)<fig:distr-azioni-RTE>
+
+#figure(
+  caption: [Analisi distribuzione delle azioni tra i DEM nel tempo.],
+  image(distr-azioni-DEM)
+)<fig:distr-azioni-DEM>
+
+#figure(
+  caption: [Analisi distribuzione delle azioni tra le visite nel tempo.],
+  image(distr-azioni-time-VISIT)
+)<fig:distr-azioni-time-VISIT>
+
+#figure(
+  caption: [Analisi distribuzione delle azioni nel tempo.],
+  image(distr-azioni)
+)<fig:distr-azioni>
 
 == Profilazione della Digital Attitude tramite Clustering
-
+Entrando nel vivo del progetto, bisogna ora passare alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi
 === Feature Engineering per la misura dell'attitudine digitale
 
 === Sviluppo, addestramento e valutazione del modello
