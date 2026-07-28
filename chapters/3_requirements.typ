@@ -37,7 +37,7 @@ All'interno del progetto sono state inizialmente analizzate quattro tabelle grez
 I dataset sorgente, resi disponibili come file `.csv`, sono stati importati nell'ambiente Databricks e convertiti in tabelle (Delta Table / tabelle di _metastore_). Questa operazione ha consentito di accedere ai dataset direttamente tramite query SQL ed ecosistema PySpark.
 
 Le tabelle a disposizione si dividevano in due macro-gruppi: la tabella anagrafica e le tabelle delle azioni.
-=== Analisi Tabella Anagrafica
+=== Analisi Tabella Anagrafica <cap:analisi-tab-anagrafica>
 La tabella, denominata "`hcp_epi_in_scope_it`", raccoglie le informazioni relative agli HCP (_Healthcare Professional_) coinvolti nel progetto. Nello specifico, non è stata resa disponibile l'intera anagrafica aziendale, ma soltanto un sottoinsieme riferito a una determinata campagna omnicanale svolta in precedenza sull'epilessia (da cui l'acronimo `epi` nel nome della tabella). Il campione comprende all'circa 800 HCP. Sulla tabella sono state condotte le prime attività di pulizia e analisi esplorativa.
 
 *Prima fase: pulizia e selezione delle colonne*\
@@ -130,10 +130,16 @@ Dall'analisi esplorativa sono emerse le seguenti considerazioni sintetiche:
 )<fig:specialty>
 
 === Analisi Tabelle delle Azioni
-abchdoioei
+Sono state esaminate tre tabelle contenenti lo storico delle diverse interazioni e azioni svolte con i professionisti sanitari:
++ `visit_epi_it`. raccoglie lo storico completo delle visite svolte dai rappresentanti verso gli HCP presenti nella tabella anaagrafica;
++ `dem_epi_it`. In cui sono presenti tutti gli invii di comunicazioni DEM (_Direct Email Marketing_) e le relative interazioni effettuate da e verso gli HCP (es. aperture, click ecc.);
++ `rte_epi_it`. Analogamente al punto precedentetraccia analogamente le comunicazioni di tipo RTE (_Real-Time Email_) ovvero le e-mail inviate direttamente dai rappresentanti farmaceutici.
+Anche per questo gruppo di tabelle, le attività di pulizia e l'analisi esplorativa è stata suddivisa su più fasi.
 
-*Prima fase: pulizia colonne*
+*Prima fase: comprensione del dominio e selezione delle colonne*\
+L'attenzione si è inizialmente concentrata sulla comprensione del dominio concettuale dei singoli campi, avvalendosi del supporto e confronto con i referenti aziendali.
 
+Una volta chiarita la semantica delle variabili, si è proceduto alla rimozione dei campi non rilevanti o ridondanti ai fini della modellazione. Le variabili selezionate per le tre tabelle sono riportate dettagliatamente nelle @tab:visit e @tab:dem-rte.
 #set table(
   align: (center+horizon, center+horizon), 
 )
@@ -142,11 +148,21 @@ abchdoioei
   table(
     columns: 2,
     table.header([*Campo*], [*Spiegazione*]),
-    [SLICE],[],
-    [KEY_COUNTRY_CONTACT],[],
-    [DATE_SQL],[],
-    [CALL_TYPE],[],
-    [HAS_CLM],[]
+    [SLICE],[
+    Tipologia di interazione tracciata nel record (per questa tabella assume valore costante "`VISIT`").],
+    [KEY_COUNTRY_CONTACT],[
+    Chiave composta (prefisso `COUNTRY_ID` e `CONTACT_ID`) che costituisce la *chiave esterna* per collegare l'azione all'anagrafica dell'HCP.],
+    [DATE_SQL],[Data e ora in cui è stata eseguita la visita.],
+    [CALL_TYPE],[Il tipo di visita eseguita. Che si suddivide tra:
+    - "_VisitF2F_": interazione in presenza (Face-to-Face;
+    - "_PhoneCall_": contatto o colloquio telefonico;
+    - "_VideoCall_": interazione da remoto o in videoconferenza. ],
+    [HAS_CLM],[Flag binaria che indica l'impiego di CLM (_Closed-Loop Marketing_), ossia presentazioni digitali interattive a supporto del rappresentante:
+      - `1`: utilizzo di materiale CLM durante la visita;
+      - `0`: visita effettuata senza ausilio di CLM.],
+    [KEY_MESSAGES], [Messaggi chiave presentati durante l'uso del CLM:
+    - #underline[nel caso di utilizzo di CLM] specifica il dettaglio della pagina/diapositiva mostrata (generando un record per ciascuna pagina vista);
+    - #underline[altrimenti] riporta il valore "`-1`" ]
   )
 )<tab:visit>
 
@@ -158,19 +174,43 @@ abchdoioei
   table(
     columns: 2,
     table.header([*Campo*], [*Spiegazione*]),
-    [SLICE],[],
-    [KEY_COUNTRY_CONTACT],[],
-    [ACTION],[],
-    [DATE_SQL],[]
+    [SLICE],[
+    Canale di comunicazione a cui si riferisce il record (rispettivamente `"DEM"` o `"RTE"`).],
+    [KEY_COUNTRY_CONTACT],[*Chiave esterna* di collegamento con la tabella anagrafica degli HCP.],
+    [ACTION],[Tipologia di interazione registrata sulla comunicazione e-mail, l'interazione può essere:
+    - "_SENT_": mail inviata con successo all'HCP;
+    - "_OPEN_": mail aperta dal destinatario;
+    - "_CLICK_": interazione con i link o contenuti presenti nel corpo della mail.
+    #underline[Solo per le comunicazioni RTE]:
+    - "_BOUNCED_": nmancata consegna della mail (indirizzo non valido o errore di recapito).],
+    [DATE_SQL],[Data e ora in cui si è verificata la specifica azione ("_ACTION_").]
   )
 )<tab:dem-rte>
+*Seconda fase: pulizia dati*\
+In questa fase sono stati condotti controlli analoghi a quelli descritti per la tabella anagrafica (@cap:analisi-tab-anagrafica), procedendo alla bonifica dei valori nulli e anomali.
 
-*Seconda fase: pulizia dati mancanti o ridondanti*\
-Inoltre, una volta compreso il campo applicativo della tabella, tramite dei semplici ragionamenti logici, era possibile fare dei controlli per controllare eventuali altre anomalie.
+Inoltre, si è resa necessaria una trasformazione specifica sulla chiave esterna `KEY_COUNTRY_CONTACT`. Per agevolare le successive operazioni di congiunzione (`JOIN`) tra le tabelle delle azioni e la tabella anagrafica, la colonna è stata ridenominata in `CONTACT_ID` e opportunamente manipolata tramite una stringa di taglio (@cod:trim).
 
-*Terza fase: studio tabelle pulite*
-=== Unione delle tabelle
+Originalmente, la variabile `KEY_COUNTRY_CONTACT` conteneva un prefisso numerico relativo al Paese, concatenato all'identificativo del contatto tramite un carattere di *underscore* (ad esempio, `3000008_CN60556O-8V51-4667-9436-R7E5446799U9`). L'anagrafica riportava invece il solo codice `CONTACT_ID` (es. `CN60556O-8V51-4667-9436-R7E5446799U9`). Si è pertanto estratta esclusivamente la componente alfanumerica successiva al separatore, garantendo la perfetta corrispondenza tra le chiavi.
 
+#linebreak()
+#figure(caption: "Trim su `KEY_COUNTRY_CONTACT`.")[
+```SQL
+TRIM(SUBSTRING(KEY_COUNTRY_CONTACT FROM POSITION('_' IN KEY_COUNTRY_CONTACT) + 1)) AS CONTACT_ID, 
+```
+]<cod:trim>
+
+È stato inoltre riscontrato un disallineamento nei tipi di dato del campo `DATE_SQL`: in alcune tabelle la variabile era memorizzata sotto forma di stringa (sebbene rispettasse il formato temporale), mentre in altre era già definita come tipo di dato temporale. Si è quindi proceduto preventivamente alla loro uniformazione, convertendo tutte le colonne al tipo `TIMESTAMP`.
+
+Successivamente, si è scelta la rimozione dell'informazione relativa all'orario, mantenendo la sola componente della data (`DATE`). Questa decisione è stata guidata da due considerazioni principali:
+- *Assenza di valore informativo sulle visite*: dall'analisi esplorativa è emerso che tutti i record della tabella `visit_epi_it` riportavano come orario la mezzanotte precisa (`00:00:00`), segnaposto predefinito al momento della registrazione del dato;
+- *Riduzione del rumore*: per le tabelle delle e-mail (`dem_epi_it` e `rte_epi_it`), data la quantità complessiva di record a disposizione, un livello di granularità orario avrebbe introdotto un'eccessiva varianza, fungendo da rumore nei modelli di apprendimento.
+È opportuno precisare che la rinuncia al dettaglio orario rappresenta una scelta metodologica legata agli obiettivi e alla dimensione del dataset attuale; l'informazione oraria rimane un elemento potenzialmente utile per sviluppi futuri e modelli con una maggiore precisione.
+
+*Terza fase: studio tabelle pulite*\
+Come per la tabella anagrafica, grazie all'utilizzo degli strumenti di data visualization e dei notebook di Databricks si è passato allo studio dei dati. 
+
+=== Unione delle Tabelle Azioni
 
 == Profilazione della Digital Attitude tramite Clustering
 
