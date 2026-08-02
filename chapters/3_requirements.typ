@@ -267,7 +267,11 @@ Dallo studio delle interazioni sono emerse le seguenti considerazioni sintetiche
 )<fig:distr-azioni>
 
 == Profilazione della Digital Attitude tramite Clustering
-Entrando nel vivo del progetto, bisogna ora passare alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi
+Entrando nel vivo del progetto, si passa ora alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi. \ A questo scopo la richiesta è stata di creare un algoritmo di Clustering che potesse supportare la richiesta.
+
+In una prima fase è stato svolto un *lavoro di ricerca sui possibili algoritmi* applicabili al progetto. Sono stati valutati diversi algoritmi tra cui:
+
+
 === Feature Engineering per la misura dell'attitudine digitale
 
 === Sviluppo, addestramento e valutazione del modello
