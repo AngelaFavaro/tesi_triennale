@@ -309,7 +309,7 @@ A partire dal dataset consolidato `clean_all_epi_it`, la fase di Feature Enginee
 
 La logica implementata adotta un *approccio ibrido*: prima di somministrare i dati all'algoritmo di Machine Learning, si applica una segmentazione deterministica (_Rule-Based_) per escludere o etichettare le casistiche aziendali che non richiedono o non possono beneficiare dell'algoritmo di clustering e rischierebbero altrimenti di creare rumore all'interno del modello.
 
-==== Regole Deterministiche (Filtro Ibrido Preliminare)
+==== Regole Deterministiche
 
 Tramite query SQL e metriche di *Recency* e *Frequency*, ciascun HCP viene analizzato e categorizzato in quattro gruppi principali:
 
@@ -460,20 +460,44 @@ Infine, i gruppi statici di esclusione contano _Dormant_ e _Unreachable_.
 )<fig:distrib-cluster>
 
 == Modellazione predittiva per la Next Best Action (NBA)
-A completamento della profilazione comportamentale, viene eseguita un'analisi di *latenza temporale* per valutare la frequenza di contatto di ciascun segmento. Sfruttando le *Window Function* di PySpark (`F.lag`), viene calcolato il delta in giorni intercorrente tra un'interazione e la precedente per il HCP:
 
-$ Delta t_j = "DATE_SQL"_j - "DATE_SQL"_{j-1} $
+Per la generazione dei suggerimenti relativi all'azione ottimale da intraprendere nei confronti di ciascun HCP (*_Next Best Action_*), è stato condotto uno studio e sperimentazione sulle metodologie disponibili.
 
-I delta temporali vengono aggregati a livello di cluster calcolandone *Media* e *Mediana* (tramite `percentile_approx`). I risultati vengono memorizzati nella tabella `output_nba_latenza_cluster`.
+Inizialmente, l'obiettivo si è focalizzato sulla valorizzazione dei segmenti comportamentali appena individuati, valutando la possibilità di riutilizzare il set di _feature_ ingegnerizzate per la profilazione anche ai fini della predizione della Next Best Action. 
 
-#quote[
-  _Integrazione con la Next Best Action (NBA)_: Il calcolo della latenza (in particolare della *mediana dei giorni intercorsi*) costituisce una metrica fondamentale per i sistemi di *Next Best Action*, poiché definisce la cadenza ottimale di sollecitazione prima che un medico del cluster scivoli in uno stato di disinteresse o inattività.
-]
+In questo contesto preliminare, l'esplorazione si è sviluppata lungo due direttrici metodologiche principali:
+- Catene di Markov (_Markov Chains_);
+- Algoritmi basati su _Gradient Boosting_ (_CatBoost_ e _LightGBM_);
 
-=== Ingegnerizzazione delle variabili
+Di seguito vengono analizzate nel dettaglio le due famiglie di algoritmi, illustrando le criticità teoriche e pratiche emerse dai primi test che ne hanno determinato lo scarto nella loro formulazione iniziale, ponendo le basi per la re-ingegnerizzazione del problema e la scelta della soluzione finale basata su *_Gradient Boosting_ con LightGBM*.
+=== Algoritmi scartati
+==== _Markov Chains_
+Nel primo esperimento applicativo, si è tentato di modellare la generazione della Next Best Action attraverso un sistema stocastico basato sulle Catene di Markov (Markov Chains).
 
-=== Addestramento del classificatore e taratura dei parametri
+Nel contesto del progetto, si è pensato di adattare questo quadro teorico definendo uno spazio degli stati finito $S$ corrispondente alle tipologie di azione eseguibili nei confronti dell'HCP:
+$ S = \{"Face to Face", "Video Call", "Phone Call", "Send DEM", "Send RTE"\} $
 
-=== Valutazione delle performance
+Per ciascuno degli 8 cluster identificati nella fase di _clustering_, si è pensato di costruire una specifica #underline[matrice di transizione delle probabilità] $P^{(k)}$, derivata dalla distribuzione empirica delle _feature_ comportamentali. 
+
+Per rendere la rete maggiormente dinamica e aderente al contesto aziendale, si voleva integrare il modello con:
+1. *Moltiplicatori di peso* basati sull'attitudine digitale dell'utente (`DIGITAL_ATTITUDE`);
+2. Una funzione di *Reward* (ricompensa) calibrata sulla segmentazione di business dell'HCP;
+3. Un'estensione dell'ordine della catena (*High-Order Markov Chain*), configurata per considerare gli ultimi 3 stati storici registrati dall'HCP ($S_{t-2}, S_{t-1}, S_t$), al fine di guidare la decisione della transizione successiva $S_{t+1}$.
+
+Nonostante i tentativi di arricchimento contestuale, *l'approccio è stato formalmente scartato* in accordo con i referenti aziendali, per le seguenti motivazioni:
+
+- #underline[Natura eccessivamente stocastica/probabilistica]: la matrice di transizione tendeva a suggerire azioni basate su frequenze statistiche aggregate, faticando a catturare i pattern individuali o le anomalie comportamentali del singolo medico;
+- #underline[Limite strutturale della Proprietà di Markov]: sebbene l'estensione ad un ordine superiore ($p=3$) tentasse di mitigare l'assenza di memoria, la natura essenzialmente "locale" del modello si è dimostrata un limite invalidante. L'evoluzione della relazione tra l'ISF e l'HCP richiede la valutazione dell'intero storico longitudinale del contatto (es. latenze sul lungo periodo, stagionalità, trend di reattività);
+- #underline[Incapacità di generalizzazione]: il modello risultava rigido e poco incline ad adattarsi rapidamente a repentini cambi di ingaggio dell'HCP senza dover ricalcolare interamente le matrici di probabilità.
+
+Si è dunque deciso di abbandonare i modelli stocastici di transizione in favor di un approccio di Machine Learning classico con apprendimento supervisionato.
+==== _Gradient Boosting_ con _CatBoost_
+
+=== Predizione NBA: _Gradient Boosting_ con _LightGBM_
+==== Ingegnerizzazione delle variabili
+
+==== Addestramento del classificatore e taratura dei parametri
+
+==== Valutazione delle performance
 
 == Caso d'uso applicativo ed integrazione nei processi aziendali
