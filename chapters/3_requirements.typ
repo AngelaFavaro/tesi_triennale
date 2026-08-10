@@ -19,6 +19,8 @@
 #let heat-cluster = "../images/heat-cluster.png"
 #let distrib-cluster = "../images/distrib-cluster.png"
 #let feature-cluster = "../images/feature-imp.png"
+#let markov = "../images/markov.png"
+
 
 #pagebreak(to:"odd")
 
@@ -474,7 +476,23 @@ Di seguito vengono analizzate nel dettaglio le due famiglie di algoritmi, illust
 ==== _Markov Chains_
 Nel primo esperimento applicativo, si è tentato di modellare la generazione della Next Best Action attraverso un sistema stocastico basato sulle Catene di Markov (Markov Chains).
 
-Nel contesto del progetto, si è pensato di adattare questo quadro teorico definendo uno spazio degli stati finito $S$ corrispondente alle tipologie di azione eseguibili nei confronti dell'HCP:
+Una *Catena di Markov di primo ordine* è un processo stocastico a tempo discreto in cui la probabilità di passare allo stato futuro $X_{t+1}$ dipende _esclusivamente_ dallo stato presente $X_t$, ignorando la storia passata (assenza di memoria o *Proprietà di Markov*):
+
+$ P(X_{t+1} = j | X_t = i, X_{t-1} = i_{t-1}, dots, X_0 = i_0) = P(X_{t+1} = j | X_t = i) = p_{i j} $
+
+Come illustrato in @fig:markov, la dinamica può essere rappresentata tramite un grafo orientato pesato o una matrice di transizione stocastica $P$, dove la somma delle probabilità in uscita da ogni stato è pari a $1$.
+#figure(
+  caption: [Esempio catena di Markov.\ #linkfn("https://commons.wikimedia.org/w/index.php?curid=10284158")[Fonte: Joxemai4 - Own work, CC BY-SA 3.0.]],
+  image(markov, width: 40%)
+)<fig:markov>
+
+Per superare la rigidità della memoria a singolo passo, si definisce *Catena di Markov di ordine $m$* (con $m > 1$) un modello in cui lo stato futuro $X_{t+1}$ dipende dagli ultimi $m$ stati della sequenza temporale:
+
+$ P(X_{t+1} | X_t, X_{t-1}, dots, X_0) = P(X_{t+1} | X_t, X_{t-1}, dots, X_{t-m+1}) $
+
+Sebbene questo approccio ampli la finestra di memoria locale, esso comporta una crescita esponenziale dello spazio degli stati ($|S|^m$), aumentando la rigidità del modello di fronte a sequenze poco frequenti o non osservate nello storico.
+
+*Nel contesto del progetto*, si è pensato di adattare questo quadro teorico definendo uno spazio degli stati finito $S$ corrispondente alle tipologie di azione eseguibili nei confronti dell'HCP:
 $ S = \{"Face to Face", "Video Call", "Phone Call", "Send DEM", "Send RTE"\} $
 
 Per ciascuno degli 8 cluster identificati nella fase di _clustering_, si è pensato di costruire una specifica #underline[matrice di transizione delle probabilità] $P^{(k)}$, derivata dalla distribuzione empirica delle _feature_ comportamentali. 
@@ -482,7 +500,7 @@ Per ciascuno degli 8 cluster identificati nella fase di _clustering_, si è pens
 Per rendere la rete maggiormente dinamica e aderente al contesto aziendale, si voleva integrare il modello con:
 1. *Moltiplicatori di peso* basati sull'attitudine digitale dell'utente (`DIGITAL_ATTITUDE`);
 2. Una funzione di *Reward* (ricompensa) calibrata sulla segmentazione di business dell'HCP;
-3. Un'estensione dell'ordine della catena (*High-Order Markov Chain*), configurata per considerare gli ultimi 3 stati storici registrati dall'HCP ($S_{t-2}, S_{t-1}, S_t$), al fine di guidare la decisione della transizione successiva $S_{t+1}$.
+3. Un'estensione dell'ordine della catena (_High-Order Markov Chain_), configurata per considerare gli ultimi 3 stati storici registrati dall'HCP ($S_{t-2}, S_{t-1}, S_t$), al fine di guidare la decisione della transizione successiva $S_{t+1}$.
 
 Nonostante i tentativi di arricchimento contestuale, *l'approccio è stato formalmente scartato* in accordo con i referenti aziendali, per le seguenti motivazioni:
 
@@ -490,7 +508,7 @@ Nonostante i tentativi di arricchimento contestuale, *l'approccio è stato forma
 - #underline[Limite strutturale della Proprietà di Markov]: sebbene l'estensione ad un ordine superiore ($p=3$) tentasse di mitigare l'assenza di memoria, la natura essenzialmente "locale" del modello si è dimostrata un limite invalidante. L'evoluzione della relazione tra l'ISF e l'HCP richiede la valutazione dell'intero storico longitudinale del contatto (es. latenze sul lungo periodo, stagionalità, trend di reattività);
 - #underline[Incapacità di generalizzazione]: il modello risultava rigido e poco incline ad adattarsi rapidamente a repentini cambi di ingaggio dell'HCP senza dover ricalcolare interamente le matrici di probabilità.
 
-Si è dunque deciso di abbandonare i modelli stocastici di transizione in favor di un approccio di Machine Learning classico con apprendimento supervisionato.
+Si è dunque deciso di abbandonare i modelli stocastici di transizione in favore di un approccio di Machine Learning classico con apprendimento supervisionato.
 ==== _Gradient Boosting_ con _CatBoost_
 
 === Predizione NBA: _Gradient Boosting_ con _LightGBM_
