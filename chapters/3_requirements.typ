@@ -15,6 +15,9 @@
 #let distr-azioni-DEM = "../images/DEM-distr-azioni.png"
 #let distr-azioni-time-VISIT = "../images/visite-distr-azioni-tempo.png"
 #let distr-azioni-VISIT = "../images/visit-distr-azioni.png"
+#let elbow = "../images/elbow.png"
+#let heat-cluster = "../images/heat-cluster.png"
+
 
 
 #pagebreak(to:"odd")
@@ -267,14 +270,166 @@ Dallo studio delle interazioni sono emerse le seguenti considerazioni sintetiche
 )<fig:distr-azioni>
 
 == Profilazione della Digital Attitude tramite Clustering
-Entrando nel vivo del progetto, si passa ora alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi. \ A questo scopo la richiesta è stata di creare un algoritmo di Clustering che potesse supportare la richiesta.
+Entrando nel vivo del progetto, si passa alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi. \ A questo scopo la richiesta è stata di creare un algoritmo di Clustering che potesse supportare la richiesta.\
+In accordo con le linee guida espresse dal team aziendale, l'algoritmo individuato per la profilazione è stato il *K-Means*. 
 
-In una prima fase è stato svolto un *lavoro di ricerca sui possibili algoritmi* applicabili al progetto. Sono stati valutati diversi algoritmi tra cui:
+In accordo con il team aziendale, sono stati presi in considerazione più algoritmi di *Clustering* non supervisionato, valutandone l'applicabilità al caso di studio:
+- *Clustering Gerarchico*: è stato immediatamente scartato a causa dell'elevata complessità computazionale ($cal(O)(n^3)$ nel caso generale o $cal(O)(n^2)$ nelle versioni ottimizzate). Rispetto a questo, il K-Means garantisce una complessità lineare $cal(O)(n dot k dot i dot d)$, risultando nettamente più efficiente e scalabile;
+- *DBSCAN*: questo approccio basa la clusterizzazione sul concetto di _Nearest Neighbor_ e sulla densità locale, identificando i gruppi senza imporre un numero fisso di cluster e classificando i punti isolati come _outlier_. Tuttavia, per garantire la stabilità e la riuscita della segmentazione aziendale, si è preferito un modello basato su *centroidi* (K-Means). \ Di fatti il vero discriminante metodologico risiede nella possibilità di determinare e controllare preventivamente un numero di cluster $k$ "sicuro" e ben definito tramite l'esame dell'_Elbow Method_ (spiegato nella @cap:sviluppo-cluster). 
+ 
+Queste motivazioni, unite alla necessità aziendale di assegnare ogni singolo HCP a un profilo e di disporre di una metodologia facilmente interpretabile, ha confermato il K-Means come la scelta ottimale per il progetto.
+
+=== K-Means: Fondamenti Teorici
+Il K-Means è un algoritmo di partizionamento non supervisionato che ha lo scopo di suddividere un insieme di $n$ osservazioni $X = {x_1, x_2, ..., x_n}$ in $k$ cluster distinti $C = {C_1, C_2, ..., C_k}$, dove *$k$ rappresenta un iperparametro prefissato*.
+
+Matematicamente, l'algoritmo mira a minimizzare la varianza interna ai cluster, nota come _Within-Cluster Sum of Squares_ (WCSS) o *Inerzia*, definita dalla seguente funzione obiettivo:
+
+$ J = sum_(i=1)^k sum_(x in C_i) || x - mu_i ||^2 $
+
+dove $mu_i$ rappresenta il *centroide* (il punto medio) del cluster $C_i$, e $|| x - mu_i ||^2$ indica la distanza euclidea al quadrato tra l'osservazione $x$ e il centroide $mu_i$.
+
+L'algoritmo opera attraverso un processo iterativo ben definito.
+
+Nella fase iniziale di *inizializzazione*, vengono individuati $k$ punti nello spazio delle *feature* da assumere come centroidi di partenza $mu_1, ..., mu_k$.
+
+Successivamente, nella fase di *assegnazione*, ciascuna osservazione $x_j$ viene associata al cluster il cui centroide risulta geometricamente più vicino secondo la distanza euclidea:
+
+$ C_i = { x_j : || x_j - mu_i || <= || x_j - mu_l || quad forall l, 1 <= l <= k } $
+
+A questo punto si passa alla fase di *aggiornamento*, in cui viene ricalcolata la posizione di ciascun centroide $mu_i$ come media aritmetica di tutte le osservazioni correntemente assegnate a quel determinato gruppo:
+
+$ mu_i = 1 / (|C_i|) sum_(x in C_i) x $
+
+Infine, nella fase di *convergenza*, i passaggi di assegnazione e aggiornamento vengono ripetuti ciclicamente fino a quando la posizione dei centroidi non varia più in modo significativo, ovvero fino a quando lo scostamento dell'inerzia $J$ scende sotto una soglia di tolleranza $epsilon$ prestabilita, o al raggiungimento del numero massimo di iterazioni consentite.
 
 
-=== Feature Engineering per la misura dell'attitudine digitale
+=== Feature Engineering per la misura dell'Attitudine Digitale
 
-=== Sviluppo, addestramento e valutazione del modello
+A partire dal dataset consolidato `clean_all_epi_it`, la fase di Feature Engineering è stata progettata per trasformare le interazioni puntuali degli HCP in variabili sintetiche relative a una finestra temporale recente di 120 giorni, questo per garantire che i cluster siano aggiornati relativamente agli ultimi atteggiamenti digitali degli HCP e non abbiano _bias_ relativi ai comportamenti molto vvecchi degli stesso. \ La finestra temporale, in ogni caso, può essere facilmente ampiata o diminuita. 
+
+La logica implementata adotta un *approccio ibrido*: prima di somministrare i dati all'algoritmo di Machine Learning, si applica una segmentazione deterministica (_Rule-Based_) per escludere o etichettare le casistiche aziendali che non richiedono o non possono beneficiare dell'algoritmo di clustering e rischierebbero altrimenti di creare rumore all'interno del modello.
+
+==== Regole Deterministiche (Filtro Ibrido Preliminare)
+
+Tramite query SQL e metriche di *Recency* e *Frequency*, ciascun HCP viene analizzato e categorizzato in quattro gruppi principali:
+
+- *_UNTOUCHED / NEW-EXPLORATION_*: identifica i medici mai contattati o per i quali non figura alcuna interazione registrata nello storico;
+- *_INACTIVE / DORMANT_*: racchiude gli HCP che non hanno registrato alcuna attività negli ultimi 120 giorni;
+- *_BOUNCED / INVALID_*: individua i contatti con problemi di raggiungibilità sul canale e-mail, definiti da una soglia critica di _bounce_ registrati nell'ultimo quadrimestre (`DEM_Bounce_120gg >= 5`);
+- *_ELIGIBLE_FOR_ML_*: include tutti gli HCP attivi che non ricadono nelle categorie precedenti. #underline[Solo questa coorte] viene fatta proseguire verso la successiva fase di calcolo delle _feature_ ed elaborazione da parte del K-Means.
+
+==== Ingegnerizzazione delle Feature per il Machine Learning
+
+Per gli HCP appartenenti alla classe `ELIGIBLE_FOR_ML`, il codice calcola un set di *feature* derivate e normalizzate tramite funzioni PySpark. Tali variabili mirano a catturare l'intensità di ingaggio, la preferenza di canale e la reattività digitale e sono presentati in @tab:feature-clustering.
+
+#set table(
+  align: (center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Feature individuate per l'algoritmo di clustering.],
+  table(
+    columns: 2,
+    table.header([*Feature*], [*Descrizione*]),
+    [_*Monthly Interaction Intensity*_],[Volume medio mensile di interazioni totali sostenute dall'HCP (somma di contatti digitali e visite sul territorio, normalizzata sui 4 mesi della finestra analizzata).],
+    [_*Digital Open Rate*_],[Percentuale di e-mail aperte rispetto al totale degli invii ricevuti. Per mitigare anomalie di tracciamento o aperture multiple, il valore viene limitato a un tetto massimo del 100% ($1.0$).],
+    [_*Share of F2F*_],[Peso percentuale delle visite fisiche in presenza (_Face to Face_) sul totale delle interazioni svolte dai rappresentanti sul territorio.],
+    [_*Share of Remote*_],[quota percentuale di visite effettuate a distanza via *Remote Call* sul totale delle visite territoriali.],
+    [_*Digital Engagement Rate*_],[Qualità dell'interesse digitale dell'HCP, definita come la percentuale di e-mail che hanno generato un *click* sul totale delle e-mail effettivamente aperte.],
+    [_*Share of Digital*_],[Inclinazione al macro-canale del medico, ovvero la percentuale di interazioni digitali (aperture DEM e RTE) sul totale complessivo delle interazioni ricevute (digitali + visite);],
+    [_*RTE Preference Ratio*_],[Preferenza relativa all'interno del canale e-mail, misurando la quota di aperture di mail inviate direttamente dal REP (_Rep-Triggered Email_) rispetto al totale delle aperture digitali.],
+  )
+)<tab:feature-clustering>
+
+#quote[
+    _Nota metodologica sulla multicollinearità_: la quota delle chiamate telefoniche (_Phone Call_) non è stata inserita intenzionalmente come variabile indipendente per evitare problemi di multicollinearità perfetta nei modelli, essendo linearmente dipendente dalle altre due modalità sul territorio (_Face to face_ e _Remote Call_).
+] 
+
+Le variabili così ingegnerizzate vengono infine salvate in modalità nella tabella di _staging_ Delta `stg_segmentation_raw_features`, pronta per essere sottoposta alle successive fasi di scaling/standardizzazione e segmentazione via K-Means.
+
+=== Implementazione, Addestramento e Valutazione del modello <cap:sviluppo-cluster>
+==== Implementazione
+La seconda macro-fase della pipeline riguarda l'addestramento dell'algoritmo di Clustering, la mappatura logico-commerciale dei gruppi ottenuti e il calcolo delle metriche di comportamento temporale (latenza).
+
+I dati appartenenti alla coorte `ELIGIBLE_FOR_ML` vengono convertiti in ambiente Pandas per l'elaborazione vettoriale. Prima della somministrazione all'algoritmo, si procede alla normalizzazione tramite `StandardScaler`, la quale trasforma ciascuna variabile affinché abbia media nulla e varianza unitaria.
+
+Successivamente, per rispondere a precise direttive di strategia _omnichannel_ è stata applicata una *pesatura differenziata* (+50%) su due variabili chiave:
+- `Share_of_F2F`: incrementata del fattore $1.5$ per dare maggior risalto al canale in presenza;
+- `Share_of_Digital`: incrementata del fattore $1.5$ per enfatizzare la reattività complessiva al canale digitale.
+
+Tale pesatura consente di guidare lo spazio delle distanze euclidee, forzando l'algoritmo a separare in modo più netto i profili fisici da quelli digitali.
+
+==== Addestramento
+Prima di procedere all'addestramento, l'iperparametro $k$ (il numero finale di cluster) è stato individuato in modo analitico tramite l'*Elbow Method* (Metodo del Gomito) in @fig:elbow. 
+
+#pad(left: 1em)[
+  #quote[
+  _Come funziona l'Elbow Method_: si esegue l'algoritmo K-Means per un intervallo di valori di $k$ (in questo caso da $1$ a $14$), calcolando per ciascuna iterazione l'Inerzia (WCSS), ovvero la somma delle distanze al quadrato tra ogni punto e il relativo centroide. 
+  
+  Graficando il valore del WCSS in funzione di $k$, la curva decresce monotonicamente: all'aumentare dei cluster, i punti sono più vicini ai centroidi. Il valore ottimale di $k$ corrisponde al punto di flesso della curva (il "gomito"), ovvero la soglia oltre la quale l'aggiunta di un ulteriore cluster porta a una riduzione trascurabile dell'inerzia, evitando sia il _underfitting_ sia il _overfitting_ della segmentazione.
+  ]
+]
+
+#figure(
+  caption: [Analisi sulla scelta di _k_ utilizzando l'_Elbow Method_.],
+  image(elbow)
+)<fig:elbow>
+
+La scelta è confluita in *$k = 8$*, sia grazie all'analisi del grafico dell'Elbow Method (@fig:elbow) sia perché, in un'ottica aziendale, questo numero di segmenti è risultato il più fluido e gestibile per le strategie di business.
+
+Il modello K-Means viene addestrato sulle *feature* scalate e pesate attraverso il l'algoritmo di Clustering (@cod:clustering). 
+#figure(caption: "Codice del modello K-Means utilizzato.")[
+```python
+from sklearn.cluster import KMeans
+
+# Definizione del numero di cluster ottimale
+k_ottimale = 8
+
+# Inizializzazione e addestramento del modello K-Means
+kmeans_final = KMeans(
+    n_clusters=k_ottimale, 
+    random_state=42, 
+    n_init=10
+)
+
+# Assegnazione dei cluster ai dati scalati e pesati
+pdf_features['ML_Cluster_Raw'] = kmeans_final.fit_predict(X_scaled_final)
+```
+]<cod:clustering>
+
+==== Valutazione del Modello
+I cluster numerici generati dal modello ($0 dots 7$) sono stati sottoposti a un processo di *mappatura supervisionata*, in cui le caratteristiche statistiche dei centroidi sono state analizzate mediante la heatmap comportamentale (@fig:heat-cluster).
+
+#figure(
+  caption: [Heatmap derivata dall'algoritmo k-Means.],
+  image(heat-cluster)
+)<fig:heat-cluster>
+
+L'esame incrociato delle metriche percentuali ha permesso di definire l'identità operativa di ciascun gruppo. I dettagli e le descrizioni operative dei segmenti individuati sono riassunti nella @tab:clusters.
+
+#set table(
+  align: (center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Cluster individuati dal k-Means.],
+  table(
+    columns: 3,
+    table.header([*N°\ Cluster*], [*Cluster*], [*Descrizione*]),
+    [0],[*Omnichannel VIPs*],[Elevatissima ricettività digitale con un _Digital Open Rate_ pari al $96\%$, abbinata a un solido ingaggio sul territorio (_Share of F2F_ al $78\%$) e a una marcata quota digitale complessiva ($59\%$).],
+    [1],[*Traditional F2F*],[Profilo puramente fisico, dominato da una _Share of F2F_ del $94\%$ e tassi di ingaggio digitale prossimi allo $0\%$.],
+    [2],[*Digital-First \ /Mail-Only*],[Nettissima prevalenza del canale digitale (_Share of Digital_ al $92\%$) e un'ottima apertura e-mail ($65\%$), in totale assenza di interazioni in presenza ($0\%$ F2F).],
+    [3],[*Science-Oriented\ (Passive)*],[Bilanciamento tra visite fisiche ($92\%$ F2F) e comunicazioni e-mail fortemente orientate ai contenuti scientifici d'informazione scientifica remota (_RTE Preference Ratio_ al $94\%$)],
+    [4],[*Promo-Oriented\ (Passive)*],[Elevato ingaggio sul territorio ($99\%$ F2F) unito a una spiccata propensione all'apertura delle e-mail di prodotto o promozionali ($75\%$ Open Rate, con bassa preferenza RTE).],
+    [5],[*Digital Advocates\ (Top Responders)*],[ Il segmento a più alto valore qualitativo sul digitale, registrando l'unico valore di _Digital Engagement Rate_ (click) rilevante dell'intero campione ($91\%$), unito a un'alta preferenza per comunicazioni scientifiche ($88\%$);],
+    [6],[*Phone-Centric*],[Profili con valori mediamente bassi o moderati su tutti i canali principali, gestiti prevalentemente tramite contatto telefonico;],
+    [7],[*Virtual-Friendly\ (Video-Call Lovers)*],[Si distingue nettamente da tutti gli altri gruppi per l'eccezionale concentrazione di visite via _Remote Call_ (_Share of Remote_ al $71\%$).],
+  )
+)<tab:clusters>
+
+Parallelamente, i dati relativi ai medici precedentemente esclusi dal Machine Learning vengono recuperati e ricondotti a tre segmenti statici di business: *Onboarding (Exploration)* per i nuovi o non contattati, *Unreachable / Tech Issue* per i contatti con problemi di recapito (_bounced_), e *Dormant* per i medici inattivi negli ultimi 120 giorni.
+
+Il dataset completo viene infine consolidato e persistito nella tabella Delta `hcp_final_segmentation`.
+
+MANCA LE VALUTAZIONI FINALI DELLE METRICHE.
 
 == Modellazione predittiva per la Next Best Action (NBA)
 
