@@ -17,8 +17,8 @@
 #let distr-azioni-VISIT = "../images/visit-distr-azioni.png"
 #let elbow = "../images/elbow.png"
 #let heat-cluster = "../images/heat-cluster.png"
-
-
+#let distrib-cluster = "../images/distrib-cluster.png"
+#let feature-cluster = "../images/feature-imp.png"
 
 #pagebreak(to:"odd")
 
@@ -396,8 +396,12 @@ pdf_features['ML_Cluster_Raw'] = kmeans_final.fit_predict(X_scaled_final)
 ```
 ]<cod:clustering>
 
-==== Valutazione del Modello
-I cluster numerici generati dal modello ($0 dots 7$) sono stati sottoposti a un processo di *mappatura supervisionata*, in cui le caratteristiche statistiche dei centroidi sono state analizzate mediante la heatmap comportamentale (@fig:heat-cluster).
+==== Risultati del Modello
+I cluster numerici generati dal modello ($0 dots 7$) sono stati sottoposti ad un processo di *mappatura supervisionata*, volto a tradurre le proprietà matematiche dei gruppi in segmenti commerciali e operativi. 
+
+A tal fine, sono state calcolate le medie reali delle *feature* (i *centroidi*) per ciascuno degli 8 cluster attivi, la cui distribuzione percentuale (relativa a metriche quali `Digital_Open_Rate`, `Share_of_F2F` e `RTE_Preference_Ratio`) è stata visualizzata graficamente tramite la heatmap comportamentale (@fig:heat-cluster), generata in Python mediante le librerie `seaborn` e `matplotlib`.
+
+Questa rappresentazione a matrice consente di identificare a colpo d'occhio i tratti distintivi di ciascun gruppo, garantendo al contempo la validazione della segmentazione attraverso la verifica dell'assenza di sovrapposizioni o ridondanze tra i profili creati.
 
 #figure(
   caption: [Heatmap derivata dall'algoritmo k-Means.],
@@ -427,11 +431,44 @@ L'esame incrociato delle metriche percentuali ha permesso di definire l'identit�
 
 Parallelamente, i dati relativi ai medici precedentemente esclusi dal Machine Learning vengono recuperati e ricondotti a tre segmenti statici di business: *Onboarding (Exploration)* per i nuovi o non contattati, *Unreachable / Tech Issue* per i contatti con problemi di recapito (_bounced_), e *Dormant* per i medici inattivi negli ultimi 120 giorni.
 
-Il dataset completo viene infine consolidato e persistito nella tabella Delta `hcp_final_segmentation`.
+Il dataset completo viene consolidato e persistito nella tabella Delta `hcp_final_segmentation`.
 
-MANCA LE VALUTAZIONI FINALI DELLE METRICHE.
+Infine, gli oggetti di trasformazione e modellazione (`StandardScaler` e il modello `KMeans` addestrato) vengono serializzati e salvati nei _Volumes_ di _Unity Catalog_. Tale approccio garantisce la #underline[riproducibilità] e la #underline[_governance_ dei modelli], consentendo di riutilizzarli in fase di _inference_ su nuovi dati senza dover riaddestrare la rete.
+
+=== Valutazione dei Risultati
+Per interpretare la rilevanza delle singole variabili nelle decisioni di partizione del K-Means, è stato addestrato un modello surrogato _Random Forest Classifier_ sugli stessi dati di input.\ L'#underline[analisi dell'indice di importanza delle _feature_] (in @fig:feature-cluster) rivela che:
+
+- _Share of Digital_ (circa $18\%$), _RTE Preference Ratio_ (circa $17\%$) e _Monthly Interaction Intensity_ (circa $17\%$) rappresentano i #underline[tre fattori di maggior peso] decisionale. La marcata rilevanza di _Share of Digital_ valida l'efficacia della pesatura strategica (+50%) applicata in fase di pre-elaborazione;
+- _Share of F2F_ ($17\%$) e _Digital Open Rate_ ($15.5\%$) forniscono un contributo determinante nel separare i medici a vocazione prevalentemente fisica da quelli ricettivi via mail;
+- _Digital Engagement Rate ($8.7\%$)_ e _Share of Remote_ ($3.3\%$) agiscono come _feature_ di affinamento per isolare nicchie specifiche (come i _Digital Advocates_ o i _Video-Call Lovers_).
+
+L'analisi quantitativa condotta sul campione totale di 702 HCP (comprendente gli 8 cluster dinamici da K-Means e le categorie statiche) evidenzia una struttura di popolazione estremamente bilanciata e coerente con la realtà di mercato, si può leggere in @fig:distrib-cluster.
+
+Il core della popolazione aziendale è costituito dai segmenti _Science-Oriented (Passive)_ ($25.6\%$), _Traditional F2F_ ($22.8\%$) e _Promo-Oriented (Passive)_ ($19.8\%$). \
+Gli _Omnichannel VIPs_ rappresentano un gruppo ad alto valore strategico ($12.7\%$).\
+I segmenti digitali avanzati o di nicchia comprendono i _Digital Advocates_, i _Phone-Centric_, i _Digital-First / Mail-Only_ e i _Virtual-Friendly_.
+Infine, i gruppi statici di esclusione contano _Dormant_ e _Unreachable_.
+
+#figure(
+  caption: [Importanza delle feature usate dall'algoritmo k-Means],
+  image(feature-cluster,)
+)<fig:feature-cluster>
+
+#figure(
+  caption: [Distribuzione dei cluster sul dataset],
+  image(distrib-cluster)
+)<fig:distrib-cluster>
 
 == Modellazione predittiva per la Next Best Action (NBA)
+A completamento della profilazione comportamentale, viene eseguita un'analisi di *latenza temporale* per valutare la frequenza di contatto di ciascun segmento. Sfruttando le *Window Function* di PySpark (`F.lag`), viene calcolato il delta in giorni intercorrente tra un'interazione e la precedente per il HCP:
+
+$ Delta t_j = "DATE_SQL"_j - "DATE_SQL"_{j-1} $
+
+I delta temporali vengono aggregati a livello di cluster calcolandone *Media* e *Mediana* (tramite `percentile_approx`). I risultati vengono memorizzati nella tabella `output_nba_latenza_cluster`.
+
+#quote[
+  _Integrazione con la Next Best Action (NBA)_: Il calcolo della latenza (in particolare della *mediana dei giorni intercorsi*) costituisce una metrica fondamentale per i sistemi di *Next Best Action*, poiché definisce la cadenza ottimale di sollecitazione prima che un medico del cluster scivoli in uno stato di disinteresse o inattività.
+]
 
 === Ingegnerizzazione delle variabili
 
