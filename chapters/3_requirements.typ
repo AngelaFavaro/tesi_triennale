@@ -544,23 +544,25 @@ Tali evidenze hanno condotto il team ad abbandonare l'approccio con CatBoost, ri
 === Predizione NBA: _Gradient Boosting_ con _LightGBM_
 A seguito delle limitazioni riscontrate con le Catene di Markov e con l'approccio basato su CatBoost, la ricerca metodologica si è orientata verso *LightGBM* (_Light Gradient Boosting Machine_), un framework di Gradient Boosting sviluppato da Microsoft.
 
-LightGBM ottimizza l'efficienza computazionale, la velocità di addestramento e il consumo di memoria su dataset di grandi dimensioni, mantenendo un'eccellente accuratezza predittiva.
+LightGBM ottimizza l'efficienza computazionale, la velocità di addestramento e il consumo di memoria, garantendo al contempo un'elevata accuratezza predittiva grazie a due innovazioni algoritmiche:
 
-1. *GOSS (Gradient-based One-Side Sampling):* Per selezionare le istanze di addestramento su cui costruire i successivi alberi, GOSS sfrutta l'ampiezza del gradiente come misura di errore. L'algoritmo mantiene *tutti* i record caratterizzati da un gradiente elevato (i dati più "difficili" da predire e con maggior contenuto informativo) ed esegue un campionamento casuale uniforme su un sottoinsieme di record a gradiente ridotto. Per compensare lo sbilanciamento statistico introducendo questo campionamento, GOSS assegna un peso maggiore ai dati a basso gradiente durante il calcolo del guadagno di informazione.
-2. *EFB (Exclusive Feature Bundling):* Negli scenari ad alta dimensionalità (particolarmente frequenti dopo la fase di *feature engineering*), molte variabili risultano mutualmente esclusive (ovvero raramente assumono valori diversi da zero simultaneamente). EFB raggruppa tali *feature* sparse e mutualmente esclusive in un unico "pacchetto" (*bundle*), riducendo la dimensionalità della matrice delle feature senza alcuna perdita tangibile di informazione.
+1. #underline[GOSS (Gradient-based One-Side Sampling)]:
+   poiché i dati con un gradiente più elevato contengono più informazione (rappresentano le istanze che il modello sbaglia di più), GOSS evita di dover elaborare tutti i dati a ogni iterazione:\
+   _mantiene il tutti dati a gradiente elevato_, ovvero i record più "difficili" e informativi; _esegue un campionamento casuale_ solo su una percentuale dei dati a basso gradiente (già ben addestrati) e _riconfigura i pesi_ dei dati a basso gradiente tenuti nel calcolo, garantendo che la stima del guadagno d'informazione rimanga statisticamente corretta e non distorta.
+2. #underline[EFB (Exclusive Feature Bundling)]: negli scenari ad alta dimensionalità (particolarmente frequenti dopo la fase di _feature engineering_), molte variabili risultano mutualmente esclusive ( raramente assumono valori diversi da zero simultaneamente). Ttali _feature_ sparse e mutualmente esclusive vengono raggruppate in un unico "pacchetto" (_bundle_), riducendo la dimensionalità della matrice delle feature senza alcuna perdita tangibile di informazione.
 
-Un'ulteriore distinzione chiave risiede nella strategia di costruzione degli alberi di decisione. La maggior parte degli algoritmi di boosting tradizionali (incluso XGBoost nella sua configurazione standard) adotta una crescita *level-wise* (o *depth-wise*), espandendo l'albero livello per livello.
+Un'ulteriore distinzione chiave risiede nella strategia di costruzione degli alberi di decisione. La maggior parte degli algoritmi di boosting tradizionali (incluso #linkfn("https://xgboost.ai")[XGBoost] adotta una crescita _level-wise_ (o _depth-wise_), espandendo l'albero livello per livello.
 
-LightGBM utilizza invece una strategia di crescita *leaf-wise* (foglia per foglia) con vincolo sulla profondità massima (*max depth*).
+LightGBM utilizza invece una strategia di crescita _leaf-wise_ (foglia per foglia) con vincolo sulla profondità massima.
 
 #figure(
-  caption: [Confronto tra strategia di crescita Level-wise (a sinistra) e Leaf-wise (a destra). #footnote("Fonte: Bzubeda, 'Machine Learning 101', Medium, Gennaio 2024")],
+  caption: [Confronto tra strategia di crescita Leaf-wise (a sinistra) e Level-wise (a destra). #footnote("Fonte: Bzubeda, 'Machine Learning 101', Medium, Gennaio 2024")],
   image(leaf-level)
 )<fig:leafVslevel>
 
-A ogni passo, l'algoritmo valuta tutte le foglie esistenti e sceglie di dividere unicamente la singola foglia che garantisce la *massima riduzione della funzione di perdita* (massimo guadagno d'informazione o *split gain*). 
+A ogni passo, l'algoritmo valuta tutte le foglie esistenti e sceglie di dividere unicamente la singola foglia che garantisce la #underline[massima riduzione della funzione di perdita] (massimo guadagno d'informazione). 
 
-Questa crescita asimmetrica consente a LightGBM di raggiungere un errore di addestramento inferiore a parità di numero di split. Sebbene la crescita *leaf-wise* presenti un rischio teorico maggiore di *overfitting* su dataset ridotti, tale fenomeno viene efficacemente mitigato attraverso il controllo della profondità massima dell'albero (`max_depth`) e del numero minimo di record per foglia (`min_child_samples`).
+Questa crescita asimmetrica consente a LightGBM di raggiungere un errore di addestramento inferiore a parità di numero di split. Sebbene la crescita _leaf-wise_ presenti un rischio teorico maggiore di _overfitting_ su dataset ridotti, tale fenomeno viene mitigato attraverso il controllo della profondità massima dell'albero (`max_depth`) e del numero minimo di record per foglia (`min_child_samples`).
 ==== Ingegnerizzazione delle variabili
 
 ==== Addestramento del classificatore e taratura dei parametri
