@@ -482,7 +482,7 @@ $ P(X_{t+1} = j | X_t = i, X_{t-1} = i_{t-1}, dots, X_0 = i_0) = P(X_{t+1} = j |
 Come illustrato in @fig:markov, la dinamica può essere rappresentata tramite un grafo orientato pesato o una matrice di transizione stocastica $P$, dove la somma delle probabilità in uscita da ogni stato è pari a $1$.
 #figure(
   caption: [Esempio catena di Markov. #footnote("Fonte: Joxemai4 - Own work, CC BY-SA 3.0.")],
-  image(markov, width: 40%)
+  image(markov, width: 35%)
 )<fig:markov>
 
 Per superare la rigidità della memoria a singolo passo, si definisce *Catena di Markov di ordine $m$* (con $m > 1$) un modello in cui lo stato futuro $X_{t+1}$ dipende dagli ultimi $m$ stati della sequenza temporale:
@@ -563,10 +563,232 @@ LightGBM utilizza invece una strategia di crescita _leaf-wise_ (foglia per fogli
 A ogni passo, l'algoritmo valuta tutte le foglie esistenti e sceglie di dividere unicamente la singola foglia che garantisce la #underline[massima riduzione della funzione di perdita] (massimo guadagno d'informazione). 
 
 Questa crescita asimmetrica consente a LightGBM di raggiungere un errore di addestramento inferiore a parità di numero di split. Sebbene la crescita _leaf-wise_ presenti un rischio teorico maggiore di _overfitting_ su dataset ridotti, tale fenomeno viene mitigato attraverso il controllo della profondità massima dell'albero (`max_depth`) e del numero minimo di record per foglia (`min_child_samples`).
-==== Ingegnerizzazione delle variabili
+==== _Data Preparation & Engineering_
+Per poter addestrare un modello dinamico come LightGBM capace di suggerire la _Next Best Action_, si è resa necessaria una complessa fase di trasformazione e ristrutturazione dei dati aziendali transazionali.\ Il processo ha integrato la costruzione di una griglia temporale giornaliera, l'estrazione di _feature_ di sequenza storica, il calcolo delle latenze e la definizione di metriche statiche e dinamiche di affinità per ciascun HCP.
 
-==== Addestramento del classificatore e taratura dei parametri
+I dati di partenza si presentavano sotto forma di registro di eventi disaccoppiati.\
+Per convertire tale struttura in una serie storica idonea al tracciamento delle interazioni è stato identificato il #underline[range temporale tra la prima interazione registrata per ciascun HCP e la data massima globale dell'intero dataset]. Tramite una funzione di sequenza temporale (`F.sequence`), il dataset è stato esploso in modo da ottenere #underline[esattamente una riga per ogni giorno e per ogni medico]. Nei giorni in cui non è stata registrata alcuna sollecitazione commerciale, l'azione è stata codificata come `NO_ACTION`.
 
-==== Valutazione delle performance
+Come eredità concettuale derivata dai primi esperimenti con le _Catene di Markov di terzo ordine_, si è deciso di preservare l'informazione storica relativa agli ultimi tre contatti. Utilizzando #underline[finestre temporali applicate unicamente alle giornate di interazione effettiva], sono state estratte le ultime 3 azioni commerciali reali eseguite dal REP su ciascun medico ($"lag"_1, "lag"_2, "lag"_3$). Tali variabili sono state successivamente propagate sui giorni di `NO_ACTION`, formando la variabile categoriale di sequenza *`story_state`* (es. `SendDEM_VisitF2F_SendRTE`).
+
+Infine, per #underline[valutare l'efficacia del contatto], è stata definita una finestra prospettica di 7 giorni ($t dots t+7$). L'esito reale (`esito_reale`) è stato categorizzato in:
+   - `VISIT_EXECUTED`: per le visite condotte sul territorio;
+   - `CLICK` o `OPEN`: se nei 7 giorni successivi all'invio di un canale digitale (DEM o RTE) è stato registrato un segnale di ingaggio attivo;
+   - `NO_RESPONSE`: in assenza di reazioni da parte dell'HCP nello stesso intervallo.
+
+
+Sono inoltre state calcolate diverse metriche di affinità individuale (@tab:feature-forecasting), applicando tecniche di imputazione distribuita basate sui cluster di appartenenza.
+
+#set table(
+  align: (center+horizon, center+horizon), 
+)
+#figure(
+  caption: [Feature di preparazione ai modelli predittivi.],
+  table(
+    columns: 2,
+    table.header([*Nome*], [*Descrizione*]),
+    [*Ratio Storici\ di Utilizzo*],[Per ogni HCP sono stati calcolati i tassi reali di ingaggio, tra cui la proporzione di visite F2F condotte con supporto di presentazioni digitali CLM (`clm_f2f_ratio`), nonché i tassi di _Click Rate_ storici per i canali DEM (`dem_click_ratio`) ed RTE (`rte_click_ratio`).],
+    [*Indici di Affinità\ di Canale:*],[Combinando la quota totale di ingaggio digitale (`Share of Digital`) e le preferenze storiche per canale (`RTE Preference Ratio`, `Share of F2F`, `Share of Remote`), sono stati sintetizzati indici numerici continui di affinità condizionata per i canali d'ingaggio.\ $ "Affinity_SendRTE" =\ "Quota_Digital" times "RTE_Preference_Ratio" $
+$ "Affinity_SendDEM" =\ "Quota_Digital" times (1 - "RTE_Preference_Ratio") $],
+    [*Regole Aziendali \ (_Business Rules_)*],[Per garantire che i medici appartenenti a cluster con forti anomalie di contatto o problemi tecnici venissero gestiti in sicurezza dal modello, sono stati applicati _override_ deterministici dei valori di affinità per i gruppi "Unreachable / Tech Issue", "Onboarding (Exploration)" e "Dormant".],
+    [*Giorni dall'Ultimo\ Contatto*],[Calcolati come la distanza in giorni tra la data corrente $t$ e la data del contatto reale precedente.],
+    [*Distanza e\ Rapporto di\ Latenza:*],[La variabile temporale "Giorni dall'Ultimo Contatto" è stata messa in relazione diretta con la latenza mediana del cluster di appartenenza.]
+  )
+)<tab:feature-forecasting>
+
+Tutti i dataframe transazionali, le sequenze e i profili statici arricchiti sono stati infine consolidati tramite join strutturate sulla chiave primaria `CONTACT_ID` e salvati stabilmente nell'architettura Lakehouse di Databricks come tabella Delta.
+==== Addestramento del classificatore
+
+L'obiettivo del motore di raccomandazione NBA è duplice: suggerire al REP il canale di contatto ideale per ogni medico (HCP) e fornire un indice di saturazione (che indica quanto sia opportuno agire).
+
+Inizialmente si è testato un singolo classificatore multiclasse istruito per predire sia l'inazione (`NO_ACTION`) sia i canali attivi (`VisitF2F`, `SendDEM`, ecc.).\
+Tuttavia, la griglia temporale giornaliera generava una fortissima prevalenza di giornate senza contatto: la classe `NO_ACTION` superava l'80% del totale. Il modello monolitico ha così "imparato" a minimizzare la funzione di perdita predicendo quasi sempre l'inazione. Nonostante un'accuracy apparente dell'80%, #underline[il sistema risultava passivo e privo di capacità prescrittiva].
+
+Per superare questo limite, il problema è stato decomposto in due modelli sequenziali e condizionati:
+1. *Modello 1 — Predittore di Innesco e Saturazione (Binario):* stima la probabilità che per l'HCP $i$ al giorno $t$ sia opportuno un contatto rispetto al riposo:
+   $ P(Y_(i,t) = "ACTION" | bold(X)_1) $
+
+2. *Modello 2 — Selettore Strategico di Canale (Multiclasse):* sddestrato #underline[solo sulle interazioni reali] ($Y != "NO_ACTION"$), calcola la preferenza condizionata tra i canali attivi:
+   $ P(Y_(i,t) = k | Y_(i,t) != "NO_ACTION", bold(X)_2) quad\ "con" k in {"VisitF2F", "SendDEM", "SendRTE", dots} $
+
+Questa separazione ha aumentato sensibilmente il _Recall_ sulle azioni reali, generando suggerimenti proattivi e ben distribuiti.
+
+Dalla matrice delle variabili ($X$) sono stati esclusi l'identificativo (`CONTACT_ID`), la variabile target e i KPI storici di rendimento (`clm_f2f_ratio`, `rte_click_ratio`, ecc.). Questi ultimi, oltre a rischiare fenomeni di _data leakage_, presentavano troppi pochi valori ed avrebbero generato solo rumore.
+
+===== Addestramento Modello 1: Modello di Saturazione (_Binary Model_)
+Per bilanciare l'elevata frequenza di giorni passivi, si applica una compensazione dinamica dei pesi tramite l'iperparametro `scale_pos_weight`. L'addestramento e l'Early Stopping vengono guidati dall'area sotto la curva ROC (AUC), la quale misura la reale capacità discriminativa tra medici attivi e inattivi. \ L'implementazione del modello è presentato nel @cod:modello1.
+
+#figure(
+  caption: [Implementazione essenziale del Modello Binario.],
+  [
+```python
+# Target: 0 se NO_ACTION, 1 altrimenti
+y_binario = np.where(df_master['azione_macro'] == 'NO_ACTION', 0, 1)
+
+# Bilanciamento dinamico dei pesi tra classi
+peso_positivo = np.sum(y_binario == 0) / np.sum(y_binario == 1)
+
+# Configurazione del modello con metrica AUC
+modello_1_binario = lgb.LGBMClassifier(
+    objective='binary',
+    metric='auc',
+    scale_pos_weight=peso_positivo,  # Penalizza gli errori sulle azioni
+    learning_rate=0.02,
+    max_depth=7,
+    random_state=42
+)
+
+# Training con Early Stopping sull'AUC di validazione
+modello_1_binario.fit(
+    X_train, y_train,
+    eval_set=[(X_val, y_val)],
+    eval_metric='auc',
+    callbacks=[lgb.early_stopping(50)]
+)
+```
+]
+)<cod:modello1>
+
+===== Addestramento Modello 2: Selettore Strategico di Canale (_Multiclass Model_)
+Il secondo stadio lavora solo sui dati attivi. Per evitare che i canali storicamente più frequenti (come le visite presenziali `VisitF2F`) coprano i canali digitali, si forza la ponderazione `class_weight='balanced'`, come si può vedere dal @cod:modello2.
+
+#figure(caption: "Implementazion essenziale del modello multiclasse.")[
+```python
+# Isolamento delle sole interazioni reali (Esclusione NO_ACTION)
+df_attivi = df_master[df_master['azione_macro'] != 'NO_ACTION']
+X_canali = df_attivi.drop(columns=['azione_macro', 'CONTACT_ID', ...])
+y_canali = df_attivi['azione_macro']
+
+# Modello Multiclasse bilanciato
+modello_2_multiclass = lgb.LGBMClassifier(
+    objective='multiclass',
+    class_weight='balanced',  # Pondera i canali meno frequenti
+    learning_rate=0.05,
+    random_state=42
+)
+
+# Training condizionato sui soli canali attivi
+modello_2_multiclass.fit(
+    X_train_c, y_train_c,
+    eval_set=[(X_val_c, y_val_c)],
+    callbacks=[lgb.early_stopping(30)]
+)
+```
+]<cod:modello2>
+
+==== Regole di Business - Post Processing
+Una volta generate le probabilità grezze dai due modelli di Machine Learning, il sistema applica una fase di _post-processing_ basata su regole di dominio aziendali (_Business Rules_). Questa fase è essenziale per raccordare i punteggi puramente statistici con gli obiettivi strategici del business, definendo l'output finale destinato agli Informatori Scientifici del Farmaco (ISF) e alla Dashboard aziendale.
+
+*Il modello 1 restituisce la probabilità di inazione* che misura il livello di saturazione o di stasi del medico. Tuttavia, affidarsi unicamente alla logica predittiva rischia di penalizzare particolari segmenti strategici, condannando a una permanente passività medici che richiederebbero invece un'azione correttiva prioritaria.
+
+Per ovviare a questo limite, vengono applicate delle regole di override basate sul cluster di appartenenza dell'HCP:
+- Cluster "Unreachable / Tech Issue": La probabilità di inazione viene forzata artificialmente a un valore basso, attribuendo al medico una propensione all'azione.
+- Cluster "Dormant": La probabilità di inazione viene azzerata quasi del tutto per contrastare la deriva di inattività e sollecitare il riaggancio relazionale.
+
+*Parallelamente, dal modello 2* si estraggono le probabilità condizionate di preferenza per ciascun canale d'ingaggio attivo ($P("VisitF2F")$, $P("SendDEM")$, $P("SendRTE")$, ecc.). 
+
+La raccomandazione finale (`NBA_SUGGERITA`) viene individuata applicando un operatore di massimo ($"argmax"$) sull'insieme dei canali commerciali. L'algoritmo seleziona e assegna così la strategia d'ingaggio che registra il punteggio di propensione relativa più elevato per quello specifico profilo medico.
+
+Tutti gli output prodotti vengono consolidati in un dataset strutturato. Questo flusso viene infine persistito su una tabella aziendale in formato Delta.
+==== Valutazione e validazione delle performance
+La validazione dell'architettura gerarchica a due stadi è stata condotta analizzando separatamente l'efficacia del predittore di saturazione e la capacità discriminativa del selettore di canale.
+
+===== Performance Modello 1
+Il primo stadio registra un'#underline[Accuracy globale del 61.0%] Tale valore riflette il bilanciamento introdotto per evitare che il modello predica sistematicamente la classe maggioritaria di inazione, garantendo una capacità discriminativa reale tra momenti di ingaggio e fasi di riposo.
+
+Dall'analisi della matrice di confusione (@fig:confusion-matr-m1) si osserva come il modello riesca a *intercettare correttamente il $72\%$ delle interazioni reali* (`ACTION`), assegnando al riposo solo il restante $28\%$ dei casi. Sul fronte opposto, il $60\%$ delle giornate prive di contatto (`NO_ACTION`) viene classificato correttamente, mentre il $40\%$ registra una sovrastima dell'attività.
+
+#let confusion-matrix-m1 = "../images/analisi-forecasting/confusion-matrix-m1.png"
+#let indice-saturazione-m1 = "../images/analisi-forecasting/indice-saturazione.png"
+#figure(
+  caption: [Matrice di confuzione, modello 1.],
+  image(confusion-matrix-m1)
+)<fig:confusion-matr-m1>
+
+Questa distribuzione si riflette chiaramente nell'Indice di Saturazione $"PROB_NO_ACTION" times 100$, in @fig:indice-saturazione-m1, la cui curva sulla popolazione degli HCP mostra una forma regolare con un picco principale attorno al $40\%$. L'#underline[impostazione della soglia di blocco operativa al 75%] consente di isolare nettamente la quota di medici ad alto rischio di sovraesposizione, fornendo un criterio oggettivo per sospendere temporaneamente le sollecitazioni commerciali.
+
+
+#figure(
+  caption: [Distribuzione indice di saturazione.],
+  image(indice-saturazione-m1)
+)<fig:indice-saturazione-m1>
+
+===== Performance Modello 2
+Isolando esclusivamente le interazioni commerciali effettive (`PhoneCall`, `RemoteCall`, `SendDEM`, `SendRTE`, `VisitF2F`), il secondo stadio dimostra una spiccata capacità di orientare la scelta strategica, raggiungendo un'#underline[Accuracy complessiva del 67.2%].
+
+L'osservazione della matrice di confusione () evidenzia un'elevata precisione sulle forme di contatto dirette e digitali. Il canale `RemoteCall` si attesta come il più preciso con l' $84\%$ di individuazioni corrette, seguito da `SendRTE` all' $81\%$, `PhoneCall` al $77\%$ e `SendDEM` al $70\%$. Le visite in presenza (`VisitF2F`) mostrano una diagonale pari al $59\%$. Tale risultato è la diretta conseguenza della strategia di bilanciamento delle classi (`class_weight='balanced'`) adottata in fase di addestramento.\ In assenza di tale penalizzazione, il modello tendeva a raggiungere un'accuracy globale ingannevolmente più elevata, ma al prezzo di una quasi totale polarizzazione su `VisitF2F`, canale nettamente maggioritario nel dataset storico. Accettando un lieve calo nell'accuracy di questo singolo canale, si è deliberatamente redistribuito il peso informativo favorendo la capacità discriminativa sui canali digitali e remoti, garantendo al sistema un'effettiva proattività omnicanale.
+
+#let confusion-matrix-m2 = "../images/analisi-forecasting/confusion-matrix-m2.png"
+#figure(
+  caption: [Matrice di confuzione, modello 2.],
+  image(confusion-matrix-m2)
+)<fig:confusion-matr-m2>
+
+Nello specifico della NBA Suggerita (in @fig:nba-sugg-m2), le visite presenziali (`VisitF2F`) si confermano il pilastro della relazione commerciale superando le $100.000$ raccomandazioni, affiancate da un forte contributo del canale `SendDEM` con circa $70.000$ suggerimenti. Le chiamate telefoniche (`PhoneCall`) e le e-mail di contenuto scientifico (`SendRTE`) coprono rispettivamente bacini di circa $30.000$ e $24.000$ medici, mentre `RemoteCall` si posiziona come strumento di nicchia ad altissima precisione, consigliato per meno di $10.000$ HCP.
+#let nba-sugg = "../images/analisi-forecasting/NBA-suggrite.png"
+#figure(
+  caption: [Distribuzione suggerimenti del modello sull'intero dataset],
+  image(nba-sugg)
+)<fig:nba-sugg-m2>
+
+===== Performance Generali
+
+L'analisi dell'output complessivo post-forecasting conferma che l'algoritmo non tende a schiacciarsi su un'unica tipologia di contatto, ma genera un piano d'azione multicanale articolato ed equilibrato.
+
+Coerentemente la distribuzione mediana delle probabilità, in @fig:mediana-sugg, mostra la classe `NO_ACTION` con il valore mediano più alto (attorno al $0.55$), agendo da naturale filtro di stasi. Tra i canali attivi spiccano `VisitF2F` con una mediana attorno al $0.34$ e `SendDEM` attorno al $0.20$, mentre i canali telefonici e remoti mantengono mediane più basse ma picchi molto definiti, a dimostrazione di come il modello li suggerisca in modo mirato solo in presenza di segnali d'ingaggio estremamente specifici.
+
+#let mediana-sugg = "../images/analisi-forecasting/distr-mediana-sugg.png"
+#figure(
+  caption: [Distribuzione mediana delle probabilità dei modelli],
+  image(mediana-sugg)
+)<fig:mediana-sugg>
 
 == Caso d'uso applicativo ed integrazione nei processi aziendali
+
+A completamento del lavoro svolto, è stata preparata una dashboard di simulazione all'interno dell'ambiente Databricks, visibile in @fig:dashboard. L'obiettivo della schermata non è quello di presentare uno sviluppo applicativo software finito, attività che richiederebbe un ciclo di progettazione informatica dedicato, bensì quello di mostrare concretamente i risultati del modello, abbozzando una possibile resa visiva e operativa dei dati elaborati.
+
+#let dashboard1 = "../images/analisi-forecasting/Screen2.png"
+#figure(
+  caption: [Vista generale della dashboard finale - cluster deterministico.],
+  image(dashboard1)
+)<fig:dashboard>
+#let dashboard2 = "../images/analisi-forecasting/Screen1.png"
+#figure(
+  caption: [Vista generale della dashboard finale - cluster non deterministico.],
+  image(dashboard2)
+)<fig:dashboard2>
+
+L'interfaccia raccoglie in primo luogo le *generalità anagrafiche* e la specializzazione medica dell'HCP, associandole alle tassonomie strategiche definite in fase di segmentazione. Nello specifico, vengono esplicitati il cluster comportamentale, l'attitudine digitale e la posizione nell'_Adoption Ladder_.
+
+La sezione centrale mostra l'*Indice di Saturazione* (@fig:probabilities) del medico, trasformato in percentuale per una lettura immediata.\ L'indice viene infatti mappato dinamicamente su sei classi operative determinate da soglie aziendali ben definite:
+- $<= 10\%$: Prioritario: Ingaggio Libero (massima apertura all'ingaggio);
+- $10\% - 30\%$: Ricettivo: Finestra Ideale (momento ottimale di contatto);
+- $30\% - 60\%$: Presidiato: In Target (frequenza di contatto in equilibrio);
+- $60\% - 80\%$: Quasi Saturo: Soglia Limite (evitare di non sovra-sollecitare);
+- $80\% - 90\%$: In Pausa: Raffreddamento (riduzione consigliata dell'ingaggio);
+- $> 90\%$: Saturato: Presidio Sospesoz (blocco temporaneo delle comunicazioni).
+
+Il modulo di ingaggio presenta la *graduatoria delle probabilità calcolate* (@fig:probabilities) dal Modello 2 per i diversi canali. 
+
+#let probabilities = "../images/analisi-forecasting/probabilities.png"
+#figure(
+  caption: [Vista delle probabilità calcolate dai modelli.],
+  image(probabilities)
+)<fig:probabilities>
+
+Per rendere la raccomandazione operativa e non solo prescrittiva, il sistema applica in fase di post-processing un motore di regole tattiche basato sui tassi storici di risposta del medico.\ I moduli valutano l'affinità rispetto ai link via mail (`rte_click_ratio` e `dem_click_ratio`) e l'efficacia dell'uso di materiale digitale su tablet durante le visite sul campo (`clm_f2f_ratio`). Nel caso d'uso simulato, *la sezione _Flags_* (@fig:flags) genera un'indicazione specifica.
+
+Un riquadro dedicato declina la *spiegazione qualitativa del cluster* (@fig:flags), fornendo contesto sul livello di ingaggio storico per guidare l'operatore nella comprensione delle motivazioni di fondo dell'algoritmo.
+
+#let flags = "../images/analisi-forecasting/flags-cluster.png"
+#figure(
+  caption: [Vista delle flags, dei cluster e del processo decisionale spiegati.],
+  image(flags, width: 65%)
+)<fig:flags>
+
+La parte inferiore della dashboard riporta la *Timeline delle Interazioni* (@fig:timeline), una matrice cronologica che traccia la sequenza temporale dei contatti passati (distinguendo tra visite sul campo, azioni web e reazioni dell'HCP come i `CLICK` registrati sulle e-mail). Questa vista completa il quadro clinico-commerciale del medico, consentendo di verificare visivamente la coerenza tra il comportamento passato e la Next Best Action proposta dal sistema.
+#let timeline = "../images/analisi-forecasting/timeline.png"
+#figure(
+  caption: [Vista sulla timline all'interno della dashboard.],
+  image(timeline)
+)<fig:timeline>
