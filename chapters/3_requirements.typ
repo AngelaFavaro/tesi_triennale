@@ -20,7 +20,7 @@
 #let distrib-cluster = "../images/distrib-cluster.png"
 #let feature-cluster = "../images/feature-imp.png"
 #let markov = "../images/markov.png"
-
+#let leaf-level = "../images/leafvslevel.png"
 
 #pagebreak(to:"odd")
 
@@ -472,8 +472,7 @@ In questo contesto preliminare, l'esplorazione si è sviluppata lungo due dirett
 - Algoritmi basati su _Gradient Boosting_ (_CatBoost_ e _LightGBM_);
 
 Di seguito vengono analizzate nel dettaglio le due famiglie di algoritmi, illustrando le criticità teoriche e pratiche emerse dai primi test che ne hanno determinato lo scarto nella loro formulazione iniziale, ponendo le basi per la re-ingegnerizzazione del problema e la scelta della soluzione finale basata su *_Gradient Boosting_ con LightGBM*.
-=== Algoritmi scartati
-==== _Markov Chains_
+=== Sperimentazione con le _Markov Chains_
 Nel primo esperimento applicativo, si è tentato di modellare la generazione della Next Best Action attraverso un sistema stocastico basato sulle Catene di Markov (Markov Chains).
 
 Una *Catena di Markov di primo ordine* è un processo stocastico a tempo discreto in cui la probabilità di passare allo stato futuro $X_{t+1}$ dipende _esclusivamente_ dallo stato presente $X_t$, ignorando la storia passata (assenza di memoria o *Proprietà di Markov*):
@@ -482,7 +481,7 @@ $ P(X_{t+1} = j | X_t = i, X_{t-1} = i_{t-1}, dots, X_0 = i_0) = P(X_{t+1} = j |
 
 Come illustrato in @fig:markov, la dinamica può essere rappresentata tramite un grafo orientato pesato o una matrice di transizione stocastica $P$, dove la somma delle probabilità in uscita da ogni stato è pari a $1$.
 #figure(
-  caption: [Esempio catena di Markov.\ #linkfn("https://commons.wikimedia.org/w/index.php?curid=10284158")[Fonte: Joxemai4 - Own work, CC BY-SA 3.0.]],
+  caption: [Esempio catena di Markov. #footnote("Fonte: Joxemai4 - Own work, CC BY-SA 3.0.")],
   image(markov, width: 40%)
 )<fig:markov>
 
@@ -492,6 +491,7 @@ $ P(X_{t+1} | X_t, X_{t-1}, dots, X_0) = P(X_{t+1} | X_t, X_{t-1}, dots, X_{t-m+
 
 Sebbene questo approccio ampli la finestra di memoria locale, esso comporta una crescita esponenziale dello spazio degli stati ($|S|^m$), aumentando la rigidità del modello di fronte a sequenze poco frequenti o non osservate nello storico.
 
+==== Analisi e criticità delle Catene di Markov
 *Nel contesto del progetto*, si è pensato di adattare questo quadro teorico definendo uno spazio degli stati finito $S$ corrispondente alle tipologie di azione eseguibili nei confronti dell'HCP:
 $ S = \{"Face to Face", "Video Call", "Phone Call", "Send DEM", "Send RTE"\} $
 
@@ -509,9 +509,58 @@ Nonostante i tentativi di arricchimento contestuale, *l'approccio è stato forma
 - #underline[Incapacità di generalizzazione]: il modello risultava rigido e poco incline ad adattarsi rapidamente a repentini cambi di ingaggio dell'HCP senza dover ricalcolare interamente le matrici di probabilità.
 
 Si è dunque deciso di abbandonare i modelli stocastici di transizione in favore di un approccio di Machine Learning classico con apprendimento supervisionato.
-==== _Gradient Boosting_ con _CatBoost_
+=== Sperimentazione con il  _Gradient Boosting_
+L'attenzione si è spostata sulla famiglia degli algoritmi di _Gradient Boosting_, riconosciuti per le prestazioni su dati strutturati e tabulari.
+
+Il *Gradient Boosting* è una tecnica di apprendimento supervisionato basata sul principio del _boosting_: una sequenza di modelli predittivi deboli (tipicamente alberi di decisione di ridotta profondità) viene combinata per costruire un modello predittivo forte.
+
+#underline[L'addestramento avviene in modo sequenziale]. Ogni nuovo albero $h_m(x)$ viene addestrato per stimare i residui (ovvero l'errore) commessi dai modelli precedenti, muovendosi lungo la direzione del gradiente negativo della funzione di perdita $L(y, f(x))$.
+
+Analiticamente, dato un dataset ${(x_i, y_i)}_(i=1)^N$, l'obiettivo è trovare una funzione $F(x)$ che minimizzi il valore atteso della funzione di perdita:
+
+$ F_m (x) = F_(m-1)(x) + gamma_m h_m (x) $
+
+dove $gamma_m$ rappresenta il passo di apprendimento (_learning rate_) e $h_m(x)$ è il nuovo albero addestrato sui pseudo-residui $r_(i m)$:
+
+$ r_(i m) = - [ (partial L(y_i, F(x_i))) / (partial F(x_i)) ]_(F(x) = F_(m-1)(x)) $
+==== _CatBoost_: fondamenti teorici
+Tra i diversi framework di Gradient Boosting, il primo ad essere preso in considerazione è stato CatBoost (_Categorical Boosting_), sviluppato da Yandex #footnote[https://catboost.ai]. La scelta iniziale è stata dettata da due caratteristiche strutturali distintive dell'algoritmo:
+
+1. #underline[Gestione Nativa delle Feature Categoriche]: CatBoost evita le trasformazioni tradizionali (come _One-Hot Encoding_ o _Label Encoding_) convertendo le categorie in valori numerici tramite i _Target Statistics (TS) ordinati_. Per prevenire il fenomeno del _target leakage_ (in cui il valore target di un record influenza la propria stessa feature), l'algoritmo applica una permutazione casuale dell'intero dataset: per ogni record, la stima della categoria viene calcolata considerando unicamente i valori target delle osservazioni che lo precedono in quel determinato ordine simulato.
+2. #underline[Alberi Simmetrici (_Oblivious Trees_)]: A differenza di altri algoritmi di boosting che valutano criteri di split differenti per ciascun nodo e fanno crescere gli alberi foglia per foglia, CatBoost seleziona un _unico criterio di split globale_ per ciascun livello. Questa condizione viene applicata uniformemente a tutti i nodi dello stesso livello, costringendo l'albero a crescere in modo perfettamente bilanciato e simmetrico.\ Questa simmetria strutturale garantisce un'elevata regolarizzazione dell'algoritmo, #underline[riducendo il rischio di overfitting] e stabilizzando la struttura del modello.
+
+===== Esperimenti Condotti e Analisi delle Criticità
+
+Nel primo approccio sperimentale, si è tentato di sfruttare di CatBoost per predire la _Next Best Action_ addestrando il modello direttamente sulle categorie native a disposizione, quali i segmenti di clustering recentemente identificati, le tipologie di interazione storica e le variabili aziendali preesistenti (`DIGITAL_ATTITUDE`, `SEGMENTATION` ecc.). Sono state condotte diverse prove sia utilizzando i dati in formato grezzo, sia applicando un primo livello di _feature engineering_.
+
+Tuttavia, l'analisi approfondita dei risultati ha portato a scartare CatBoost in favore di altre soluzioni, a causa di alcune criticità operative e strutturali.
+
+Nonostante la dimensione contenuta del dataset a disposizione per gli esperimenti, CatBoost ha mostrato *tempi di esecuzione e di addestramento elevati*. Sebbene tali tempistiche potessero essere parzialmente tollerabili in fase di ricerca preliminare, l'algoritmo è risultato non idoneo alle logiche di un processo aziendale quasi quotidiano o con esigenze di inferenza istantanea.
+
+In secondo luogo, con il progredire della fase di _feature engineering_, si è notato come il *dataset finale non* fosse più *dominato da variabili puramente categoriali*. L'estrazione di metriche quantitative ha sbilanciato la matrice dei dati a favore di feature numeriche continue.
+
+Tali evidenze hanno condotto il team ad abbandonare l'approccio con CatBoost, riorientando la ricerca verso la libreria *LightGBM*.
 
 === Predizione NBA: _Gradient Boosting_ con _LightGBM_
+A seguito delle limitazioni riscontrate con le Catene di Markov e con l'approccio basato su CatBoost, la ricerca metodologica si è orientata verso *LightGBM* (_Light Gradient Boosting Machine_), un framework di Gradient Boosting sviluppato da Microsoft.
+
+LightGBM ottimizza l'efficienza computazionale, la velocità di addestramento e il consumo di memoria su dataset di grandi dimensioni, mantenendo un'eccellente accuratezza predittiva.
+
+1. *GOSS (Gradient-based One-Side Sampling):* Per selezionare le istanze di addestramento su cui costruire i successivi alberi, GOSS sfrutta l'ampiezza del gradiente come misura di errore. L'algoritmo mantiene *tutti* i record caratterizzati da un gradiente elevato (i dati più "difficili" da predire e con maggior contenuto informativo) ed esegue un campionamento casuale uniforme su un sottoinsieme di record a gradiente ridotto. Per compensare lo sbilanciamento statistico introducendo questo campionamento, GOSS assegna un peso maggiore ai dati a basso gradiente durante il calcolo del guadagno di informazione.
+2. *EFB (Exclusive Feature Bundling):* Negli scenari ad alta dimensionalità (particolarmente frequenti dopo la fase di *feature engineering*), molte variabili risultano mutualmente esclusive (ovvero raramente assumono valori diversi da zero simultaneamente). EFB raggruppa tali *feature* sparse e mutualmente esclusive in un unico "pacchetto" (*bundle*), riducendo la dimensionalità della matrice delle feature senza alcuna perdita tangibile di informazione.
+
+Un'ulteriore distinzione chiave risiede nella strategia di costruzione degli alberi di decisione. La maggior parte degli algoritmi di boosting tradizionali (incluso XGBoost nella sua configurazione standard) adotta una crescita *level-wise* (o *depth-wise*), espandendo l'albero livello per livello.
+
+LightGBM utilizza invece una strategia di crescita *leaf-wise* (foglia per foglia) con vincolo sulla profondità massima (*max depth*).
+
+#figure(
+  caption: [Confronto tra strategia di crescita Level-wise (a sinistra) e Leaf-wise (a destra). #footnote("Fonte: Bzubeda, 'Machine Learning 101', Medium, Gennaio 2024")],
+  image(leaf-level)
+)<fig:leafVslevel>
+
+A ogni passo, l'algoritmo valuta tutte le foglie esistenti e sceglie di dividere unicamente la singola foglia che garantisce la *massima riduzione della funzione di perdita* (massimo guadagno d'informazione o *split gain*). 
+
+Questa crescita asimmetrica consente a LightGBM di raggiungere un errore di addestramento inferiore a parità di numero di split. Sebbene la crescita *leaf-wise* presenti un rischio teorico maggiore di *overfitting* su dataset ridotti, tale fenomeno viene efficacemente mitigato attraverso il controllo della profondità massima dell'albero (`max_depth`) e del numero minimo di record per foglia (`min_child_samples`).
 ==== Ingegnerizzazione delle variabili
 
 ==== Addestramento del classificatore e taratura dei parametri
