@@ -81,5 +81,79 @@
   description: [
     Piattaforma open-source per la gestione end-to-end del ciclo di vita dei modelli di Machine Learning. Sviluppata da Databricks, offre strumenti integrati per il tracciamento degli esperimenti e dei parametri (MLflow Tracking), la riproducibilità del codice (MLflow Projects), il salvataggio e la gestione dei formati di modello (MLflow Models) e un registro centralizzato per il versionamento e il deployment (MLflow Model Registry).
   ]
-)
+),
+(
+  key: "varianza",
+  short: [varianza],
+  description: [
+    Misura statistica della dispersione dei dati rispetto alla loro media. Indica quanto, mediamente, i valori di un insieme di dati si discostano dalla media, considerando il quadrato degli scostamenti.
+  ]
+),
+(
+  key: "cl-gerarchico",
+  short: [Clustering Gerarchico],
+  description: [
+    Tecnica di clustering che raggruppa progressivamente gli elementi in base alla loro similarità, creando una struttura gerarchica di gruppi (_cluster_).
+    Il processo può partire da singoli elementi, che vengono via via uniti nei gruppi più simili, oppure da un unico gruppo che viene progressivamente suddiviso.
+  ]
+),
+(
+  key: "dbscan",
+  short: [DBSCAN],
+  description: [
+    Algoritmo di clustering basato sulla densità che raggruppa gli elementi che si trovano in aree ad alta concentrazione e identifica come “rumore” o outlier gli elementi isolati.
+    A differenza di altri metodi di clustering, non richiede di stabilire in anticipo il numero di cluster. È particolarmente utile per individuare gruppi di forma irregolare e dati anomali.
+  ]
+),
+(
+  key: "inerzia",
+  short: [inerzia],
+  description: [
+    Misura della dispersione dei punti all’interno dei cluster rispetto al centroide del proprio cluster.
+    Indica quanto gli elementi di ciascun gruppo sono vicini o lontani dal proprio centro. Un valore di WCSS più basso indica cluster più compatti e quindi, generalmente, una maggiore coesione interna.
+  ]
+),
+(
+  key: "gr-boosting",
+  short: [Gradient Boosting],
+  description: [
+    Tecnica di machine learning che combina in modo sequenziale più modelli semplici, generalmente alberi decisionali, per costruire un modello predittivo più accurato.
+    Ogni nuovo modello viene addestrato per correggere gli errori commessi dai modelli precedenti. Il risultato finale è quindi l’insieme dei contributi di tutti i modelli costruiti progressivamente.
+  ]
+),
+(
+  key: "stocastico",
+  short: [stocastico],
+  description: [
+    Si dice di un processo, fenomeno o sistema il cui comportamento è governato da leggi probabilistiche e dal caso, invece che da regole deterministiche. In un processo stocastico, dato un determinato stato iniziale, non è possibile predire con certezza l'esito futuro, ma solo la probabilità con cui i diversi risultati si possono verificare.
+  ]
+),
+(
+  key: "one-hot-encoding",
+  short: [One-Hot Encoding],
+  description: [
+    Tecnica di pre-elaborazione dei dati usata nel Machine Learning per convertire variabili categoriali in un formato numerico binario. Per ciascuna categoria unica della variabile viene creata una nuova colonna (chiamata _dummy variable_): la colonna assume valore 1 in corrispondenza della classe appartenente e 0 per tutte le altre, evitando di introdurre relazioni d'ordine artificiali tra le categorie.
+  ]
+),
+(
+  key: "label-encoding",
+  short: [Label Encoding],
+  description: [
+    Tecnica di pre-elaborazione dei dati che converte ciascuna categoria unica di una variabile categoriale in un valore numerico intero (es. da 0 a $N-1$). A differenza del One-Hot Encoding, non crea nuove colonne, ma sostituisce direttamente le stringhe con numeri. 
+  ]
+),
+(
+  key: "recall",
+  short: [Recall],
+  description: [
+    Metrica di valutazione delle performance di un modello di classificazione che misura la capacità dell'algoritmo di individuare tutti i casi reali appartenenti a una determinata classe. Corrisponde alla percentuale di veri positivi identificati rispetto al totale dei casi reali positivi ($"Veri Positivi" / ("Veri Positivi" + "Falsi Negativi")$). Risulta particolarmente critica in scenari in cui mancare un evento positivo comporta un costo elevato.
+  ]
+),
+(
+  key: "accuracy",
+  short: [Accuracy],
+  description: [
+    Metrica di valutazione generale che misura la percentuale di predizioni corrette effettuate dal modello rispetto al totale delle osservazioni analizzate. Corrisponde al rapporto tra la somma di veri positivi e veri negativi e il numero totale di casi. Pur essendo immediata da interpretare, può risultare ingannevole in presenza di dataset fortemente sbilanciati, dove tende a sovrastimare le performance del modello se questo favorisce la classe maggioritaria.
+  ]
+),
 )

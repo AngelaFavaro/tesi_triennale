@@ -217,7 +217,7 @@ TRIM(SUBSTRING(KEY_COUNTRY_CONTACT FROM POSITION('_' IN KEY_COUNTRY_CONTACT) + 1
 
 Successivamente, si è scelta la rimozione dell'informazione relativa all'orario, mantenendo la sola componente della data (`DATE`). Questa decisione è stata guidata da due considerazioni principali:
 - *Assenza di valore informativo sulle visite*: dall'analisi esplorativa è emerso che tutti i record della tabella `visit_epi_it` riportavano come orario la mezzanotte precisa (`00:00:00`), segnaposto predefinito al momento della registrazione del dato;
-- *Riduzione del rumore*: per le tabelle delle e-mail (`dem_epi_it` e `rte_epi_it`), data la quantità complessiva di record a disposizione, un livello di granularità orario avrebbe introdotto un'eccessiva varianza, fungendo da rumore nei modelli di apprendimento.
+- *Riduzione del rumore*: per le tabelle delle e-mail (`dem_epi_it` e `rte_epi_it`), data la quantità complessiva di record a disposizione, un livello di granularità orario avrebbe introdotto un'eccessiva #gl("varianza"), fungendo da rumore nei modelli di apprendimento.
 È opportuno precisare che la rinuncia al dettaglio orario rappresenta una scelta metodologica legata agli obiettivi e alla dimensione del dataset attuale; l'informazione oraria rimane un elemento potenzialmente utile per sviluppi futuri e modelli con una maggiore precisione.
 
 In ultima battuta, si è deciso di unificare le tre tabelle delle azioni (`rte_epi_it`, `dem_epi_it` e `visit_epi_it`) all'interno di un unico dataset consolidato. Le colonne non presenti in tutte le tabelle sorgente sono state conservate nello schema finale, popolandole con valori `NULL` per le tipologie di azione in cui non trovarono applicazione.
@@ -276,15 +276,15 @@ Entrando nel vivo del progetto, si passa alla fase di profilazione degli HCP in 
 In accordo con le linee guida espresse dal team aziendale, l'algoritmo individuato per la profilazione è stato il *K-Means*. 
 
 In accordo con il team aziendale, sono stati presi in considerazione più algoritmi di *Clustering* non supervisionato, valutandone l'applicabilità al caso di studio:
-- *Clustering Gerarchico*: è stato immediatamente scartato a causa dell'elevata complessità computazionale ($cal(O)(n^3)$ nel caso generale o $cal(O)(n^2)$ nelle versioni ottimizzate). Rispetto a questo, il K-Means garantisce una complessità lineare $cal(O)(n dot k dot i dot d)$, risultando nettamente più efficiente e scalabile;
-- *DBSCAN*: questo approccio basa la clusterizzazione sul concetto di _Nearest Neighbor_ e sulla densità locale, identificando i gruppi senza imporre un numero fisso di cluster e classificando i punti isolati come _outlier_. Tuttavia, per garantire la stabilità e la riuscita della segmentazione aziendale, si è preferito un modello basato su *centroidi* (K-Means). \ Di fatti il vero discriminante metodologico risiede nella possibilità di determinare e controllare preventivamente un numero di cluster $k$ "sicuro" e ben definito tramite l'esame dell'_Elbow Method_ (spiegato nella @cap:sviluppo-cluster). 
+- *#gl("cl-gerarchico")*: è stato immediatamente scartato a causa dell'elevata complessità computazionale ($cal(O)(n^3)$ nel caso generale o $cal(O)(n^2)$ nelle versioni ottimizzate). Rispetto a questo, il K-Means garantisce una complessità lineare $cal(O)(n dot k dot i dot d)$, risultando nettamente più efficiente e scalabile;
+- *#gl("dbscan")*: questo approccio basa la clusterizzazione sul concetto di _Nearest Neighbor_ e sulla densità locale, identificando i gruppi senza imporre un numero fisso di cluster e classificando i punti isolati come _outlier_. Tuttavia, per garantire la stabilità e la riuscita della segmentazione aziendale, si è preferito un modello basato su *centroidi* (K-Means). \ Di fatti il vero discriminante metodologico risiede nella possibilità di determinare e controllare preventivamente un numero di cluster $k$ "sicuro" e ben definito tramite l'esame dell'_Elbow Method_ (spiegato nella @cap:sviluppo-cluster). 
  
 Queste motivazioni, unite alla necessità aziendale di assegnare ogni singolo HCP a un profilo e di disporre di una metodologia facilmente interpretabile, ha confermato il K-Means come la scelta ottimale per il progetto.
 
 === K-Means: Fondamenti Teorici
 Il K-Means è un algoritmo di partizionamento non supervisionato che ha lo scopo di suddividere un insieme di $n$ osservazioni $X = {x_1, x_2, ..., x_n}$ in $k$ cluster distinti $C = {C_1, C_2, ..., C_k}$, dove *$k$ rappresenta un iperparametro prefissato*.
 
-Matematicamente, l'algoritmo mira a minimizzare la varianza interna ai cluster, nota come _Within-Cluster Sum of Squares_ (WCSS) o *Inerzia*, definita dalla seguente funzione obiettivo:
+Matematicamente, l'algoritmo mira a minimizzare la varianza interna ai cluster, nota come _Within-Cluster Sum of Squares_ (WCSS) o *#gl("inerzia")*, definita dalla seguente funzione obiettivo:
 
 $ J = sum_(i=1)^k sum_(x in C_i) || x - mu_i ||^2 $
 
@@ -469,15 +469,15 @@ Inizialmente, l'obiettivo si è focalizzato sulla valorizzazione dei segmenti co
 
 In questo contesto preliminare, l'esplorazione si è sviluppata lungo due direttrici metodologiche principali:
 - Catene di Markov (_Markov Chains_);
-- Algoritmi basati su _Gradient Boosting_ (_CatBoost_ e _LightGBM_);
+- Algoritmi basati su _#gl("gr-boosting")_ (_CatBoost_ e _LightGBM_);
 
 Di seguito vengono analizzate nel dettaglio le due famiglie di algoritmi, illustrando le criticità teoriche e pratiche emerse dai primi test che ne hanno determinato lo scarto nella loro formulazione iniziale, ponendo le basi per la re-ingegnerizzazione del problema e la scelta della soluzione finale basata su *_Gradient Boosting_ con LightGBM*.
 === Sperimentazione con le _Markov Chains_
-Nel primo esperimento applicativo, si è tentato di modellare la generazione della Next Best Action attraverso un sistema stocastico basato sulle Catene di Markov (Markov Chains).
+Nel primo esperimento applicativo, si è tentato di modellare la generazione della Next Best Action attraverso un sistema #gl("stocastico") basato sulle Catene di Markov (Markov Chains).
 
 Una *Catena di Markov di primo ordine* è un processo stocastico a tempo discreto in cui la probabilità di passare allo stato futuro $X_{t+1}$ dipende _esclusivamente_ dallo stato presente $X_t$, ignorando la storia passata (assenza di memoria o *Proprietà di Markov*):
 
-$ P(X_{t+1} = j | X_t = i, X_{t-1} = i_{t-1}, dots, X_0 = i_0) = P(X_{t+1} = j | X_t = i) = p_{i j} $
+$ P(X_{t+1} = j | X_t = i, X_{t-1} = i_{t-1}, dots, X_0 = i_0) =\ P(X_{t+1} = j | X_t = i) = p_{i j} $
 
 Come illustrato in @fig:markov, la dinamica può essere rappresentata tramite un grafo orientato pesato o una matrice di transizione stocastica $P$, dove la somma delle probabilità in uscita da ogni stato è pari a $1$.
 #figure(
@@ -526,7 +526,7 @@ $ r_(i m) = - [ (partial L(y_i, F(x_i))) / (partial F(x_i)) ]_(F(x) = F_(m-1)(x)
 ==== _CatBoost_: fondamenti teorici
 Tra i diversi framework di Gradient Boosting, il primo ad essere preso in considerazione è stato CatBoost (_Categorical Boosting_), sviluppato da Yandex #footnote[https://catboost.ai]. La scelta iniziale è stata dettata da due caratteristiche strutturali distintive dell'algoritmo:
 
-1. #underline[Gestione Nativa delle Feature Categoriche]: CatBoost evita le trasformazioni tradizionali (come _One-Hot Encoding_ o _Label Encoding_) convertendo le categorie in valori numerici tramite i _Target Statistics (TS) ordinati_. Per prevenire il fenomeno del _target leakage_ (in cui il valore target di un record influenza la propria stessa feature), l'algoritmo applica una permutazione casuale dell'intero dataset: per ogni record, la stima della categoria viene calcolata considerando unicamente i valori target delle osservazioni che lo precedono in quel determinato ordine simulato.
+1. #underline[Gestione Nativa delle Feature Categoriche]: CatBoost evita le trasformazioni tradizionali (come _#gl("one-hot-encoding") _ o _#gl("label-encoding")_) convertendo le categorie in valori numerici tramite i _Target Statistics (TS) ordinati_. Per prevenire il fenomeno del _target leakage_ (in cui il valore target di un record influenza la propria stessa feature), l'algoritmo applica una permutazione casuale dell'intero dataset: per ogni record, la stima della categoria viene calcolata considerando unicamente i valori target delle osservazioni che lo precedono in quel determinato ordine simulato.
 2. #underline[Alberi Simmetrici (_Oblivious Trees_)]: A differenza di altri algoritmi di boosting che valutano criteri di split differenti per ciascun nodo e fanno crescere gli alberi foglia per foglia, CatBoost seleziona un _unico criterio di split globale_ per ciascun livello. Questa condizione viene applicata uniformemente a tutti i nodi dello stesso livello, costringendo l'albero a crescere in modo perfettamente bilanciato e simmetrico.\ Questa simmetria strutturale garantisce un'elevata regolarizzazione dell'algoritmo, #underline[riducendo il rischio di overfitting] e stabilizzando la struttura del modello.
 
 ===== Esperimenti Condotti e Analisi delle Criticità
@@ -602,7 +602,7 @@ Tutti i dataframe transazionali, le sequenze e i profili statici arricchiti sono
 L'obiettivo del motore di raccomandazione NBA è duplice: suggerire al REP il canale di contatto ideale per ogni medico (HCP) e fornire un indice di saturazione (che indica quanto sia opportuno agire).
 
 Inizialmente si è testato un singolo classificatore multiclasse istruito per predire sia l'inazione (`NO_ACTION`) sia i canali attivi (`VisitF2F`, `SendDEM`, ecc.).\
-Tuttavia, la griglia temporale giornaliera generava una fortissima prevalenza di giornate senza contatto: la classe `NO_ACTION` superava l'80% del totale. Il modello monolitico ha così "imparato" a minimizzare la funzione di perdita predicendo quasi sempre l'inazione. Nonostante un'accuracy apparente dell'80%, #underline[il sistema risultava passivo e privo di capacità prescrittiva].
+Tuttavia, la griglia temporale giornaliera generava una fortissima prevalenza di giornate senza contatto: la classe `NO_ACTION` superava l'80% del totale. Il modello monolitico ha così "imparato" a minimizzare la funzione di perdita predicendo quasi sempre l'inazione. Nonostante un'#gl("accuracy") apparente dell'80%, #underline[il sistema risultava passivo e privo di capacità prescrittiva].
 
 Per superare questo limite, il problema è stato decomposto in due modelli sequenziali e condizionati:
 1. *Modello 1 — Predittore di Innesco e Saturazione (Binario):* stima la probabilità che per l'HCP $i$ al giorno $t$ sia opportuno un contatto rispetto al riposo:
@@ -611,7 +611,7 @@ Per superare questo limite, il problema è stato decomposto in due modelli seque
 2. *Modello 2 — Selettore Strategico di Canale (Multiclasse):* sddestrato #underline[solo sulle interazioni reali] ($Y != "NO_ACTION"$), calcola la preferenza condizionata tra i canali attivi:
    $ P(Y_(i,t) = k | Y_(i,t) != "NO_ACTION", bold(X)_2) quad\ "con" k in {"VisitF2F", "SendDEM", "SendRTE", dots} $
 
-Questa separazione ha aumentato sensibilmente il _Recall_ sulle azioni reali, generando suggerimenti proattivi e ben distribuiti.
+Questa separazione ha aumentato sensibilmente il _#gl("recall")_ sulle azioni reali, generando suggerimenti proattivi e ben distribuiti.
 
 Dalla matrice delle variabili ($X$) sono stati esclusi l'identificativo (`CONTACT_ID`), la variabile target e i KPI storici di rendimento (`clm_f2f_ratio`, `rte_click_ratio`, ecc.). Questi ultimi, oltre a rischiare fenomeni di _data leakage_, presentavano troppi pochi valori ed avrebbero generato solo rumore.
 
@@ -743,7 +743,7 @@ Coerentemente la distribuzione mediana delle probabilità, in @fig:mediana-sugg,
   image(mediana-sugg)
 )<fig:mediana-sugg>
 
-== Caso d'uso applicativo ed integrazione nei processi aziendali
+== Caso d'uso applicativo
 
 A completamento del lavoro svolto, è stata preparata una dashboard di simulazione all'interno dell'ambiente Databricks, visibile in @fig:dashboard. L'obiettivo della schermata non è quello di presentare uno sviluppo applicativo software finito, attività che richiederebbe un ciclo di progettazione informatica dedicato, bensì quello di mostrare concretamente i risultati del modello, abbozzando una possibile resa visiva e operativa dei dati elaborati.
 
