@@ -50,7 +50,7 @@ L'ultima macroarea è dedicata alla verifica e all'ottimizzazione della soluzion
 
 Al fine di acquisire le competenze verticali necessarie all'utilizzo dello stack tecnologico di progetto, la fase iniziale prevede un percorso di formazione e autoapprendimento. Tale attività si è avvalsa della piattaforma #linkfn("https://business.udemy.com/it")[Udemy], messa a disposizione dall'azienda.
 
-=== Obiettivi fissati
+=== Obiettivi fissati <cap:obiettivi>
 *Notazione*\
 Si farà riferimento agli obiettivi secondo le seguenti notazioni: 
 - #underline[_OO_ per gli obiettivi obbligatori], vincolanti in quanto obiettivo primario; sono presenti in @tab:obiettivi-obbligatori.
