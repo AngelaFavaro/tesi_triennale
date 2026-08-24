@@ -19,7 +19,7 @@ Il presente lavoro di tesi tratta la progettazione e lo sviluppo di modelli di c
 #v(1em)
 
 / #link(<cap:introduzione>)[Il primo capitolo]: introduce l'azienda, il progetto e le motivazioni che hanno portato a sceglierlo;
-/ #link(<cap:desc-stage>)[Il secondo capitolo]: descrive l'azienda, il progetto e l'organizzazione del lavoro, definendo gli obiettivi e analizzando i rischi;
+/ #link(<cap:desc-stage>)[Il secondo capitolo]: descrive l'azienda, il progetto e l'organizzazione del lavoro  definendone gli obiettivi;
 / #link(<cap:svolgimento-progetto>)[Il terzo capitolo]: presenta nel dettaglio lo svolgimento del progetto ed i risultati ottenuti;
 / #link(<cap:conclusioni>)[Il quarto capitolo]: traccia una breve analisi conclusiva sul lavoro svolto.
 
