@@ -36,18 +36,18 @@
   caption: [Logo di Databricks.],
   image(logo-databricks , width: 40%)
 )
-L'intero progetto è stato realizzato all'interno della piattaforma #linkfn("https://www.databricks.com")[*Databricks*], che ha fornito l'infrastruttura analitica e l'ambiente di sviluppo integrato.\ _Databricks_ è una piattaforma di analisi dati unificata su cloud che implementa l'architettura #gl("lakehouse"). Sviluppata dai creatori di #linkfn("https://spark.apache.org")[Apache Spark], la piattaforma consente di integrare in un unico ecosistema le attività di Data Engineering, Data Science e Business Intelligence. \ Grazie all'integrazione nativa con #gl("lake") (che garantisce la consistenza transazionale ACID e l'indicizzazione dei dati) e #gl("ml-flow") (per il tracciamento, la riproducibilità e il _deployment_ dei modelli di Machine Learning), Databricks permette di gestire l'intero ciclo di vita del dato: dall'ingestione e pulizia delle sorgenti grezze fino all'addestramento degli algoritmi predittivi e alla loro integrazione nei processi aziendali.
+L'intero progetto è stato realizzato all'interno della piattaforma #linkfn("https://www.databricks.com")[*Databricks*], che ha fornito l'infrastruttura analitica e l'ambiente di sviluppo integrato.\ _Databricks_ è una piattaforma di analisi dati unificata su cloud che implementa l'architettura #gl("lakehouse"). Sviluppata dai creatori di #linkfn("https://spark.apache.org")[Apache Spark], la piattaforma consente di integrare in un unico ecosistema le attività di _Data Engineering, Data Science e Business Intelligence_. \ Grazie all'integrazione nativa con #gl("lake") (che garantisce la consistenza transazionale ACID e l'indicizzazione dei dati) e #gl("ml-flow") (per il tracciamento, la riproducibilità e il _deployment_ dei modelli di Machine Learning), Databricks permette di gestire l'intero ciclo di vita del dato: dall'ingestione e pulizia delle sorgenti grezze fino all'addestramento degli algoritmi predittivi e alla loro integrazione nei processi aziendali.
 
-La parte di sviluppo è stata svolta utilizzando i *notebook* nativi di Databricks. \ In questo ambiente è possibile impiegare simultaneamente diversi linguaggi (sia di programmazione che di gestione dei dati). L'implementazione ha combinato l'uso dei linguaggi #linkfn("https://www.python.org")[*Python*] e #linkfn("https://it.wikipedia.org/wiki/Structured_Query_Language")[*SQL*] grazie all'integrazione fornita da #linkfn("https://docs.databricks.com/aws/en/pyspark")[PySpark], l'API Python per *Apache Spark*.
+La parte di sviluppo è stata svolta utilizzando i _*notebook*_ nativi di Databricks. \ In questo ambiente è possibile impiegare simultaneamente diversi linguaggi (sia di programmazione che di gestione dei dati). L'implementazione ha combinato l'uso dei linguaggi #linkfn("https://www.python.org")[*Python*] e #linkfn("https://it.wikipedia.org/wiki/Structured_Query_Language")[*SQL*] grazie all'integrazione fornita da #linkfn("https://docs.databricks.com/aws/en/pyspark")[PySpark], l'API Python per *Apache Spark*.
 
-_Apache Spark_ rappresenta il motore open-source di calcolo distribuito sottostante, progettato per l'elaborazione ad altissime prestazioni di grandi volumi di dati (Big Data) in memoria. Sfruttando l'architettura di Spark attraverso _PySpark_, è stato possibile manipolare e interrogare la base dati in maniera fluida all'interno dello stesso notebook, convertendo in modo trasparente le strutture dati tra _Spark DataFrame_ e tabelle SQL temporanee in base alle specifiche esigenze analitiche.
+_Apache Spark_ rappresenta il motore open-source di calcolo distribuito sottostante, progettato per l'elaborazione ad altissime prestazioni di grandi volumi di dati (_Big Data_) in memoria. Sfruttando l'architettura di Spark attraverso _PySpark_, è stato possibile manipolare e interrogare la base dati in maniera fluida all'interno dello stesso _notebook_, convertendo in modo trasparente le strutture dati tra _Spark DataFrame_ e tabelle SQL temporanee in base alle specifiche esigenze analitiche.
 
 Per automatizzare e rendere riproducibili le fasi di trasformazione del dato, sono state strutturate apposite *_pipeline_ di elaborazione*. Tali pipeline hanno lo scopo di gestire l'intero ciclo di vita del dato a supporto della modellazione: dalle procedure preliminari di pulizia del dato e pre-elaborazione (_preprocessing_) per l'alimentazione degli algoritmi, fino alle fasi di _post-processing_, necessarie per ricondurre gli output predittivi nel formato idoneo alla fruizione aziendale.
 
 == Analisi ed esplorazione preliminare dei dati
-All'interno del progetto sono state inizialmente analizzate quattro tabelle grezze. Da queste il passo iniziale è di leggerle, comprenderle ed estrapolarne le informazioni utili allo sviluppo dell'intero progetto.\ Si tratta quindi di un lavoro analitico di comprensione profonda e personale del dataset. \ È stato inotre necessario pulire le tabelle per poter comprendere meglio i dati a disposizione. 
+All'interno del progetto sono state inizialmente analizzate quattro tabelle grezze. Da queste il passo iniziale è di leggerle, comprenderle ed estrapolarne le informazioni utili allo sviluppo dell'intero progetto.\ Si tratta quindi di un lavoro analitico di comprensione profonda e personale del _dataset_. \ È stato inotre necessario pulire le tabelle per poter comprendere meglio i dati a disposizione. 
 
-I dataset sorgente, resi disponibili come file `.csv`, sono stati importati nell'ambiente Databricks e convertiti in tabelle (Delta Table / tabelle di _metastore_). Questa operazione ha consentito di accedere ai dataset direttamente tramite query SQL ed ecosistema PySpark.
+I _dataset_ sorgente, resi disponibili come file `.csv`, sono stati importati nell'ambiente Databricks e convertiti in tabelle (Delta Table / tabelle di _metastore_). Questa operazione ha consentito di accedere ai _dataset_ direttamente tramite query SQL ed ecosistema PySpark.
 
 Le tabelle a disposizione si dividevano in due macro-gruppi: la tabella anagrafica e le tabelle delle azioni.
 === Analisi Tabella Anagrafica <cap:analisi-tab-anagrafica>
@@ -92,59 +92,40 @@ Di conseguenza a questa selezione iniziale, sono state mantenute le variabili ri
 Successivamente alla selezione dei campi di interesse, l'analisi si è focalizzata sullo studio puntuale dei record all'interno della tabella.  \ 
 Prima di procedere con la modellazione, si è reso necessario effettuare un'operazione di pulizia per garantire l'integrità dei dati, verificando la presenza di record duplicati e di valori nulli (`NULL`).
 
-Dall'analisi esplorativa è emerso che, in diversi campi, i valori mancanti non erano rappresentati dal classico `NULL` di sistema, bensì dal carattere speciale "`?`". Questa anomalia avrebbe compromesso sia la correttezza delle query SQL (invalidando le funzioni native di gestione dei valori nulli), sia la logica stessa dell'analisi, poiché il simbolo `?` viene interpretato come una stringa valida e non vuota.
+Dall'analisi esplorativa è emerso che, in diversi campi, i valori mancanti non erano rappresentati dal classico `NULL` di sistema, bensì dal carattere speciale "`?`". Questa anomalia avrebbe compromesso sia la correttezza delle query SQL (invalidando le funzioni native di gestione dei valori nulli), sia la logica stessa dell'analisi, poiché il simbolo "`?`" viene interpretato come una stringa valida e non vuota.
 
 Il controllo prioritario è stato eseguito sul campo `CONTACT_ID`: trattandosi della *chiave primaria*, è stato fondamentale assicurarsi che non vi fossero identificativi nulli o ridondanti. Eventuali record duplicati o privi di chiave primaria sono stati eliminati.
 
 Per quanto riguarda i valori mancanti riscontrati in altri campi, si è deciso di non rimuoverli immediatamente, ma di conservarli temporaneamente per valutarne l'impatto e la gestione ottimale durante le successive fasi di _feature engineering_.
 
-#linebreak()
-#figure(caption: "Pulizia tabella anagrafica.")[
-```SQL
-CREATE OR REPLACE TABLE clean_hcp_epi_in_scope_it AS
-SELECT 
-    CONTACT_ID,
-    NULLIF(DIGITAL_ATTITUDE, '?') AS DIGITAL_ATTITUDE,
-    NULLIF(SEGMENTATION, '?') AS SEGMENTATION,
-    SPECIALTY_ONEKEY_1_DESC
-FROM hcp_epi_in_scope_it
-WHERE CONTACT_ID IS NOT NULL 
-  AND CONTACT_ID != '?';
-}
-```
-]
-
 *Terza fase: studio della tabella pulita* \
 L'ultimo passaggio ha riguardato l'analisi descrittiva dei singoli campi che componevano la tabella. Per ciascuna colonna sono state eseguite operazioni di aggregazione (`GROUP BY`) e conteggio dei valori distinti, al fine di valutarne la distribuzione e la rilevanza analitica. 
 
-A tal fine, dello strumento di data visualization interattiva #linkfn("https://docs.databricks.com/aws/en/genie")[*Databricks Genie*] che opera all'interno delle _dashboard_ native in Databricks.\ L'impiego dei grafici si è rivelato fondamentale per comprendere la struttura del dataset, evidenziando trend, polarizzazioni e livelli di eterogeneità tra i gruppi di professionisti sanitari.
+A tal fine, dello strumento di data visualization interattiva #linkfn("https://docs.databricks.com/aws/en/genie")[*Databricks Genie*] che opera all'interno delle _dashboard_ native in Databricks.\ L'impiego dei grafici si è rivelato fondamentale per comprendere la struttura del _dataset_, evidenziando trend, polarizzazioni e livelli di eterogeneità tra i gruppi di professionisti sanitari.
 
 Dall'analisi esplorativa sono emerse le seguenti considerazioni sintetiche:
 - DIGITAL_ATTITUDE: come evidenziato nella @fig:digital-attitude, il parametro presenta una buona variabilità tra gli HCP, confermandosi una variabile importante da considerare nelle analisi successive;
-- SEGMENTATION: la @fig:segmentation mostra una discreta distribuzione ed eterogeneità tra le classi, rendendo la variabile utile per l'addestramento dei modelli;
-- SPECIALTY_ONEKEY_1_DESC: la @fig:specialty evidenzia una forte polarizzazione delle specializzazioni, legata alla natura specifica della campagna incentrata sull'epilessia;
-- ADOPTION_LADDER: presenta una distribuzione equilibrata tra i vari stadi di adozione del farmaco;
-- COUNTRY_ID: privo di valore informativo ai fini della modellazione, in quanto costante su un unico Paese (Italia);
-- REGION, CITY, BRICK: mostrano una buona distribuzione geografica, rivelandosi campi promettenti per le successive fasi di _feature engineering_.
-
 #figure(
   caption: [Analisi distribuzione della _DIGITAL ATTITUDE_.],
   image(digital-attitude)
 )<fig:digital-attitude>
-
+- SEGMENTATION: la @fig:segmentation mostra una discreta distribuzione ed eterogeneità tra le classi, rendendo la variabile utile per l'addestramento dei modelli;
 #figure(
   caption: [Analisi distribuzione della _SEGMENTATION_.],
   image(segmentation)
 )<fig:segmentation>
-
+- SPECIALTY_ONEKEY_1_DESC: la @fig:specialty evidenzia una forte polarizzazione delle specializzazioni, legata alla natura specifica della campagna incentrata sull'epilessia;
 #figure(
   caption: [Analisi distribuzione della _SPECIALTY_.],
   image(specialty)
 )<fig:specialty>
+- ADOPTION_LADDER: presenta una distribuzione equilibrata tra i vari stadi di adozione del farmaco;
+- COUNTRY_ID: privo di valore informativo ai fini della modellazione, in quanto costante su un unico Paese (Italia);
+- REGION, CITY, BRICK: mostrano una buona distribuzione geografica, rivelandosi campi promettenti per le successive fasi di _feature engineering_.
 
 === Analisi Tabelle delle Azioni
 Sono state esaminate tre tabelle contenenti lo storico delle diverse interazioni e azioni svolte con i professionisti sanitari:
-+ `visit_epi_it`. raccoglie lo storico completo delle visite svolte dai rappresentanti verso gli HCP presenti nella tabella anaagrafica;
++ `visit_epi_it`. Raccoglie lo storico completo delle visite svolte dai rappresentanti verso gli HCP presenti nella tabella anaagrafica;
 + `dem_epi_it`. In cui sono presenti tutti gli invii di comunicazioni DEM (_Direct Email Marketing_) e le relative interazioni effettuate da e verso gli HCP (es. aperture, click ecc.);
 + `rte_epi_it`. Analogamente al punto precedente traccia  le comunicazioni di tipo RTE (_Real-Time Email_) ovvero le e-mail inviate direttamente dai rappresentanti farmaceutici.
 Anche per questo gruppo di tabelle, le attività di pulizia e l'analisi esplorativa è stata suddivisa su più fasi.
@@ -195,7 +176,7 @@ Una volta chiarita la semantica delle variabili, si è proceduto alla rimozione 
     - "_OPEN_": mail aperta dal destinatario;
     - "_CLICK_": interazione con i link o contenuti presenti nel corpo della mail.
     #underline[Solo per le comunicazioni RTE]:
-    - "_BOUNCED_": nmancata consegna della mail (indirizzo non valido o errore di recapito).],
+    - "_BOUNCED_": mancata consegna della mail (indirizzo non valido o errore di recapito).],
     [DATE_SQL],[Data e ora in cui si è verificata la specifica azione ("_ACTION_").]
   )
 )<tab:dem-rte>
@@ -204,7 +185,7 @@ In questa fase sono stati condotti controlli analoghi a quelli descritti per la 
 
 Inoltre, si è resa necessaria una trasformazione specifica sulla chiave esterna `KEY_COUNTRY_CONTACT`. Per agevolare le successive operazioni di congiunzione (`JOIN`) tra le tabelle delle azioni e la tabella anagrafica, la colonna è stata ridenominata in `CONTACT_ID` e opportunamente manipolata tramite una stringa di taglio (@cod:trim).
 
-Originalmente, la variabile `KEY_COUNTRY_CONTACT` conteneva un prefisso numerico relativo al Paese, concatenato all'identificativo del contatto tramite un carattere di *underscore* (ad esempio, `3000008_CN60556O-8V51-4667-9436-R7E5446799U9`). L'anagrafica riportava invece il solo codice `CONTACT_ID` (es. `CN60556O-8V51-4667-9436-R7E5446799U9`). Si è pertanto estratta esclusivamente la componente alfanumerica successiva al separatore, garantendo la perfetta corrispondenza tra le chiavi.
+Originalmente, la variabile `KEY_COUNTRY_CONTACT` conteneva un prefisso numerico relativo al Paese, concatenato all'identificativo del contatto tramite un carattere di _*underscore*_ (ad esempio, `3000008_CN60556O-8V51-4667-9436-R7E5446799U9`). L'anagrafica riportava invece il solo codice `CONTACT_ID` (es. `CN60556O-8V51-4667-9436-R7E5446799U9`). Si è pertanto estratta esclusivamente la componente alfanumerica successiva al separatore, garantendo la perfetta corrispondenza tra le chiavi.
 
 #linebreak()
 #figure(caption: "Trim su `KEY_COUNTRY_CONTACT`.")[
@@ -231,40 +212,34 @@ A tale scopo è stata creata la tabella `clean_all_epi_it`, che accentra l'insie
 Analogamente a quanto fatto per la tabella anagrafica, l'analisi esplorativa è stata condotta integrando i notebook di Databricks con gli strumenti di _Data Visualization_ aziendali.
 
 Dallo studio delle interazioni sono emerse le seguenti considerazioni sintetiche:
-- *Sbilanciamento del canale RTE*: le comunicazioni di tipo *RTE* rappresentano soltanto il 6,84% del totale delle azioni (@fig:perc-azioni). Pur riflettendo la realtà operativa (in cui gli invii personalizzati dei REP sono quantitativamente inferiori alle campagne massive), questo #underline[sproporzionato volume (_class imbalance_) costituisce una criticità per i futuri algoritmi di Machine Learning], che potrebbero faticare a trarre pattern significativi o scartare la variabile;
-- *Polarizzazione delle interazioni e-mail*: come evidenziato nella @fig:distr-azioni-web, #underline[le azioni sulle mail sono polarizzate sullo stadio di invio (`SENT`)]. Si riscontra inoltre la presenza di un #underline[numero non trascurabile di eventi `BOUNCED`] (indirizzi non raggiungibili). Confrontando le campagne *DEM* (@fig:distr-azioni-DEM) e *RTE* (@fig:distr-azioni-RTE), il trend rimane analogo (prevalenza di `SENT`), ad eccezione del #underline[tasso di `CLICK`, proporzionalmente più elevato negli RTE]: questo comportamento rispecchia la natura personalizzata del canale diretto;
-- *Predominanza e disallineamento temporale delle visite*: le visite tradizionali (@fig:distr-azioni-VISIT) mostrano una #underline[marcata preferenza per la modalità in presenza (*Face-to-Face*)], la quale copre circa l'87,80% delle 42.392 interazioni registrate. Tuttavia, dall'analisi temporale (@fig:distr-azioni-time-VISIT) emerge un disallineamento strutturale: i dati sulle visite in presenza partono da inizio 2019, mentre le altre tipologie di visita registrano eventi solo a partire da fine 2019 / inizio 2020;
-- *Disallineamento temporale macro-canale (Digital vs F2F)*: il divario temporale appare ancora più evidente nell'analisi aggregata delle macro-azioni (@fig:distr-azioni). Mentre lo storico delle visite gestite dagli ISF copre l'intero intervallo a partire dal 2019, i canali digitali (DEM e RTE) presentano volumi solo a partire da metà 2022. Questa asimmetria di circa due anni e mezzo attribuisce un peso sproporzionato al canale fisico rispetto a quello digitale, #underline[potendo introdurre un _bias_ nelle analisi storiche di ingaggio].
-
-#figure(
+- *Sbilanciamento del canale RTE*: le comunicazioni di tipo *RTE* rappresentano soltanto il 6,84% del totale delle azioni (@fig:perc-azioni). Pur riflettendo la realtà operativa (in cui gli invii personalizzati dei REP sono quantitativamente inferiori alle campagne massive), questo #underline[sproporzionato volume (_class imbalance_) costituisce una criticità per i futuri algoritmi di _Machine Learning_], che potrebbero faticare a trarre pattern significativi o scartare la variabile;
+  #figure(
   caption: [Analisi distribuzione delle possibili azioni.],
   image(perc-azioni, height: 30%, width: 60%)
 )<fig:perc-azioni>
-
-#figure(
-  caption: [Analisi distribuzione delle azioni digitali.],
-  image(distr-azioni-web)
-)<fig:distr-azioni-web>
-
-#figure(
+- *Polarizzazione delle interazioni e-mail*: come evidenziato nella @fig:distr-azioni-web, #underline[le azioni sulle mail sono polarizzate sullo stadio di invio (`SENT`)]. Si riscontra inoltre la presenza di un #underline[numero non trascurabile di eventi `BOUNCED`] (indirizzi non raggiungibili). Confrontando le campagne *DEM* (@fig:distr-azioni-DEM) e *RTE* (@fig:distr-azioni-RTE), il trend rimane analogo (prevalenza di `SENT`), ad eccezione del #underline[tasso di `CLICK`, proporzionalmente più elevato negli RTE]: questo comportamento rispecchia la natura personalizzata del canale diretto;
+  #figure(
+    caption: [Analisi distribuzione delle azioni digitali.],
+    image(distr-azioni-web)
+  )<fig:distr-azioni-web>
+  #figure(
+    caption: [Analisi distribuzione delle azioni tra gli RTE nel tempo.],
+    image(distr-azioni-RTE)
+  )<fig:distr-azioni-RTE>
+  #figure(
+    caption: [Analisi distribuzione delle azioni tra i DEM nel tempo.],
+    image(distr-azioni-DEM)
+  )<fig:distr-azioni-DEM>
+- *Predominanza e disallineamento temporale delle visite*: le visite tradizionali (@fig:distr-azioni-VISIT) mostrano una #underline[marcata preferenza per la modalità in presenza (*Face-to-Face*)], la quale copre circa l'87,80% delle 42.392 interazioni registrate. Tuttavia, dall'analisi temporale (@fig:distr-azioni-time-VISIT) emerge un disallineamento strutturale: i dati sulle visite in presenza partono da inizio 2019, mentre le altre tipologie di visita registrano eventi solo a partire da fine 2019 / inizio 2020;
+  #figure(
   caption: [Analisi distribuzione delle azioni tra le visite.],
   image(distr-azioni-VISIT, width: 90%)
 )<fig:distr-azioni-VISIT>
-
-#figure(
-  caption: [Analisi distribuzione delle azioni tra gli RTE nel tempo.],
-  image(distr-azioni-RTE)
-)<fig:distr-azioni-RTE>
-
-#figure(
-  caption: [Analisi distribuzione delle azioni tra i DEM nel tempo.],
-  image(distr-azioni-DEM)
-)<fig:distr-azioni-DEM>
-
-#figure(
+  #figure(
   caption: [Analisi distribuzione delle azioni tra le visite nel tempo.],
   image(distr-azioni-time-VISIT)
 )<fig:distr-azioni-time-VISIT>
+- *Disallineamento temporale macro-canale (Digital vs F2F)*: il divario temporale appare ancora più evidente nell'analisi aggregata delle macro-azioni (@fig:distr-azioni). Mentre lo storico delle visite gestite dai REP copre l'intero intervallo a partire dal 2019, i canali digitali (DEM e RTE) presentano volumi solo a partire da metà 2022. Questa asimmetria di circa due anni e mezzo attribuisce un peso sproporzionato al canale fisico rispetto a quello digitale, #underline[potendo introdurre un _bias_ nelle analisi storiche di ingaggio].
 
 #figure(
   caption: [Analisi distribuzione delle azioni nel tempo.],
@@ -272,10 +247,10 @@ Dallo studio delle interazioni sono emerse le seguenti considerazioni sintetiche
 )<fig:distr-azioni>
 
 == Profilazione della Digital Attitude tramite Clustering
-Entrando nel vivo del progetto, si passa alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi. \ A questo scopo la richiesta è stata di creare un algoritmo di Clustering che potesse supportare la richiesta.\
+Entrando nel vivo del progetto, si passa alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi. \ A questo scopo la richiesta è stata quella di creare un modello di _Clustering_ che potesse supportare la richiesta.\
 In accordo con le linee guida espresse dal team aziendale, l'algoritmo individuato per la profilazione è stato il *K-Means*. 
 
-In accordo con il team aziendale, sono stati presi in considerazione più algoritmi di *Clustering* non supervisionato, valutandone l'applicabilità al caso di studio:
+Sono stati comunque presi in considerazione più algoritmi di _*Clustering*_ non supervisionato, valutandone l'applicabilità al caso di studio:
 - *#gl("cl-gerarchico")*: è stato immediatamente scartato a causa dell'elevata complessità computazionale ($cal(O)(n^3)$ nel caso generale o $cal(O)(n^2)$ nelle versioni ottimizzate). Rispetto a questo, il K-Means garantisce una complessità lineare $cal(O)(n dot k dot i dot d)$, risultando nettamente più efficiente e scalabile;
 - *#gl("dbscan")*: questo approccio basa la clusterizzazione sul concetto di _Nearest Neighbor_ e sulla densità locale, identificando i gruppi senza imporre un numero fisso di cluster e classificando i punti isolati come _outlier_. Tuttavia, per garantire la stabilità e la riuscita della segmentazione aziendale, si è preferito un modello basato su *centroidi* (K-Means). \ Di fatti il vero discriminante metodologico risiede nella possibilità di determinare e controllare preventivamente un numero di cluster $k$ "sicuro" e ben definito tramite l'esame dell'_Elbow Method_ (spiegato nella @cap:sviluppo-cluster). 
  
@@ -309,11 +284,11 @@ Infine, nella fase di *convergenza*, i passaggi di assegnazione e aggiornamento 
 
 A partire dal dataset consolidato `clean_all_epi_it`, la fase di Feature Engineering è stata progettata per trasformare le interazioni puntuali degli HCP in variabili sintetiche relative a una finestra temporale recente di 120 giorni, questo per garantire che i cluster siano aggiornati relativamente agli ultimi atteggiamenti digitali degli HCP e non abbiano _bias_ relativi ai comportamenti molto vvecchi degli stesso. \ La finestra temporale, in ogni caso, può essere facilmente ampiata o diminuita. 
 
-La logica implementata adotta un *approccio ibrido*: prima di somministrare i dati all'algoritmo di Machine Learning, si applica una segmentazione deterministica (_Rule-Based_) per escludere o etichettare le casistiche aziendali che non richiedono o non possono beneficiare dell'algoritmo di clustering e rischierebbero altrimenti di creare rumore all'interno del modello.
+La logica implementata adotta un *approccio ibrido*: prima di somministrare i dati all'algoritmo di _Machine Learning_, si applica una segmentazione deterministica (_Rule-Based_) per escludere o etichettare le casistiche aziendali che non richiedono o non possono beneficiare dell'algoritmo di _clustering_ e rischierebbero altrimenti di creare rumore all'interno del modello.
 
 ==== Regole Deterministiche
 
-Tramite query SQL e metriche di *Recency* e *Frequency*, ciascun HCP viene analizzato e categorizzato in quattro gruppi principali:
+Tramite query SQL e metriche di _*Recency*_ e _*Frequency*_, ciascun HCP viene analizzato e categorizzato in quattro gruppi principali:
 
 - *_UNTOUCHED / NEW-EXPLORATION_*: identifica i medici mai contattati o per i quali non figura alcuna interazione registrata nello storico;
 - *_INACTIVE / DORMANT_*: racchiude gli HCP che non hanno registrato alcuna attività negli ultimi 120 giorni;
@@ -332,11 +307,11 @@ Per gli HCP appartenenti alla classe `ELIGIBLE_FOR_ML`, il codice calcola un set
   table(
     columns: 2,
     table.header([*Feature*], [*Descrizione*]),
-    [_*Monthly Interaction Intensity*_],[Volume medio mensile di interazioni totali sostenute dall'HCP (somma di contatti digitali e visite sul territorio, normalizzata sui 4 mesi della finestra analizzata).],
+    [_*Monthly Interaction Intensity*_],[Volume medio mensile di interazioni totali sostenute dall'HCP (somma di contatti digitali e visite sul territorio, normalizzata sui quattro mesi della finestra analizzata).],
     [_*Digital Open Rate*_],[Percentuale di e-mail aperte rispetto al totale degli invii ricevuti. Per mitigare anomalie di tracciamento o aperture multiple, il valore viene limitato a un tetto massimo del 100% ($1.0$).],
     [_*Share of F2F*_],[Peso percentuale delle visite fisiche in presenza (_Face to Face_) sul totale delle interazioni svolte dai rappresentanti sul territorio.],
-    [_*Share of Remote*_],[quota percentuale di visite effettuate a distanza via *Remote Call* sul totale delle visite territoriali.],
-    [_*Digital Engagement Rate*_],[Qualità dell'interesse digitale dell'HCP, definita come la percentuale di e-mail che hanno generato un *click* sul totale delle e-mail effettivamente aperte.],
+    [_*Share of Remote*_],[quota percentuale di visite effettuate a distanza via _Remote Call_ sul totale delle visite territoriali.],
+    [_*Digital Engagement Rate*_],[Qualità dell'interesse digitale dell'HCP, definita come la percentuale di e-mail che hanno generato un click sul totale delle e-mail effettivamente aperte.],
     [_*Share of Digital*_],[Inclinazione al macro-canale del medico, ovvero la percentuale di interazioni digitali (aperture DEM e RTE) sul totale complessivo delle interazioni ricevute (digitali + visite);],
     [_*RTE Preference Ratio*_],[Preferenza relativa all'interno del canale e-mail, misurando la quota di aperture di mail inviate direttamente dal REP (_Rep-Triggered Email_) rispetto al totale delle aperture digitali.],
   )
@@ -365,9 +340,9 @@ Prima di procedere all'addestramento, l'iperparametro $k$ (il numero finale di c
 
 #pad(left: 1em)[
   #quote[
-  _Come funziona l'Elbow Method_: si esegue l'algoritmo K-Means per un intervallo di valori di $k$ (in questo caso da $1$ a $14$), calcolando per ciascuna iterazione l'Inerzia (WCSS), ovvero la somma delle distanze al quadrato tra ogni punto e il relativo centroide. 
+  _Come funziona l'Elbow Method_: si esegue l'algoritmo K-Means per un intervallo di valori di $k$ (in questo caso da $1$ a $14$), calcolando per ciascuna iterazione l'Inerzia, ovvero la somma delle distanze al quadrato tra ogni punto e il relativo centroide. 
   
-  Graficando il valore del WCSS in funzione di $k$, la curva decresce monotonicamente: all'aumentare dei cluster, i punti sono più vicini ai centroidi. Il valore ottimale di $k$ corrisponde al punto di flesso della curva (il "gomito"), ovvero la soglia oltre la quale l'aggiunta di un ulteriore cluster porta a una riduzione trascurabile dell'inerzia, evitando sia il _underfitting_ sia il _overfitting_ della segmentazione.
+  Graficando il valore dell'inerzia in funzione di $k$, la curva decresce monotonicamente: all'aumentare dei cluster, i punti sono più vicini ai centroidi. Il valore ottimale di $k$ corrisponde al punto di flesso della curva (il "gomito"), ovvero la soglia oltre la quale l'aggiunta di un ulteriore cluster porta a una riduzione trascurabile dell'inerzia, evitando sia il _underfitting_ sia il _overfitting_ della segmentazione.
   ]
 ]
 
@@ -379,7 +354,7 @@ Prima di procedere all'addestramento, l'iperparametro $k$ (il numero finale di c
 La scelta è confluita in *$k = 8$*, sia grazie all'analisi del grafico dell'Elbow Method (@fig:elbow) sia perché, in un'ottica aziendale, questo numero di segmenti è risultato il più fluido e gestibile per le strategie di business.
 
 Il modello K-Means viene addestrato sulle *feature* scalate e pesate attraverso il l'algoritmo di Clustering (@cod:clustering). 
-#figure(caption: "Codice del modello K-Means utilizzato.")[
+#figure(caption: "Implementazione essenziale modello K-Means utilizzato.")[
 ```python
 from sklearn.cluster import KMeans
 
@@ -431,7 +406,7 @@ L'esame incrociato delle metriche percentuali ha permesso di definire l'identit�
   )
 )<tab:clusters>
 
-Parallelamente, i dati relativi ai medici precedentemente esclusi dal Machine Learning vengono recuperati e ricondotti a tre segmenti statici di business: *Onboarding (Exploration)* per i nuovi o non contattati, *Unreachable / Tech Issue* per i contatti con problemi di recapito (_bounced_), e *Dormant* per i medici inattivi negli ultimi 120 giorni.
+Parallelamente, i dati relativi ai medici precedentemente esclusi dal Machine Learning vengono recuperati e ricondotti a tre segmenti statici di business: _Onboarding (Exploration)_ per i nuovi o non contattati, _Unreachable / Tech Issue_ per i contatti con problemi di recapito (_bounced_), e _Dormant_ per i medici inattivi negli ultimi 120 giorni.
 
 Il dataset completo viene consolidato e persistito nella tabella Delta `hcp_final_segmentation`.
 
@@ -444,17 +419,17 @@ Per interpretare la rilevanza delle singole variabili nelle decisioni di partizi
 - _Share of F2F_ ($17\%$) e _Digital Open Rate_ ($15.5\%$) forniscono un contributo determinante nel separare i medici a vocazione prevalentemente fisica da quelli ricettivi via mail;
 - _Digital Engagement Rate ($8.7\%$)_ e _Share of Remote_ ($3.3\%$) agiscono come _feature_ di affinamento per isolare nicchie specifiche (come i _Digital Advocates_ o i _Video-Call Lovers_).
 
+#figure(
+  caption: [Importanza delle feature usate dall'algoritmo k-Means],
+  image(feature-cluster,)
+)<fig:feature-cluster>
+
 L'analisi quantitativa condotta sul campione totale di 702 HCP (comprendente gli 8 cluster dinamici da K-Means e le categorie statiche) evidenzia una struttura di popolazione estremamente bilanciata e coerente con la realtà di mercato, si può leggere in @fig:distrib-cluster.
 
 Il core della popolazione aziendale è costituito dai segmenti _Science-Oriented (Passive)_ ($25.6\%$), _Traditional F2F_ ($22.8\%$) e _Promo-Oriented (Passive)_ ($19.8\%$). \
 Gli _Omnichannel VIPs_ rappresentano un gruppo ad alto valore strategico ($12.7\%$).\
 I segmenti digitali avanzati o di nicchia comprendono i _Digital Advocates_, i _Phone-Centric_, i _Digital-First / Mail-Only_ e i _Virtual-Friendly_.
 Infine, i gruppi statici di esclusione contano _Dormant_ e _Unreachable_.
-
-#figure(
-  caption: [Importanza delle feature usate dall'algoritmo k-Means],
-  image(feature-cluster,)
-)<fig:feature-cluster>
 
 #figure(
   caption: [Distribuzione dei cluster sul dataset],
@@ -465,7 +440,7 @@ Infine, i gruppi statici di esclusione contano _Dormant_ e _Unreachable_.
 
 Per la generazione dei suggerimenti relativi all'azione ottimale da intraprendere nei confronti di ciascun HCP (*_Next Best Action_*), è stato condotto uno studio e sperimentazione sulle metodologie disponibili.
 
-Inizialmente, l'obiettivo si è focalizzato sulla valorizzazione dei segmenti comportamentali appena individuati, valutando la possibilità di riutilizzare il set di _feature_ ingegnerizzate per la profilazione anche ai fini della predizione della Next Best Action. 
+Inizialmente, l'obiettivo si è focalizzato sulla valorizzazione dei segmenti comportamentali appena individuati, valutando la possibilità di riutilizzare il set di _feature_ ingegnerizzate per la profilazione anche ai fini della predizione della _Next Best Action_. 
 
 In questo contesto preliminare, l'esplorazione si è sviluppata lungo due direttrici metodologiche principali:
 - Catene di Markov (_Markov Chains_);
@@ -473,9 +448,9 @@ In questo contesto preliminare, l'esplorazione si è sviluppata lungo due dirett
 
 Di seguito vengono analizzate nel dettaglio le due famiglie di algoritmi, illustrando le criticità teoriche e pratiche emerse dai primi test che ne hanno determinato lo scarto nella loro formulazione iniziale, ponendo le basi per la re-ingegnerizzazione del problema e la scelta della soluzione finale basata su *_Gradient Boosting_ con LightGBM*.
 === Sperimentazione con le _Markov Chains_
-Nel primo esperimento applicativo, si è tentato di modellare la generazione della Next Best Action attraverso un sistema #gl("stocastico") basato sulle Catene di Markov (Markov Chains).
+Nel primo esperimento applicativo, si è tentato di modellare la generazione della _Next Best Action_ attraverso un sistema #gl("stocastico") basato sulle Catene di Markov (_Markov Chains_).
 
-Una *Catena di Markov di primo ordine* è un processo stocastico a tempo discreto in cui la probabilità di passare allo stato futuro $X_{t+1}$ dipende _esclusivamente_ dallo stato presente $X_t$, ignorando la storia passata (assenza di memoria o *Proprietà di Markov*):
+Una *Catena di Markov di primo ordine* è un processo stocastico a tempo discreto in cui la probabilità di passare allo stato futuro $X_{t+1}$ dipende esclusivamente dallo stato presente $X_t$, ignorando la storia passata (assenza di memoria o *Proprietà di Markov*):
 
 $ P(X_{t+1} = j | X_t = i, X_{t-1} = i_{t-1}, dots, X_0 = i_0) =\ P(X_{t+1} = j | X_t = i) = p_{i j} $
 
@@ -505,7 +480,7 @@ Per rendere la rete maggiormente dinamica e aderente al contesto aziendale, si v
 Nonostante i tentativi di arricchimento contestuale, *l'approccio è stato formalmente scartato* in accordo con i referenti aziendali, per le seguenti motivazioni:
 
 - #underline[Natura eccessivamente stocastica/probabilistica]: la matrice di transizione tendeva a suggerire azioni basate su frequenze statistiche aggregate, faticando a catturare i pattern individuali o le anomalie comportamentali del singolo medico;
-- #underline[Limite strutturale della Proprietà di Markov]: sebbene l'estensione ad un ordine superiore ($p=3$) tentasse di mitigare l'assenza di memoria, la natura essenzialmente "locale" del modello si è dimostrata un limite invalidante. L'evoluzione della relazione tra l'ISF e l'HCP richiede la valutazione dell'intero storico longitudinale del contatto (es. latenze sul lungo periodo, stagionalità, trend di reattività);
+- #underline[Limite strutturale della Proprietà di Markov]: sebbene l'estensione ad un ordine superiore ($p=3$) tentasse di mitigare l'assenza di memoria, la natura essenzialmente "locale" del modello si è dimostrata un limite invalidante. L'evoluzione della relazione tra il REP e l'HCP richiede la valutazione dell'intero storico longitudinale del contatto (es. latenze sul lungo periodo, stagionalità, trend di reattività);
 - #underline[Incapacità di generalizzazione]: il modello risultava rigido e poco incline ad adattarsi rapidamente a repentini cambi di ingaggio dell'HCP senza dover ricalcolare interamente le matrici di probabilità.
 
 Si è dunque deciso di abbandonare i modelli stocastici di transizione in favore di un approccio di Machine Learning classico con apprendimento supervisionato.
@@ -526,8 +501,8 @@ $ r_(i m) = - [ (partial L(y_i, F(x_i))) / (partial F(x_i)) ]_(F(x) = F_(m-1)(x)
 ==== _CatBoost_: fondamenti teorici
 Tra i diversi framework di Gradient Boosting, il primo ad essere preso in considerazione è stato CatBoost (_Categorical Boosting_), sviluppato da Yandex #footnote[https://catboost.ai]. La scelta iniziale è stata dettata da due caratteristiche strutturali distintive dell'algoritmo:
 
-1. #underline[Gestione Nativa delle Feature Categoriche]: CatBoost evita le trasformazioni tradizionali (come _#gl("one-hot-encoding") _ o _#gl("label-encoding")_) convertendo le categorie in valori numerici tramite i _Target Statistics (TS) ordinati_. Per prevenire il fenomeno del _target leakage_ (in cui il valore target di un record influenza la propria stessa feature), l'algoritmo applica una permutazione casuale dell'intero dataset: per ogni record, la stima della categoria viene calcolata considerando unicamente i valori target delle osservazioni che lo precedono in quel determinato ordine simulato.
-2. #underline[Alberi Simmetrici (_Oblivious Trees_)]: A differenza di altri algoritmi di boosting che valutano criteri di split differenti per ciascun nodo e fanno crescere gli alberi foglia per foglia, CatBoost seleziona un _unico criterio di split globale_ per ciascun livello. Questa condizione viene applicata uniformemente a tutti i nodi dello stesso livello, costringendo l'albero a crescere in modo perfettamente bilanciato e simmetrico.\ Questa simmetria strutturale garantisce un'elevata regolarizzazione dell'algoritmo, #underline[riducendo il rischio di overfitting] e stabilizzando la struttura del modello.
+1. #underline[Gestione Nativa delle Feature Categoriche]: CatBoost evita le trasformazioni tradizionali (come _#gl("one-hot-encoding") _ o _#gl("label-encoding")_) convertendo le categorie in valori numerici tramite i _Target Statistics (TS) ordinati_. Per prevenire il fenomeno del _target leakage_ (in cui il valore target di un record influenza la propria stessa feature), l'algoritmo applica una permutazione casuale dell'intero _dataset_: per ogni record, la stima della categoria viene calcolata considerando unicamente i valori target delle osservazioni che lo precedono in quel determinato ordine simulato.
+2. #underline[Alberi Simmetrici (_Oblivious Trees_)]: A differenza di altri algoritmi di boosting che valutano criteri di split differenti per ciascun nodo e fanno crescere gli alberi foglia per foglia, CatBoost seleziona un _unico criterio di split globale_ per ciascun livello. Questa condizione viene applicata uniformemente a tutti i nodi dello stesso livello, costringendo l'albero a crescere in modo perfettamente bilanciato e simmetrico.\ Questa simmetria strutturale garantisce un'elevata regolarizzazione dell'algoritmo, #underline[riducendo il rischio di _overfitting_] e stabilizzando la struttura del modello.
 
 ===== Esperimenti Condotti e Analisi delle Criticità
 
@@ -549,9 +524,9 @@ LightGBM ottimizza l'efficienza computazionale, la velocità di addestramento e 
 1. #underline[GOSS (Gradient-based One-Side Sampling)]:
    poiché i dati con un gradiente più elevato contengono più informazione (rappresentano le istanze che il modello sbaglia di più), GOSS evita di dover elaborare tutti i dati a ogni iterazione:\
    _mantiene il tutti dati a gradiente elevato_, ovvero i record più "difficili" e informativi; _esegue un campionamento casuale_ solo su una percentuale dei dati a basso gradiente (già ben addestrati) e _riconfigura i pesi_ dei dati a basso gradiente tenuti nel calcolo, garantendo che la stima del guadagno d'informazione rimanga statisticamente corretta e non distorta.
-2. #underline[EFB (Exclusive Feature Bundling)]: negli scenari ad alta dimensionalità (particolarmente frequenti dopo la fase di _feature engineering_), molte variabili risultano mutualmente esclusive ( raramente assumono valori diversi da zero simultaneamente). Ttali _feature_ sparse e mutualmente esclusive vengono raggruppate in un unico "pacchetto" (_bundle_), riducendo la dimensionalità della matrice delle feature senza alcuna perdita tangibile di informazione.
+2. #underline[EFB (_Exclusive Feature Bundling_)]: negli scenari ad alta dimensionalità (particolarmente frequenti dopo la fase di _feature engineering_), molte variabili risultano mutualmente esclusive (raramente assumono valori diversi da zero simultaneamente). Tali _feature_ sparse e mutualmente esclusive vengono raggruppate in un unico "pacchetto" (_bundle_), riducendo la dimensionalità della matrice delle feature senza alcuna perdita tangibile di informazione.
 
-Un'ulteriore distinzione chiave risiede nella strategia di costruzione degli alberi di decisione. La maggior parte degli algoritmi di boosting tradizionali (incluso #linkfn("https://xgboost.ai")[XGBoost] adotta una crescita _level-wise_ (o _depth-wise_), espandendo l'albero livello per livello.
+Un'ulteriore distinzione chiave risiede nella strategia di costruzione degli alberi di decisione. La maggior parte degli algoritmi di boosting tradizionali (incluso #linkfn("https://xgboost.ai")[XGBoost]) adotta una crescita _level-wise_ (o _depth-wise_), espandendo l'albero livello per livello.
 
 LightGBM utilizza invece una strategia di crescita _leaf-wise_ (foglia per foglia) con vincolo sulla profondità massima.
 
@@ -567,7 +542,7 @@ Questa crescita asimmetrica consente a LightGBM di raggiungere un errore di adde
 Per poter addestrare un modello dinamico come LightGBM capace di suggerire la _Next Best Action_, si è resa necessaria una complessa fase di trasformazione e ristrutturazione dei dati aziendali transazionali.\ Il processo ha integrato la costruzione di una griglia temporale giornaliera, l'estrazione di _feature_ di sequenza storica, il calcolo delle latenze e la definizione di metriche statiche e dinamiche di affinità per ciascun HCP.
 
 I dati di partenza si presentavano sotto forma di registro di eventi disaccoppiati.\
-Per convertire tale struttura in una serie storica idonea al tracciamento delle interazioni è stato identificato il #underline[range temporale tra la prima interazione registrata per ciascun HCP e la data massima globale dell'intero dataset]. Tramite una funzione di sequenza temporale (`F.sequence`), il dataset è stato esploso in modo da ottenere #underline[esattamente una riga per ogni giorno e per ogni medico]. Nei giorni in cui non è stata registrata alcuna sollecitazione commerciale, l'azione è stata codificata come `NO_ACTION`.
+Per convertire tale struttura in una serie storica idonea al tracciamento delle interazioni è stato identificato il #underline[_range_ temporale tra la prima interazione registrata per ciascun HCP e la data massima globale dell'intero _dataset_]. Tramite una funzione di sequenza temporale (`F.sequence`), il _dataset_ è stato esploso in modo da ottenere #underline[esattamente una riga per ogni giorno e per ogni medico]. Nei giorni in cui non è stata registrata alcuna sollecitazione commerciale, l'azione è stata codificata come `NO_ACTION`.
 
 Come eredità concettuale derivata dai primi esperimenti con le _Catene di Markov di terzo ordine_, si è deciso di preservare l'informazione storica relativa agli ultimi tre contatti. Utilizzando #underline[finestre temporali applicate unicamente alle giornate di interazione effettiva], sono state estratte le ultime 3 azioni commerciali reali eseguite dal REP su ciascun medico ($"lag"_1, "lag"_2, "lag"_3$). Tali variabili sono state successivamente propagate sui giorni di `NO_ACTION`, formando la variabile categoriale di sequenza *`story_state`* (es. `SendDEM_VisitF2F_SendRTE`).
 
@@ -596,7 +571,7 @@ $ "Affinity_SendDEM" =\ "Quota_Digital" times (1 - "RTE_Preference_Ratio") $],
   )
 )<tab:feature-forecasting>
 
-Tutti i dataframe transazionali, le sequenze e i profili statici arricchiti sono stati infine consolidati tramite join strutturate sulla chiave primaria `CONTACT_ID` e salvati stabilmente nell'architettura Lakehouse di Databricks come tabella Delta.
+Tutti i dataframe transazionali, le sequenze e i profili statici arricchiti sono stati infine consolidati tramite join strutturate sulla chiave primaria `CONTACT_ID` e salvati stabilmente nell'architettura _Lakehouse_ di Databricks come tabella Delta.
 ==== Addestramento del classificatore
 
 L'obiettivo del motore di raccomandazione NBA è duplice: suggerire al REP il canale di contatto ideale per ogni medico (HCP) e fornire un indice di saturazione (che indica quanto sia opportuno agire).
@@ -652,7 +627,7 @@ modello_1_binario.fit(
 ===== Addestramento Modello 2: Selettore Strategico di Canale (_Multiclass Model_)
 Il secondo stadio lavora solo sui dati attivi. Per evitare che i canali storicamente più frequenti (come le visite presenziali `VisitF2F`) coprano i canali digitali, si forza la ponderazione `class_weight='balanced'`, come si può vedere dal @cod:modello2.
 
-#figure(caption: "Implementazion essenziale del modello multiclasse.")[
+#figure(caption: "Implementazione essenziale del modello multiclasse.")[
 ```python
 # Isolamento delle sole interazioni reali (Esclusione NO_ACTION)
 df_attivi = df_master[df_master['azione_macro'] != 'NO_ACTION']
@@ -677,7 +652,7 @@ modello_2_multiclass.fit(
 ]<cod:modello2>
 
 ==== Regole di Business - Post Processing
-Una volta generate le probabilità grezze dai due modelli di Machine Learning, il sistema applica una fase di _post-processing_ basata su regole di dominio aziendali (_Business Rules_). Questa fase è essenziale per raccordare i punteggi puramente statistici con gli obiettivi strategici del business, definendo l'output finale destinato agli Informatori Scientifici del Farmaco (ISF) e alla Dashboard aziendale.
+Una volta generate le probabilità grezze dai due modelli di Machine Learning, il sistema applica una fase di _post-processing_ basata su regole di dominio aziendali (_Business Rules_). Questa fase è essenziale per raccordare i punteggi puramente statistici con gli obiettivi strategici del business, definendo l'output finale destinato ai rappresentanti farmaceutici e alla _dashboard_ aziendale.
 
 *Il modello 1 restituisce la probabilità di inazione* che misura il livello di saturazione o di stasi del medico. Tuttavia, affidarsi unicamente alla logica predittiva rischia di penalizzare particolari segmenti strategici, condannando a una permanente passività medici che richiederebbero invece un'azione correttiva prioritaria.
 
@@ -694,7 +669,7 @@ Tutti gli output prodotti vengono consolidati in un dataset strutturato. Questo 
 La validazione dell'architettura gerarchica a due stadi è stata condotta analizzando separatamente l'efficacia del predittore di saturazione e la capacità discriminativa del selettore di canale.
 
 ===== Performance Modello 1
-Il primo stadio registra un'#underline[Accuracy globale del 61.0%] Tale valore riflette il bilanciamento introdotto per evitare che il modello predica sistematicamente la classe maggioritaria di inazione, garantendo una capacità discriminativa reale tra momenti di ingaggio e fasi di riposo.
+Il primo stadio registra un'#underline[_Accuracy_ globale del 61.0%] Tale valore riflette il bilanciamento introdotto per evitare che il modello predica sistematicamente la classe maggioritaria di inazione, garantendo una capacità discriminativa reale tra momenti di ingaggio e fasi di riposo.
 
 Dall'analisi della matrice di confusione (@fig:confusion-matr-m1) si osserva come il modello riesca a *intercettare correttamente il $72\%$ delle interazioni reali* (`ACTION`), assegnando al riposo solo il restante $28\%$ dei casi. Sul fronte opposto, il $60\%$ delle giornate prive di contatto (`NO_ACTION`) viene classificato correttamente, mentre il $40\%$ registra una sovrastima dell'attività.
 
@@ -716,7 +691,7 @@ Questa distribuzione si riflette chiaramente nell'Indice di Saturazione $"PROB_N
 ===== Performance Modello 2
 Isolando esclusivamente le interazioni commerciali effettive (`PhoneCall`, `RemoteCall`, `SendDEM`, `SendRTE`, `VisitF2F`), il secondo stadio dimostra una spiccata capacità di orientare la scelta strategica, raggiungendo un'#underline[Accuracy complessiva del 67.2%].
 
-L'osservazione della matrice di confusione () evidenzia un'elevata precisione sulle forme di contatto dirette e digitali. Il canale `RemoteCall` si attesta come il più preciso con l' $84\%$ di individuazioni corrette, seguito da `SendRTE` all' $81\%$, `PhoneCall` al $77\%$ e `SendDEM` al $70\%$. Le visite in presenza (`VisitF2F`) mostrano una diagonale pari al $59\%$. Tale risultato è la diretta conseguenza della strategia di bilanciamento delle classi (`class_weight='balanced'`) adottata in fase di addestramento.\ In assenza di tale penalizzazione, il modello tendeva a raggiungere un'accuracy globale ingannevolmente più elevata, ma al prezzo di una quasi totale polarizzazione su `VisitF2F`, canale nettamente maggioritario nel dataset storico. Accettando un lieve calo nell'accuracy di questo singolo canale, si è deliberatamente redistribuito il peso informativo favorendo la capacità discriminativa sui canali digitali e remoti, garantendo al sistema un'effettiva proattività omnicanale.
+L'osservazione della matrice di confusione (@fig:confusion-matr-m2) evidenzia un'elevata precisione sulle forme di contatto dirette e digitali. Il canale `RemoteCall` si attesta come il più preciso con l' $84\%$ di individuazioni corrette, seguito da `SendRTE` all' $81\%$, `PhoneCall` al $77\%$ e `SendDEM` al $70\%$. Le visite in presenza (`VisitF2F`) mostrano una diagonale pari al $59\%$. Tale risultato è la diretta conseguenza della strategia di bilanciamento delle classi (`class_weight='balanced'`) adottata in fase di addestramento.\ In assenza di tale penalizzazione, il modello tendeva a raggiungere un'_accuracy_ globale ingannevolmente più elevata, ma al prezzo di una quasi totale polarizzazione su `VisitF2F`, canale nettamente maggioritario nel dataset storico. Accettando un lieve calo nell'_accuracy_ di questo singolo canale, si è deliberatamente redistribuito il peso informativo favorendo la capacità discriminativa sui canali digitali e remoti, garantendo al sistema un'effettiva proattività omnicanale.
 
 #let confusion-matrix-m2 = "../images/analisi-forecasting/confusion-matrix-m2.png"
 #figure(
@@ -733,7 +708,7 @@ Nello specifico della NBA Suggerita (in @fig:nba-sugg-m2), le visite presenziali
 
 ===== Performance Generali
 
-L'analisi dell'output complessivo post-forecasting conferma che l'algoritmo non tende a schiacciarsi su un'unica tipologia di contatto, ma genera un piano d'azione multicanale articolato ed equilibrato.
+L'analisi dell'output complessivo conferma che l'algoritmo non tende a schiacciarsi su un'unica tipologia di contatto, ma genera un piano d'azione multicanale articolato ed equilibrato.
 
 Coerentemente la distribuzione mediana delle probabilità, in @fig:mediana-sugg, mostra la classe `NO_ACTION` con il valore mediano più alto (attorno al $0.55$), agendo da naturale filtro di stasi. Tra i canali attivi spiccano `VisitF2F` con una mediana attorno al $0.34$ e `SendDEM` attorno al $0.20$, mentre i canali telefonici e remoti mantengono mediane più basse ma picchi molto definiti, a dimostrazione di come il modello li suggerisca in modo mirato solo in presenza di segnali d'ingaggio estremamente specifici.
 
@@ -745,7 +720,7 @@ Coerentemente la distribuzione mediana delle probabilità, in @fig:mediana-sugg,
 
 == Caso d'uso applicativo
 
-A completamento del lavoro svolto, è stata preparata una dashboard di simulazione all'interno dell'ambiente Databricks, visibile in @fig:dashboard. L'obiettivo della schermata non è quello di presentare uno sviluppo applicativo software finito, attività che richiederebbe un ciclo di progettazione informatica dedicato, bensì quello di mostrare concretamente i risultati del modello, abbozzando una possibile resa visiva e operativa dei dati elaborati.
+A completamento del lavoro svolto, è stata preparata una _dashboard_ di simulazione all'interno dell'ambiente Databricks, visibile in @fig:dashboard. L'obiettivo della schermata non è quello di presentare uno sviluppo applicativo software finito, attività che richiederebbe un ciclo di progettazione informatica dedicato, bensì quello di mostrare concretamente i risultati del modello, abbozzando una possibile resa visiva e operativa dei dati elaborati. Le parti nel dettaglio verranno mostrate in seguito.
 
 #let dashboard1 = "../images/analisi-forecasting/Screen2.png"
 #figure(
@@ -786,7 +761,7 @@ Un riquadro dedicato declina la *spiegazione qualitativa del cluster* (@fig:flag
   image(flags, width: 65%)
 )<fig:flags>
 
-La parte inferiore della dashboard riporta la *Timeline delle Interazioni* (@fig:timeline), una matrice cronologica che traccia la sequenza temporale dei contatti passati (distinguendo tra visite sul campo, azioni web e reazioni dell'HCP come i `CLICK` registrati sulle e-mail). Questa vista completa il quadro clinico-commerciale del medico, consentendo di verificare visivamente la coerenza tra il comportamento passato e la Next Best Action proposta dal sistema.
+La parte inferiore della dashboard riporta la *_timeline_ delle interazioni* (@fig:timeline), una matrice cronologica che traccia la sequenza temporale dei contatti passati (distinguendo tra visite sul campo, azioni web e reazioni dell'HCP come i `CLICK` registrati sulle e-mail). Questa vista completa il quadro clinico-commerciale del medico, consentendo di verificare visivamente la coerenza tra il comportamento passato e la _Next Best Action_ proposta dal sistema.
 #let timeline = "../images/analisi-forecasting/timeline.png"
 #figure(
   caption: [Vista sulla timline all'interno della dashboard.],

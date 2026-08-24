@@ -58,7 +58,7 @@ Al termine del progetto sono stati raggiunti la maggior parte degli obiettivi pr
 I rischi emersi durante lo stage sono riportati in @fig:rischi-occorsi.\
 #v(1em)
 #figure(
-  caption: [Rischi occorsi con la loro mitigazione.],
+  caption: [Rischi occorsi e loro mitigazione.],
   table(
     columns: 2,
     table.header([*Descrizione*],[*Mitigazione*]),
@@ -69,8 +69,8 @@ I rischi emersi durante lo stage sono riportati in @fig:rischi-occorsi.\
 )<fig:rischi-occorsi>
 #v(1em)
 == Valutazione personale
-L'esperienza di tirocinio e lo sviluppo di questo progetto si sono rivelati formativi, superando il solo valore dell'acquisizione tecnica e teorica legata agli algoritmi e alle architetture di Machine Learning. 
+L'esperienza di tirocinio e lo sviluppo di questo progetto si sono rivelati altamente formativi, superando il solo valore dell'acquisizione tecnica e teorica legata agli algoritmi e alle architetture di _Machine Learning_. 
 
-Un aspetto di valore è stato l'approccio ad una metodologia di lavoro: comprendere come strutturare un progetto, definire gli step propedeutici e orientare costantemente l'analisi verso un obiettivo di business concreto. Particolarmente istruttiva è stata la gestione delle fasi di sperimentazione meno fruttuose; il riscontro di performance non ottimali in alcuni algoritmi va considerato un fallimento, bensì un passaggio per affinare la comprensione del dominio di progetto e guidare le successive scelte. 
+Un aspetto di valore è stato l'approccio ad una metodologia di lavoro: comprendere come strutturare un progetto, definire gli step propedeutici e orientare costantemente l'analisi verso un obiettivo di business concreto. Particolarmente istruttiva è stata la gestione delle fasi di sperimentazione meno fruttuose; il riscontro di performance non ottimali in alcuni algoritmi non va considerato un fallimento, bensì un passaggio per affinare la comprensione del dominio di progetto e guidare le successive scelte. 
 
-Infine, il progetto ha offerto una panoramica molto interessante sulle reali applicazioni della Data Science in ambito aziendale, delineando con maggiore nitidezza i possibili sviluppi e gli sbocchi professionali futuri.
+Infine, il progetto ha offerto una panoramica altamente stimolante sulle reali applicazioni della _Data Science_ in ambito aziendale, delineando con maggiore nitidezza i possibili sviluppi e gli sbocchi professionali futuri.

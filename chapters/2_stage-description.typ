@@ -14,11 +14,11 @@
 #v(1em)
 
 == Aspettative di apprendimento
-Lo stage presenta un rilevante valore formativo perché consente di applicare conoscenze teoriche di analisi dei dati, statistica e machine learning a un caso reale in ambito aziendale.
+Lo stage presenta un rilevante valore formativo perché consente di applicare conoscenze teoriche di analisi dei dati, statistica e _Machine Learning_ a un caso reale in ambito aziendale.
 
 *Dal punto di vista strettamente tecnico e metodologico*, come accennato nella @cap:desc-prog, le principali aspettative di apprendimento e consolidamento riguardano:
 
-_Modellazione statistica e machine learning_ su dati comportamentali; \ apprendere a gestire dati reali e complessi legati alle interazioni umane, traducendo eventi qualitativi e temporali in variabili per un'analisi predittiva;
+_Modellazione statistica e Machine Learning_ su dati comportamentali; \ apprendere a gestire dati reali e complessi legati alle interazioni umane, traducendo eventi qualitativi e temporali in variabili per un'analisi predittiva;
 
 _Tecniche di classificazione, clustering e regressione_; \ approfondire l'uso degli algoritmi non supervisionati per l'identificazione di gruppi omogenei di utenti e di quelli supervisionati;
 
@@ -33,16 +33,16 @@ _Integrazione di modelli analitici in contesti aziendali reali_;\ comprendere co
 A fianco dell'innalzamento delle competenze tecniche, un'aspettativa rilevante è rappresentata dalla *comprensione del contesto aziendale*. Il tirocinio costituisce un'opportunità preziosa per confrontarsi con l'organizzazione del lavoro in un'azienda di consulenza, apprendere le logiche della gestione dei progetti per obiettivi e comprendere come le esigenze dei clienti e degli utenti finali guidino ogni scelta architetturale e modellistica.\ Questa esperienza si propone dunque di affinare anche la capacità di comunicazione interpersonale, il lavoro in team e la flessibilità operativa necessarie per muoversi nel mondo professionale.
 
 == Obiettivi del progetto
-Il percorso di stage si propone di introdurre e applicare le principali metodologie in uso negli ambiti della Business Intelligence e dell'Intelligenza Artificiale, attraverso lo sviluppo di un progetto orientato all'analisi del comportamento digitale degli utenti e all'ottimizzazione delle strategie omnicanale.
+Il percorso di stage si propone di introdurre e applicare le principali metodologie in uso negli ambiti della _Business Intelligence_ e dell'Intelligenza Artificiale, attraverso lo sviluppo di un progetto orientato all'analisi del comportamento digitale degli utenti e all'ottimizzazione delle strategie omnicanale.
 
 Per raggiungere questo traguardo le attività progettuali sono volte all'ingegnerizzazione di un ciclo di vita del dato, che parte dalla fase di acquisizione e pre-elaborazione delle interazioni storiche degli HCP fino all'addestramento e alla validazione di algoritmi predittivi basati sul concetto di _Next Best Action_ (NBA). 
 
 In questo contesto, il lavoro da svolgere è stato strutturato attorno a tre macroaree operative, che delineano gli obiettivi tecnici e metodologici del progetto:
 
-*1. Ingegnerizzazione dei dati e Feature Engineering* \
-Il primo obiettivo riguarda la preparazione della base informativa. Questa fase prevede l'estrazione e l'integrazione dei dati storici relativi alle interazioni multi-canale, tra cui visite F2F, chiamate telefoniche, video call ed email (DEM e RTE). A seguito di un'accurata fase di pre-elaborazione orientata alla gestione dei dati mancanti, al trattamento degli outlier e alla normalizzazione delle variabili temporali e frequenziali. L'attività si concentra poi sulla costruzione di un set di feature aggregate e indicatori sintetici.
+*1. Ingegnerizzazione dei dati e _Feature Engineering_* \
+Il primo obiettivo riguarda la preparazione della base informativa. Questa fase prevede l'estrazione e l'integrazione dei dati storici relativi alle interazioni multi-canale, tra cui visite F2F, chiamate telefoniche, video call ed email (DEM e RTE). A seguito di un'accurata fase di pre-elaborazione orientata alla gestione dei dati mancanti, al trattamento degli _outlier_ e alla normalizzazione delle variabili temporali e frequenziali. L'attività si concentra poi sulla costruzione di un set di feature aggregate e indicatori sintetici.
 
-*2. Modellazione analitica e Machine Learning*\
+*2. Modellazione analitica e _Machine Learning_*\
 La seconda macroarea costituisce il cuore algoritmico del progetto e si focalizza sullo sviluppo dei modelli analitici. In un primo momento, vengono applicate tecniche di apprendimento non supervisionato per analizzare i pattern comportamentali ed effettuare una segmentazione targettizzata degli HCP. Successivamente, la conoscenza estratta viene integrata all'interno di classificatori supervisionati e modelli di propensione, con il fine di stimare la probabilità di conversione sui diversi canali digitali e definire l'architettura predittiva in grado di raccomandare la _Next Best Action_ più efficace.
 
 *3. Validazione e valutazione delle performance* \
