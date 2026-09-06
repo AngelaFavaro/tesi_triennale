@@ -11,7 +11,7 @@
 #v(1em)
 Il presente documento descrive il lavoro svolto durante il periodo di stage curricolare, della durata di circa trecentoventi ore, dal laureando #text(myName) presso l'azienda #text(myCompany). Lo stage è stato condotto sotto la supervisione del tutor aziendale #myTutor, mentre il prof. #text(myProf) ha ricoperto il ruolo di tutor accademico.
 \ \
-Il presente lavoro di tesi tratta la progettazione e lo sviluppo di modelli di clustering e di predizione Next Best Action a supporto di strategie di ingaggio omnicanale. L'obiettivo principale risiede nella realizzazione di una dashboard riassuntiva che, illustrando l'output e il funzionamento dei modelli, offra agli stakeholder una visione concreta delle potenzialità applicative dell'Intelligenza Artificiale e del Machine Learning.
+Il presente lavoro di tesi tratta la progettazione e lo sviluppo di modelli di _clustering_ e di predizione _Next Best Action_ a supporto di strategie di ingaggio omnicanale. L'obiettivo principale risiede nella realizzazione di una _dashboard_ riassuntiva che, illustrando l'output e il funzionamento dei modelli, offra agli _stakeholder_ una visione concreta delle potenzialità applicative dell'Intelligenza Artificiale e del _Machine Learning_.
 
 #linebreak()
 #text(24pt, weight: "semibold")[Organizzazione del testo]
@@ -34,7 +34,7 @@ Durante la stesura del testo sono state adottate le seguenti convenzioni tipogra
 - Per la prima occorrenza dei termini riportati nel glossario viene utilizzata la seguente nomenclatura: #glossary-style[termine]\;
 - I termini in lingua straniera non di uso comune o facenti parti del gergo tecnico sono evidenziati con il carattere _corsivo_;
 - I nomi di funzioni o variabili appartenenti ad un linguaggio di programmazione vengono scritte con un carattere `monospaziato`;
-- Le citazioni ad un libro, ad una risorsa presente nella #link(<bibliography>)[bibliografia] (#link(<bibliography>)[p. #context counter(page).at(<bibliography>).at(0)]) o i link di approfondimento o saranno affiancate dal rispettivo numero identificativo, es. $[1]$;
+- Le citazioni relative a fonti, articoli e documentazioni ufficiali consultati per lo svolgimento del progetto sono raccolte nella #link(<bibliography>)[sitorgrafia] (#link(<bibliography>)[p. #context counter(page).at(<bibliography>).at(0)]); i link di approfondimento e le risorse esterne sono indicati nel testo da un numero in apice con il relativo URL riportato a piè di pagina.
 - I blocchi di codice sono rappresentati nel seguente modo
 #linebreak()
 #figure(caption: "Codice d'esempio.")[
