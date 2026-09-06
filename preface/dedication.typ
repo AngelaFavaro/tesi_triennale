@@ -1,6 +1,4 @@
 #v(3cm)
 #align(right, [
-  «Frase ad effetto»
-    #v(6pt)
-    #sym.dash#sym.dash#sym.dash Autore della suddetta frase
+  _Alle mie nonne, Rita e Teresa.\ Per tutto quello che mi avete dato.\ Per l'amore ricevuto._
 ])

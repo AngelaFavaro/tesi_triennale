@@ -51,7 +51,7 @@ Il fulcro logico dell'attività predittiva è rappresentato dal concetto di *_Ne
 
 *I destinatari* dell'attività dei REP vengono chiamati *Health Care Professionals (HCP)*. Rappresentano una categoria di professionisti che opera nel settore sanitario (medici, farmacisti, ecc.) e che interagisce con le campagne di marketing delle aziende farmaceutiche. \ Il modello predittivo analizza e intepreta i comportamenti multi-canale di questi ultimi al fine di suggerire al rappresentante l'azione statisticamente più efficace da intraprendere nella fase successiva dall'ultimo contatto, massimizzando così il livello di _engagement_ dell'HCP.
 
-=== I Canali
+=== I canali
 Le interazioni che i rappresentanti possono avere con gli HCP si articolano tra due principali macroaree: _visite dirette_ e _comunicazioni digitali_.
 
 *Le visite dirette* costituiscono il canale di interazione frontale tra il REP e il professionista sanitario. \ Questa categoria si suddivide a sua volta in tre specifici sottocanali:
@@ -62,7 +62,7 @@ Le interazioni che i rappresentanti possono avere con gli HCP si articolano tra 
 *Le comunicazioni digitali* si configurano come punti di contatto (_touchpoint_) indiretti. Principalmente veicolati tramite posta elettronica.\ Questi contatti sono tracciati ed il tracciamento è cruciale per misurare il livello di coinvolgimento (_engagement_) del singolo professionista sia all'interno della campagna, che per valutarne il grado di maturità digitale.\ All'interno di questa macroarea si distinguono:
 - *DEM (_Direct Email Marketing_)*: comunicazioni inviate su scala ampia, pianificate centralmente dal reparto marketing e indirizzate a specifici segmenti di target per supportare il lancio di prodotti o la diffusione di informative scientifiche. 
 - *RTE (_Real-Time Email_)*: comunicazioni elettroniche inviate in modo mirato e personalizzato al singolo HCP. Questa tipologia viene utilizzata proattivamente dal REP, solitamente a seguito di un incontro frontale (F2F o _Video Call_), per fornire materiali di approfondimento su richiesta o per dare continuità alla relazione informativa innescata dal contatto diretto.
-=== Costruzione del Progetto
+=== Costruzione del progetto
 Il progetto si articola in due macrofasi sequenziali di ricerca tecnologica e sviluppo.
 
 *_Prima fase: #gl("clustering") e profilazione comportamentale_*\ In un primo momento, l'attività si concentra sull'analisi esplorativa dei dati storici al fine di identificare pattern comportamentali e segmentare gli utenti in gruppi (o _cluster_) omogenei. \ L'obiettivo di questa fase è lo sviluppo di un modello di _clustering_ capace di mappare e misurare la _*Digital Attitude*_ (attitudine digitale) di ogni singolo HCP. \ Tale metrica consente al rappresentante di comprendere preventivamente il grado di ricettività digitale dell'HCP durante lo svolgimento delle campagne marketing.

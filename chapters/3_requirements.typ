@@ -24,7 +24,7 @@
 
 #pagebreak(to:"odd")
 
-= Svolgimento del Progetto<cap:svolgimento-progetto>
+= Svolgimento del progetto<cap:svolgimento-progetto>
 
 #text(style: "italic", [
     In questo capitolo verranno illustrate le tappe della costruzione del progetto e dei modelli correlati. \ Partendo con la ricerca per poi passare allo sviluppo  di una dashboard finale esplicativa. 
@@ -52,7 +52,7 @@ All'interno del progetto sono state inizialmente analizzate quattro tabelle grez
 I _dataset_ sorgente, resi disponibili come file `.csv`, sono stati importati nell'ambiente Databricks e convertiti in tabelle (Delta Table / tabelle di _metastore_). Questa operazione ha consentito di accedere ai _dataset_ direttamente tramite query SQL ed ecosistema PySpark.
 
 Le tabelle a disposizione si dividevano in due macro-gruppi: la tabella anagrafica e le tabelle delle azioni.
-=== Analisi Tabella Anagrafica <cap:analisi-tab-anagrafica>
+=== Analisi tabella anagrafica <cap:analisi-tab-anagrafica>
 La tabella, denominata "`hcp_epi_in_scope_it`", raccoglie le informazioni relative agli HCP (_Healthcare Professional_) coinvolti nel progetto. Nello specifico, non è stata resa disponibile l'intera anagrafica aziendale, ma soltanto un sottoinsieme riferito a una determinata campagna omnicanale svolta in precedenza sull'epilessia (da cui l'acronimo `epi` nel nome della tabella). Il campione comprende all'circa 800 HCP. Sulla tabella sono state condotte le prime attività di pulizia e analisi esplorativa.
 
 *Prima fase: pulizia e selezione delle colonne*\
@@ -125,7 +125,7 @@ Dall'analisi esplorativa sono emerse le seguenti considerazioni sintetiche:
 - COUNTRY_ID: privo di valore informativo ai fini della modellazione, in quanto costante su un unico Paese (Italia);
 - REGION, CITY, BRICK: mostrano una buona distribuzione geografica, rivelandosi campi promettenti per le successive fasi di _feature engineering_.
 
-=== Analisi Tabelle delle Azioni
+=== Analisi tabelle delle azioni
 Sono state esaminate tre tabelle contenenti lo storico delle diverse interazioni e azioni svolte con i professionisti sanitari:
 + `visit_epi_it`. Raccoglie lo storico completo delle visite svolte dai rappresentanti verso gli HCP presenti nella tabella anaagrafica;
 + `dem_epi_it`. In cui sono presenti tutti gli invii di comunicazioni DEM (_Direct Email Marketing_) e le relative interazioni effettuate da e verso gli HCP (es. aperture, click ecc.);
@@ -248,7 +248,7 @@ Dallo studio delle interazioni sono emerse le seguenti considerazioni sintetiche
   image(distr-azioni)
 )<fig:distr-azioni>
 
-== Profilazione della Digital Attitude tramite Clustering
+== Profilazione della _digital attitude_ tramite Clustering
 Entrando nel vivo del progetto, si passa alla fase di profilazione degli HCP in base all'attitudine digitale degli stessi. \ A questo scopo la richiesta è stata quella di creare un modello di _Clustering_ che potesse supportare la richiesta.\
 In accordo con le linee guida espresse dal team aziendale, l'algoritmo individuato per la profilazione è stato il *K-Means*. 
 
@@ -258,7 +258,7 @@ Sono stati comunque presi in considerazione più algoritmi di _*Clustering*_ non
  
 Queste motivazioni, unite alla necessità aziendale di assegnare ogni singolo HCP a un profilo e di disporre di una metodologia facilmente interpretabile, ha confermato il K-Means come la scelta ottimale per il progetto.
 
-=== K-Means: Fondamenti Teorici
+=== K-Means: fondamenti teorici
 Il K-Means è un algoritmo di partizionamento non supervisionato che ha lo scopo di suddividere un insieme di $n$ osservazioni $X = {x_1, x_2, ..., x_n}$ in $k$ cluster distinti $C = {C_1, C_2, ..., C_k}$, dove *$k$ rappresenta un iperparametro prefissato*.
 
 Matematicamente, l'algoritmo mira a minimizzare la varianza interna ai cluster, nota come _Within-Cluster Sum of Squares_ (WCSS) o *#gl("inerzia")*, definita dalla seguente funzione obiettivo:
@@ -282,13 +282,13 @@ $ mu_i = 1 / (|C_i|) sum_(x in C_i) x $
 Infine, nella fase di *convergenza*, i passaggi di assegnazione e aggiornamento vengono ripetuti ciclicamente fino a quando la posizione dei centroidi non varia più in modo significativo, ovvero fino a quando lo scostamento dell'inerzia $J$ scende sotto una soglia di tolleranza $epsilon$ prestabilita, o al raggiungimento del numero massimo di iterazioni consentite.
 
 
-=== Feature Engineering per la misura dell'Attitudine Digitale
+=== Feature Engineering per la misura dell'attitudine digitale
 
 A partire dal dataset consolidato `clean_all_epi_it`, la fase di Feature Engineering è stata progettata per trasformare le interazioni puntuali degli HCP in variabili sintetiche relative a una finestra temporale recente di 120 giorni, questo per garantire che i cluster siano aggiornati relativamente agli ultimi atteggiamenti digitali degli HCP e non abbiano _bias_ relativi ai comportamenti molto vvecchi degli stesso. \ La finestra temporale, in ogni caso, può essere facilmente ampiata o diminuita. 
 
 La logica implementata adotta un *approccio ibrido*: prima di somministrare i dati all'algoritmo di _Machine Learning_, si applica una segmentazione deterministica (_Rule-Based_) per escludere o etichettare le casistiche aziendali che non richiedono o non possono beneficiare dell'algoritmo di _clustering_ e rischierebbero altrimenti di creare rumore all'interno del modello.
 
-==== Regole Deterministiche
+==== Regole deterministiche
 
 Tramite query SQL e metriche di _*Recency*_ e _*Frequency*_, ciascun HCP viene analizzato e categorizzato in quattro gruppi principali:
 
@@ -297,7 +297,7 @@ Tramite query SQL e metriche di _*Recency*_ e _*Frequency*_, ciascun HCP viene a
 - *_BOUNCED / INVALID_*: individua i contatti con problemi di raggiungibilità sul canale e-mail, definiti da una soglia critica di _bounce_ registrati nell'ultimo quadrimestre (`DEM_Bounce_120gg >= 5`);
 - *_ELIGIBLE_FOR_ML_*: include tutti gli HCP attivi che non ricadono nelle categorie precedenti. #underline[Solo questa coorte] viene fatta proseguire verso la successiva fase di calcolo delle _feature_ ed elaborazione da parte del K-Means.
 
-==== Ingegnerizzazione delle Feature per il Machine Learning
+==== Ingegnerizzazione delle _feature_ per il _Machine Learning_
 
 Per gli HCP appartenenti alla classe `ELIGIBLE_FOR_ML`, il codice calcola un set di *feature* derivate e normalizzate tramite funzioni PySpark. Tali variabili mirano a catturare l'intensità di ingaggio, la preferenza di canale e la reattività digitale e sono presentati in @tab:feature-clustering.
 
@@ -325,7 +325,7 @@ Per gli HCP appartenenti alla classe `ELIGIBLE_FOR_ML`, il codice calcola un set
 
 Le variabili così ingegnerizzate vengono infine salvate in modalità nella tabella di _staging_ Delta `stg_segmentation_raw_features`, pronta per essere sottoposta alle successive fasi di scaling/standardizzazione e segmentazione via K-Means.
 
-=== Implementazione, Addestramento e Valutazione del modello <cap:sviluppo-cluster>
+=== Implementazione, addestramento e valutazione del modello <cap:sviluppo-cluster>
 ==== Implementazione
 La seconda macro-fase della pipeline riguarda l'addestramento dell'algoritmo di Clustering, la mappatura logico-commerciale dei gruppi ottenuti e il calcolo delle metriche di comportamento temporale (latenza).
 
@@ -375,7 +375,7 @@ pdf_features['ML_Cluster_Raw'] = kmeans_final.fit_predict(X_scaled_final)
 ```
 ]<cod:clustering>
 
-==== Risultati del Modello
+==== Risultati del modello
 I cluster numerici generati dal modello ($0 dots 7$) sono stati sottoposti ad un processo di *mappatura supervisionata*, volto a tradurre le proprietà matematiche dei gruppi in segmenti commerciali e operativi. 
 
 A tal fine, sono state calcolate le medie reali delle *feature* (i *centroidi*) per ciascuno degli 8 cluster attivi, la cui distribuzione percentuale (relativa a metriche quali `Digital_Open_Rate`, `Share_of_F2F` e `RTE_Preference_Ratio`) è stata visualizzata graficamente tramite la heatmap comportamentale (@fig:heat-cluster), generata in Python mediante le librerie `seaborn` e `matplotlib`.
@@ -414,7 +414,7 @@ Il dataset completo viene consolidato e persistito nella tabella Delta `hcp_fina
 
 Infine, gli oggetti di trasformazione e modellazione (`StandardScaler` e il modello `KMeans` addestrato) vengono serializzati e salvati nei _Volumes_ di _Unity Catalog_. Tale approccio garantisce la #underline[riproducibilità] e la #underline[_governance_ dei modelli], consentendo di riutilizzarli in fase di _inference_ su nuovi dati senza dover riaddestrare la rete.
 
-=== Valutazione dei Risultati
+=== Valutazione dei risultati
 Per interpretare la rilevanza delle singole variabili nelle decisioni di partizione del K-Means, è stato addestrato un modello surrogato _Random Forest Classifier_ sugli stessi dati di input.\ L'#underline[analisi dell'indice di importanza delle _feature_] (in @fig:feature-cluster) rivela che:
 
 - _Share of Digital_ (circa $18\%$), _RTE Preference Ratio_ (circa $17\%$) e _Monthly Interaction Intensity_ (circa $17\%$) rappresentano i #underline[tre fattori di maggior peso] decisionale. La marcata rilevanza di _Share of Digital_ valida l'efficacia della pesatura strategica (+50%) applicata in fase di pre-elaborazione;
@@ -506,7 +506,7 @@ Tra i diversi framework di Gradient Boosting, il primo ad essere preso in consid
 1. #underline[Gestione Nativa delle Feature Categoriche]: CatBoost evita le trasformazioni tradizionali (come _#gl("one-hot-encoding") _ o _#gl("label-encoding")_) convertendo le categorie in valori numerici tramite i _Target Statistics (TS) ordinati_. Per prevenire il fenomeno del _target leakage_ (in cui il valore target di un record influenza la propria stessa feature), l'algoritmo applica una permutazione casuale dell'intero _dataset_: per ogni record, la stima della categoria viene calcolata considerando unicamente i valori target delle osservazioni che lo precedono in quel determinato ordine simulato.
 2. #underline[Alberi Simmetrici (_Oblivious Trees_)]: A differenza di altri algoritmi di boosting che valutano criteri di split differenti per ciascun nodo e fanno crescere gli alberi foglia per foglia, CatBoost seleziona un _unico criterio di split globale_ per ciascun livello. Questa condizione viene applicata uniformemente a tutti i nodi dello stesso livello, costringendo l'albero a crescere in modo perfettamente bilanciato e simmetrico.\ Questa simmetria strutturale garantisce un'elevata regolarizzazione dell'algoritmo, #underline[riducendo il rischio di _overfitting_] e stabilizzando la struttura del modello.
 
-===== Esperimenti Condotti e Analisi delle Criticità
+===== Esperimenti condotti e analisi delle criticità
 
 Nel primo approccio sperimentale, si è tentato di sfruttare di CatBoost per predire la _Next Best Action_ addestrando il modello direttamente sulle categorie native a disposizione, quali i segmenti di clustering recentemente identificati, le tipologie di interazione storica e le variabili aziendali preesistenti (`DIGITAL_ATTITUDE`, `SEGMENTATION` ecc.). Sono state condotte diverse prove sia utilizzando i dati in formato grezzo, sia applicando un primo livello di _feature engineering_.
 
@@ -540,7 +540,7 @@ LightGBM utilizza invece una strategia di crescita _leaf-wise_ (foglia per fogli
 A ogni passo, l'algoritmo valuta tutte le foglie esistenti e sceglie di dividere unicamente la singola foglia che garantisce la #underline[massima riduzione della funzione di perdita] (massimo guadagno d'informazione). 
 
 Questa crescita asimmetrica consente a LightGBM di raggiungere un errore di addestramento inferiore a parità di numero di split. Sebbene la crescita _leaf-wise_ presenti un rischio teorico maggiore di _overfitting_ su dataset ridotti, tale fenomeno viene mitigato attraverso il controllo della profondità massima dell'albero (`max_depth`) e del numero minimo di record per foglia (`min_child_samples`).
-==== _Data Preparation & Engineering_
+==== _Data preparation & engineering_
 Per poter addestrare un modello dinamico come LightGBM capace di suggerire la _Next Best Action_, si è resa necessaria una complessa fase di trasformazione e ristrutturazione dei dati aziendali transazionali.\ Il processo ha integrato la costruzione di una griglia temporale giornaliera, l'estrazione di _feature_ di sequenza storica, il calcolo delle latenze e la definizione di metriche statiche e dinamiche di affinità per ciascun HCP.
 
 I dati di partenza si presentavano sotto forma di registro di eventi disaccoppiati.\
@@ -592,7 +592,7 @@ Questa separazione ha aumentato sensibilmente il _#gl("recall")_ sulle azioni re
 
 Dalla matrice delle variabili ($X$) sono stati esclusi l'identificativo (`CONTACT_ID`), la variabile target e i KPI storici di rendimento (`clm_f2f_ratio`, `rte_click_ratio`, ecc.). Questi ultimi, oltre a rischiare fenomeni di _data leakage_, presentavano troppi pochi valori ed avrebbero generato solo rumore.
 
-===== Addestramento Modello 1: Modello di Saturazione (_Binary Model_)
+===== Addestramento Modello 1: modello di saturazione (_Binary Model_)
 Per bilanciare l'elevata frequenza di giorni passivi, si applica una compensazione dinamica dei pesi tramite l'iperparametro `scale_pos_weight`. L'addestramento e l'Early Stopping vengono guidati dall'area sotto la curva ROC (AUC), la quale misura la reale capacità discriminativa tra medici attivi e inattivi. \ L'implementazione del modello è presentato nel @cod:modello1.
 
 #figure(
@@ -626,7 +626,7 @@ modello_1_binario.fit(
 ]
 )<cod:modello1>
 
-===== Addestramento Modello 2: Selettore Strategico di Canale (_Multiclass Model_)
+===== Addestramento Modello 2: selettore strategico di canale (_Multiclass Model_)
 Il secondo stadio lavora solo sui dati attivi. Per evitare che i canali storicamente più frequenti (come le visite presenziali `VisitF2F`) coprano i canali digitali, si forza la ponderazione `class_weight='balanced'`, come si può vedere dal @cod:modello2.
 
 #figure(caption: "Implementazione essenziale del modello multiclasse.")[
@@ -653,7 +653,7 @@ modello_2_multiclass.fit(
 ```
 ]<cod:modello2>
 
-==== Regole di Business - Post Processing
+==== Regole di business - Post processing
 Una volta generate le probabilità grezze dai due modelli di Machine Learning, il sistema applica una fase di _post-processing_ basata su regole di dominio aziendali (_Business Rules_). Questa fase è essenziale per raccordare i punteggi puramente statistici con gli obiettivi strategici del business, definendo l'output finale destinato ai rappresentanti farmaceutici e alla _dashboard_ aziendale.
 
 *Il modello 1 restituisce la probabilità di inazione* che misura il livello di saturazione o di stasi del medico. Tuttavia, affidarsi unicamente alla logica predittiva rischia di penalizzare particolari segmenti strategici, condannando a una permanente passività medici che richiederebbero invece un'azione correttiva prioritaria.
@@ -670,7 +670,7 @@ Tutti gli output prodotti vengono consolidati in un dataset strutturato. Questo 
 ==== Valutazione e validazione delle performance
 La validazione dell'architettura gerarchica a due stadi è stata condotta analizzando separatamente l'efficacia del predittore di saturazione e la capacità discriminativa del selettore di canale.
 
-===== Performance Modello 1
+===== Performance modello 1
 Il primo stadio registra un'#underline[_Accuracy_ globale del 61.0%] Tale valore riflette il bilanciamento introdotto per evitare che il modello predica sistematicamente la classe maggioritaria di inazione, garantendo una capacità discriminativa reale tra momenti di ingaggio e fasi di riposo.
 
 Dall'analisi della matrice di confusione (@fig:confusion-matr-m1) si osserva come il modello riesca a *intercettare correttamente il $72\%$ delle interazioni reali* (`ACTION`), assegnando al riposo solo il restante $28\%$ dei casi. Sul fronte opposto, il $60\%$ delle giornate prive di contatto (`NO_ACTION`) viene classificato correttamente, mentre il $40\%$ registra una sovrastima dell'attività.
@@ -690,7 +690,7 @@ Questa distribuzione si riflette chiaramente nell'Indice di Saturazione $"PROB_N
   image(indice-saturazione-m1)
 )<fig:indice-saturazione-m1>
 
-===== Performance Modello 2
+===== Performance modello 2
 Isolando esclusivamente le interazioni commerciali effettive (`PhoneCall`, `RemoteCall`, `SendDEM`, `SendRTE`, `VisitF2F`), il secondo stadio dimostra una spiccata capacità di orientare la scelta strategica, raggiungendo un'#underline[Accuracy complessiva del 67.2%].
 
 L'osservazione della matrice di confusione (@fig:confusion-matr-m2) evidenzia un'elevata precisione sulle forme di contatto dirette e digitali. Il canale `RemoteCall` si attesta come il più preciso con l' $84\%$ di individuazioni corrette, seguito da `SendRTE` all' $81\%$, `PhoneCall` al $77\%$ e `SendDEM` al $70\%$. Le visite in presenza (`VisitF2F`) mostrano una diagonale pari al $59\%$. Tale risultato è la diretta conseguenza della strategia di bilanciamento delle classi (`class_weight='balanced'`) adottata in fase di addestramento.\ In assenza di tale penalizzazione, il modello tendeva a raggiungere un'_accuracy_ globale ingannevolmente più elevata, ma al prezzo di una quasi totale polarizzazione su `VisitF2F`, canale nettamente maggioritario nel dataset storico. Accettando un lieve calo nell'_accuracy_ di questo singolo canale, si è deliberatamente redistribuito il peso informativo favorendo la capacità discriminativa sui canali digitali e remoti, garantendo al sistema un'effettiva proattività omnicanale.
@@ -708,7 +708,7 @@ Nello specifico della NBA Suggerita (in @fig:nba-sugg-m2), le visite presenziali
   image(nba-sugg)
 )<fig:nba-sugg-m2>
 
-===== Performance Generali
+===== Performance generali
 
 L'analisi dell'output complessivo conferma che l'algoritmo non tende a schiacciarsi su un'unica tipologia di contatto, ma genera un piano d'azione multicanale articolato ed equilibrato.
 
