@@ -28,6 +28,7 @@
         #v(40pt)
 
         // Relatore e laureando
+        #set par(first-line-indent: 0pt)
         #columns()[
           #align(left, text(12pt, weight: 400, style: "italic", supervisor))
           #v(5pt)

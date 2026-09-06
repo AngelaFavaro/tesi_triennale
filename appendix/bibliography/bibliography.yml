@@ -1,14 +1,145 @@
-'models-and-fair-use':
-  type: article
-  title: Foundation Models and Fair Use
-  author:
-  - Henderson, Peter
-  - Li, Xuechen
-  - Jurafsky, Dan
-  - Hashimoto, Tatsunori
-  - Lemley, Mark A.
-  - Liang, Percy
-  date: 2023
-  url: https://arxiv.org/abs/2303.15715
-  serial-number:
-    arxiv: '2303.15715'
+# ==========================================
+# DOCUMENTAZIONI UFFICIALI
+# ==========================================
+
+catboost-doc:
+  type: web
+  title: "CatBoost Documentation"
+  author: "CatBoost Development Team"
+  url: "https://catboost.ai/docs/"
+  urldate: 2026-09-06
+  parent:
+    title: "CatBoost"
+
+python-doc:
+  type: web
+  title: "Python Documentation"
+  author: "Python Software Foundation"
+  url: "https://docs.python.org/3/"
+  urldate: 2026-09-06
+  parent:
+    title: "Python Software Foundation"
+
+pyspark-doc:
+  type: web
+  title: "PySpark Documentation"
+  author: "Apache Software Foundation"
+  url: "https://spark.apache.org/docs/latest/"
+  urldate: 2026-09-06
+  parent:
+    title: "Apache Spark"
+
+databricks-doc:
+  type: web
+  title: "Databricks Documentation"
+  author: "Databricks Inc."
+  url: "https://docs.databricks.com/aws/en/"
+  urldate: 2026-09-06
+  parent:
+    title: "Databricks"
+
+lightgbm-docs:
+  type: web
+  title: "LightGBM Documentation"
+  author: "LightGBM Contributors"
+  url: "https://lightgbm.readthedocs.io/en/stable/"
+  urldate: 2026-09-06
+  parent:
+    title: "Read the Docs"
+
+sklearn-kmeans-doc:
+  type: web
+  title: "sklearn.cluster.KMeans"
+  author: "Scikit-learn Developers"
+  url: "https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html"
+  urldate: 2026-09-06
+  parent:
+    title: "scikit-learn documentation"
+
+# ==========================================
+# ARTICOLI E BLOG POST
+# ==========================================
+
+articolo-ibm:
+  type: web
+  title: "What is Gradient Boosting?"
+  author: ["Brian Clark", "Fangfang Lee"]
+  date: 2026
+  url: "https://www.ibm.com/think/topics/gradient-boosting"
+  urldate: 2026-09-06
+  parent:
+    title: "IBM Think"
+
+lightgbm-explained-medium:
+  type: web
+  title: "LightGBM Explained: Faster and Smarter Gradient Boosting"
+  author: "Abhay Singh"
+  date: 2024-03-03
+  url: "https://medium.com/@abhaysingh71711/lightgbm-explained-faster-and-smarter-gradient-boosting-4ab549629925"
+  urldate: 2026-09-06
+  parent:
+    title: "Medium"
+
+wiki-markov-chain:
+  type: web
+  title: "Markov chain"
+  author: "Wikipedia Contributors"
+  url: "https://en.wikipedia.org/wiki/Markov_chain"
+  urldate: 2026-09-06
+  parent:
+    title: "Wikipedia, The Free Encyclopedia"
+
+ai4business-markov:
+  type: web
+  title: "La Catena di Markov: cos'è e come si colloca nella Data Science"
+  author: "Redazione AI4Business"
+  url: "https://www.ai4business.it/intelligenza-artificiale/la-catena-di-markov-cose-come-si-colloca-nella-data-science/"
+  urldate: 2026-09-06
+  parent:
+    title: "AI4Business"
+
+markov-chains-medium:
+  type: web
+  title: "Markov Chains for Humans: The Simplest Way to Predict What's Next"
+  author: "Data Science Collective"
+  url: "https://medium.com/data-science-collective/markov-chains-for-humans-the-simplest-way-to-predict-whats-next-e9939d63d4c0"
+  urldate: 2026-09-06
+  parent:
+    title: "Medium"
+
+ibm-think-clustering:
+  type: web
+  title: "Che cos'è il clustering?"
+  author: "IBM"
+  url: "https://www.ibm.com/it-it/think/topics/clustering"
+  urldate: 2026-09-06
+  parent:
+    title: "IBM Think"
+
+ibm-think-kmeans:
+  type: web
+  title: "Che cos'è il clustering k-means?"
+  author: "IBM"
+  url: "https://www.ibm.com/it-it/think/topics/k-means-clustering"
+  urldate: 2026-09-06
+  parent:
+    title: "IBM Think"
+  
+databricks-dashboards-doc:
+  type: web
+  title: "Dashboards in Databricks"
+  author: "Databricks Inc."
+  url: "https://docs.databricks.com/aws/en/dashboards/"
+  urldate: 2026-09-06
+  parent:
+    title: "Databricks Documentation"
+
+gemini-ai:
+  type: web
+  title: "Gemini"
+  author: "Google"
+  date: 2026 # oppure l'anno della versione utilizzata
+  url: "https://gemini.google.com"
+  urldate: 2026-09-06
+  parent:
+    title: "Large Language Model"

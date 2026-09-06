@@ -44,6 +44,8 @@ _Apache Spark_ rappresenta il motore open-source di calcolo distribuito sottosta
 
 Per automatizzare e rendere riproducibili le fasi di trasformazione del dato, sono state strutturate apposite *_pipeline_ di elaborazione*. Tali pipeline hanno lo scopo di gestire l'intero ciclo di vita del dato a supporto della modellazione: dalle procedure preliminari di pulizia del dato e pre-elaborazione (_preprocessing_) per l'alimentazione degli algoritmi, fino alle fasi di _post-processing_, necessarie per ricondurre gli output predittivi nel formato idoneo alla fruizione aziendale.
 
+Infine, a supporto delle attività di sviluppo del codice, per il refactoring degli script Python/PySpark e durante le sessioni di _brainstorming_ sulla logica degli algoritmi, è stato utilizzato uno strumento di intelligenza artificiale generativa #linkfn("https://gemini.google.com")[*Gemini PRO*]#cite(<gemini-ai>).
+
 == Analisi ed esplorazione preliminare dei dati
 All'interno del progetto sono state inizialmente analizzate quattro tabelle grezze. Da queste il passo iniziale è di leggerle, comprenderle ed estrapolarne le informazioni utili allo sviluppo dell'intero progetto.\ Si tratta quindi di un lavoro analitico di comprensione profonda e personale del _dataset_. \ È stato inotre necessario pulire le tabelle per poter comprendere meglio i dati a disposizione. 
 

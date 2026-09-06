@@ -135,10 +135,4 @@ Se devi lavorare con i diagrammi degli use case direttamente in Typst è fattibi
 Fai riferimento alla documentazione di questo progetto di SWE:
 - #link("https://techminds-unipd.github.io/docs/PB/documenti_esterni/analisi_requisiti/analisi-dei-requisiti.pdf")
 - #link("https://github.com/techminds-unipd/docs/blob/main/PB/documenti_esterni/analisi_requisiti/include/use_cases.typ")
-#v(1em)
-Il tracciamento dei requisiti viene fatto attraverso la tabella in `/chapters/data/requirements_list.typ`
-Questo permette di:
-- Conteggiare in maniera corretta i requisiti.
-- Creare la @tab:riepilogo-requisiti e la @tab:requisiti-soddisfatti
-#v(1em)
 #align(center)[*Se non ti serve togli tutto.*]
