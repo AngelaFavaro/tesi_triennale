@@ -7,11 +7,11 @@
 
 = Conclusioni<cap:conclusioni>
 #text(style: "italic", [
-    In questo capitolo verranno tratte alcune considerazioni sull'attività svolta.
+    In questo capitolo verranno tratte alcune considerazioni finali sull'attività svolta.
 ])
 #v(1em)
 == Consuntivo finale
-Una volta terminato il progetto è stato redatto il consuntivo orario finale nella @fig:tabella-calcolo-ore che suddivide in maniera approssimata le ore dedicate alle varie fasi.
+Una volta terminato il progetto è stato redatto il consuntivo orario finale (in @fig:tabella-calcolo-ore) che suddivide in maniera approssimata le ore dedicate alle varie fasi.
 #v(1em)
 #set table(
   align: (center+horizon, center+horizon), 
@@ -55,7 +55,7 @@ Al termine del progetto sono stati raggiunti la maggior parte degli obiettivi pr
 )<tab:requisiti-soddisfatti>
 
 == Rischi occorsi e mitigati
-I rischi emersi durante lo stage sono riportati in @fig:rischi-occorsi.\
+I rischi emersi durante lo stage e la rispettiva mitigazione sono riportati in @fig:rischi-occorsi.\
 #v(1em)
 #figure(
   caption: [Rischi occorsi e loro mitigazione.],
@@ -63,7 +63,7 @@ I rischi emersi durante lo stage sono riportati in @fig:rischi-occorsi.\
     columns: 2,
     table.header([*Descrizione*],[*Mitigazione*]),
 [*R1 -- Anomalie silenti nei dati:* presenza di errori non evidenti o disallineamenti nelle tabelle di staging.], [Sessioni periodiche di revisione e controllo dei dati con i referenti aziendali.],    [*R2 -- Asimmetria nelle competenze tecniche:* gap iniziale di conoscenza sullo stack tecnologico aziendale.], [Pianificazione di una fase di _onboarding_ con l'ausilio della formazione aziendale dedicata.],
-[*R3 -- Polarizzazione del modello da sbilanciamento:* Tendenza dell'algoritmo a predire quasi esclusivamente i canali storicamente dominanti.], [Adozione della strategia di pesatura dinamica in fase di addestramento per penalizzare gli errori sui canali meno frequenti e preservare l'approccio omnicanale.],
+[*R3 -- Polarizzazione del modello da sbilanciamento:* tendenza dell'algoritmo a predire quasi esclusivamente i canali storicamente dominanti.], [Adozione della strategia di pesatura dinamica in fase di addestramento per penalizzare gli errori sui canali meno frequenti e preservare l'approccio omnicanale.],
 [*R4 -- Disallineamento tra output algoritmico e logiche di ingaggio:* generazione di raccomandazioni teoricamente ottimali per il modello, ma potenzialmente inefficaci o controproducenti sul piano commerciale.], [Sviluppo di un motore di _post-processing_ basato su regole deterministiche e soglie di business per contestualizzare e guidare le predizioni.]
  )
 )<fig:rischi-occorsi>
@@ -71,6 +71,6 @@ I rischi emersi durante lo stage sono riportati in @fig:rischi-occorsi.\
 == Valutazione personale
 L'esperienza di tirocinio e lo sviluppo di questo progetto si sono rivelati altamente formativi, superando il solo valore dell'acquisizione tecnica e teorica legata agli algoritmi e alle architetture di _Machine Learning_. 
 
-Un aspetto di valore è stato l'approccio ad una metodologia di lavoro: comprendere come strutturare un progetto, definire gli step propedeutici e orientare costantemente l'analisi verso un obiettivo di business concreto. Particolarmente istruttiva è stata la gestione delle fasi di sperimentazione meno fruttuose; il riscontro di performance non ottimali in alcuni algoritmi non va considerato un fallimento, bensì un passaggio per affinare la comprensione del dominio di progetto e guidare le successive scelte. 
+Un aspetto di valore è stato l'approccio ad una metodologia di lavoro: comprendere come strutturare un progetto, definire gli step propedeutici e orientare costantemente l'analisi verso un obiettivo di business concreto. Particolarmente istruttiva è stata la gestione delle fasi di sperimentazione meno fruttuose; il riscontro di performance non ottimali in alcuni algoritmi non è stato accolto come fallimento, bensì come passaggio per affinare la comprensione del dominio di progetto e guidare le successive scelte. 
 
 Infine, il progetto ha offerto una panoramica altamente stimolante sulle reali applicazioni della _Data Science_ in ambito aziendale, delineando con maggiore nitidezza i possibili sviluppi e gli sbocchi professionali futuri.
