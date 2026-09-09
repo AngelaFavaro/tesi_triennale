@@ -6,7 +6,7 @@
 
 = Introduzione <cap:introduzione>
 #text(style: "italic", [
-    Il presente capitolo è dedicato alla contestualizzazione della realtà aziendale e del progetto. Viene delineato il profilo di Blue BI. Segue una descrizione approfondita della proposta progettuale, per poi concludere con l'analisi delle motivazioni che hanno indirizzato alla scelta del progetto.
+    Il presente capitolo è dedicato alla contestualizzazione della realtà aziendale e del progetto. Viene delineato il profilo di Blue BI. Segue una descrizione  della proposta progettuale, per poi concludere con l'analisi delle motivazioni che hanno indirizzato alla scelta del progetto.
 ])
 #v(1em)
 
@@ -33,9 +33,9 @@ L'azienda inoltre *investe nell'esplorazione di tecnologie emergenti* per antici
 - _Mixed Reality_: studio dell'integrazione di report e grafici 2D/3D all'interno di ambienti di realtà aumentata e virtuale (AR/VR), con l'obiettivo di abilitare l'ancoraggio spaziale dei dati e migliorare l'interattività delle #gl("dashboard").
 - Integrazione _Chatbot_: sviluppo di interfacce conversazionali avanzate con comandi vocali per rendere l'accesso ai dati aziendali e alla _business intelligence_ più immediato e accessibile.
 - GenAI: implementazione di use cases aziendali basati sui più recenti _Foundation Models_, sfruttando le API di ChatGPT e i servizi _cloud-native_ per l'estrazione di conoscenza.
-- Analisi predittive: applicazione di algoritmi di Machine Learning, alberi decisionali e reti neurali per l'analisi predittiva e la modellazione statistica dei dati storici dei clienti.
+- *Analisi predittive*: applicazione di algoritmi di _Machine Learning_, alberi decisionali e reti neurali per l'analisi predittiva e la modellazione statistica dei dati storici dei clienti.
 
-In quest'ottica, sono in atto *collaborazioni* strategiche con _OpenAI_, _Amazon Web Services (AWS)_ e _Databricks_: tre piattaforme leader nel settore cloud-native che mettono a disposizione dell'azienda le tecnologie e l'infrastruttura necessarie per lo sviluppo, l'elaborazione dei dati e l'implementazione di applicazioni intelligenti di ultima generazione.
+In quest'ottica, sono in atto collaborazioni strategiche con _OpenAI_, _Amazon Web Services (AWS)_ e _Databricks_: tre piattaforme leader nel settore _cloud-native_ che mettono a disposizione dell'azienda le tecnologie e l'infrastruttura necessarie per lo sviluppo, l'elaborazione dei dati e l'implementazione di applicazioni intelligenti di ultima generazione.
 
 L'*obiettivo strategico* aziendale risiede proprio nel capitalizzare questi investimenti per trasformare i dati in valore reale. \ L'estrazione di #gl("insight") accurati e la proposta di soluzioni fortemente innovative permettono infatti ai clienti di ottimizzare i processi interni, prosperare nel proprio settore e mantenere un solido vantaggio competitivo sul mercato.
 
@@ -43,7 +43,7 @@ L'*obiettivo strategico* aziendale risiede proprio nel capitalizzare questi inve
 === Contesto
 Uno specifico ambito in cui l'azienda opera è quello delle campagne di *marketing farmaceutico omnicanale*, strategia che prevede l'uso integrato e sinergico di diversi canali di comunicazione per interagire con i clienti in modo coerente e personalizzato.\ Blue BI sta sviluppando soluzioni di gestione ed analisi dei dati per rispondere alle esigenze odierne del mercato.
 
-Il progetto di tesi si concentra sull'applicazione di tecniche di Machine Learning per massimizzare l'efficacia delle campagne di marketing omnicanale sul singolo.\ L'*obiettivo principale* risiede nello sviluppo di modelli predittivi che consentano di segmentare i destinatari in base al loro comportamento digitale e alle preferenze manifestate, al fine di personalizzare le strategie di comunicazione e ottimizzare le interazioni complessive.
+Il progetto di tesi si concentra sull'applicazione di tecniche di _Machine Learning_ per massimizzare l'efficacia delle campagne di marketing omnicanale sul singolo.\ L'*obiettivo principale* risiede nello sviluppo di modelli predittivi che consentano di segmentare i destinatari in base al loro comportamento digitale e alle preferenze manifestate, al fine di personalizzare le strategie di comunicazione e ottimizzare le interazioni complessive.
 
 Il fulcro logico dell'attività predittiva è rappresentato dal concetto di *_Next Best Action_ (NBA)*. \ La NBA identifica l'azione o il canale di comunicazione più appropriato da proporre ad un determinato utente in un dato momento. \ L'implementazione di tale modello predittivo si basa sull'analisi approfondita dei dati storici, finalizzata ad identificare pattern comportamentali ricorrenti e prevedere l'interazione futura con la maggiore probabilità di successo.
 
@@ -73,9 +73,9 @@ Il progetto si articola in due macrofasi sequenziali di ricerca tecnologica e sv
 == Motivazioni di scelta del progetto
 La scelta del progetto è stata determinata da una combinazione di fattori legati sia dal contesto applicativo che dall'alto valore formativo della proposta aziendale. 
 
-Una prima motivazione risiede nell'interesse verso il mondo della #gl("data-science") e dell'analisi dei dati. \ Sebbene il percorso di studi triennale fornisca solide basi metodologiche incentrate principalmente sulla progettazione e sulla costruzione di sistemi software tradizionali, lo studio dei dati rappresenta uno stimolante completamento del profilo accademico. \ La prospettiva di approfondire le metodologie di estrazione del valore dai dati ha trovato una corrispondenza nelle proposte progettuali offerte dall'azienda.
+Una prima motivazione risiede nell'interesse verso il mondo della #gl("data-science") e dell'analisi dei dati. \ Il percorso di studi triennale si concentra nel fornire solide basi metodologiche incentrate principalmente sulla progettazione e sulla costruzione di sistemi software tradizionali, lo studio dei dati rappresenta uno stimolante completamento del profilo accademico. \ La prospettiva di approfondire le metodologie di estrazione del valore dai dati ha trovato una corrispondenza nelle proposte progettuali offerte dall'azienda.
 
-In seconda battuta l'integrazione del progetto con le tecnolgie di _Machine Learning_ costituisce un'opportunità formativa irrinunciabile. Nel panorama informatico contemporaneo, la comprensione di questi paradigmi non è più un elemento opzionale, ma uno strumento fondamentale per affrontare problemi complessi.
+In seconda battuta l'integrazione del progetto con le tecnolgie di _Machine Learning_ costituisce un'opportunità formativa irrinunciabile. Nel panorama informatico contemporaneo, la comprensione di questi paradigmi non è più un elemento opzionale, ma uno strumento la cui conoscenza è fondamentale.
 
 Ulteriori elementi di forte interesse sono emersi dall'analisi del contesto applicativo.\ L'elaborazione di modelli basati sulle interazioni umane e comportamentali, in contrasto con le più lineari analisi di mercato quantitative, ha aumentato la curiosità e introdotto una sfida stimolante. \ L'adozione del paradigma di _Next Best Action_ (NBA) permette di estendere il raggio d'azione della classica analisi predittiva (#gl("forecasting")). Non ci si limita a prevedere un trend futuro passivo, ma si identifica dinamicamente l'azione ottimale per guidare l'operato umano.
 

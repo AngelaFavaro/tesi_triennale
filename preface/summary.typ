@@ -11,7 +11,7 @@
 #v(1em)
 Il presente documento descrive il lavoro svolto durante il periodo di stage curricolare, della durata di circa trecentoventi ore, dal laureando #text(myName) presso l'azienda #text(myCompany). Lo stage è stato condotto sotto la supervisione del tutor aziendale #myTutor, mentre il prof. #text(myProf) ha ricoperto il ruolo di tutor accademico.
 \ \
-Il presente lavoro di tesi tratta la progettazione e lo sviluppo di modelli di _clustering_ e di predizione _Next Best Action_ a supporto di strategie di ingaggio omnicanale. L'obiettivo principale risiede nella realizzazione di una _dashboard_ riassuntiva che, illustrando l'output e il funzionamento dei modelli, offra agli _stakeholder_ una visione concreta delle potenzialità applicative dell'Intelligenza Artificiale e del _Machine Learning_.
+Il presente lavoro di tesi tratta lo studio preliminare e lo sviluppo di modelli di _clustering_ e di predizione _Next Best Action_ a supporto di strategie di ingaggio omnicanale. L'obiettivo principale risiede nella realizzazione di una _dashboard_ riassuntiva che, illustrando l'output e il funzionamento dei modelli, offra agli _stakeholder_ una visione concreta delle potenzialità applicative dell'Intelligenza Artificiale e del _Machine Learning_.
 
 #linebreak()
 #text(24pt, weight: "semibold")[Organizzazione del testo]
@@ -19,7 +19,7 @@ Il presente lavoro di tesi tratta la progettazione e lo sviluppo di modelli di _
 #v(1em)
 
 / #link(<cap:introduzione>)[Il primo capitolo]: introduce l'azienda, il progetto e le motivazioni che hanno portato a sceglierlo;
-/ #link(<cap:desc-stage>)[Il secondo capitolo]: descrive l'azienda, il progetto e l'organizzazione del lavoro  definendone gli obiettivi;
+/ #link(<cap:desc-stage>)[Il secondo capitolo]: descrive il progetto e l'organizzazione del lavoro  definendone gli obiettivi;
 / #link(<cap:svolgimento-progetto>)[Il terzo capitolo]: presenta nel dettaglio lo svolgimento del progetto ed i risultati ottenuti;
 / #link(<cap:conclusioni>)[Il quarto capitolo]: traccia una breve analisi conclusiva sul lavoro svolto.
 

@@ -18,7 +18,7 @@ Lo stage presenta un rilevante valore formativo perché consente di applicare co
 
 *Dal punto di vista strettamente tecnico e metodologico*, come accennato nella @cap:desc-prog, le principali aspettative di apprendimento e consolidamento riguardano:
 
-_Modellazione statistica e Machine Learning_ su dati comportamentali; \ apprendere a gestire dati reali e complessi legati alle interazioni umane, traducendo eventi qualitativi e temporali in variabili per un'analisi predittiva;
+_Modellazione statistica e Machine Learning su dati comportamentali_; \ apprendere a gestire dati reali e complessi legati alle interazioni umane, traducendo eventi qualitativi e temporali in variabili per un'analisi predittiva;
 
 _Tecniche di classificazione, clustering e regressione_; \ approfondire l'uso degli algoritmi non supervisionati per l'identificazione di gruppi omogenei di utenti e di quelli supervisionati;
 
@@ -26,7 +26,7 @@ _Feature engineering e costruzione di indicatori sintetici_; \ sviluppare la cap
 
 _Valutazione delle performance dei modelli_; \ acquisire rigore nell'uso di metriche quantitative e metodologie di validazione per misurare l'accuratezza, la robustezza e la capacità di generalizzazione degli algoritmi sviluppati;
 
-_Interpretazione dei risultati (#gl("data-visualization"))_; \ apprendere le tecniche di rappresentazione grafica dei dati, indispensabili per tradurre gli output analitici in report e _dashboard_ chiare, rendendo i pattern emersi e le raccomandazioni logiche facilmente intellegibili anche a utenti non tecnici (ad esempio gli utenti);
+_Interpretazione dei risultati (#gl("data-visualization"))_; \ apprendere le tecniche di rappresentazione grafica dei dati, indispensabili per tradurre gli output analitici in report e _dashboard_ chiare, rendendo i pattern emersi e le raccomandazioni logiche facilmente intellegibili anche ad utenti non tecnici;
 
 _Integrazione di modelli analitici in contesti aziendali reali_;\ comprendere come un modello teorico possa trasformarsi in uno strumento operativo utilizzabile all'interno dei processi decisionali del cliente, rispettando vincoli di business e requisiti di efficienza.
 
@@ -40,21 +40,21 @@ Per raggiungere questo traguardo le attività progettuali sono volte all'ingegne
 In questo contesto, il lavoro da svolgere è stato strutturato attorno a tre macroaree operative, che delineano gli obiettivi tecnici e metodologici del progetto:
 
 *1. Ingegnerizzazione dei dati e _Feature Engineering_* \
-Il primo obiettivo riguarda la preparazione della base informativa. Questa fase prevede l'estrazione e l'integrazione dei dati storici relativi alle interazioni multi-canale, tra cui visite F2F, chiamate telefoniche, video call ed email (DEM e RTE). A seguito di un'accurata fase di pre-elaborazione orientata alla gestione dei dati mancanti, al trattamento degli _outlier_ e alla normalizzazione delle variabili temporali e frequenziali. L'attività si concentra poi sulla costruzione di un set di feature aggregate e indicatori sintetici.
+Il primo obiettivo riguarda la preparazione della base informativa. Questa fase prevede l'estrazione e l'integrazione dei dati storici relativi alle interazioni multi-canale, tra cui visite F2F, chiamate telefoniche, _video call_ ed email (DEM e RTE). A seguito di un'accurata fase di pre-elaborazione orientata alla gestione dei dati mancanti, al trattamento degli _outlier_ e alla normalizzazione delle variabili temporali e frequenziali. L'attività si concentra poi sulla costruzione di un set di feature aggregate e indicatori sintetici.
 
 *2. Modellazione analitica e _Machine Learning_*\
 La seconda macroarea costituisce il cuore algoritmico del progetto e si focalizza sullo sviluppo dei modelli analitici. In un primo momento, vengono applicate tecniche di apprendimento non supervisionato per analizzare i pattern comportamentali ed effettuare una segmentazione targettizzata degli HCP. Successivamente, la conoscenza estratta viene integrata all'interno di classificatori supervisionati e modelli di propensione, con il fine di stimare la probabilità di conversione sui diversi canali digitali e definire l'architettura predittiva in grado di raccomandare la _Next Best Action_ più efficace.
 
 *3. Validazione e valutazione delle performance* \
-L'ultima macroarea è dedicata alla verifica e all'ottimizzazione della soluzione modellata, garantendo il rigore scientifico del lavoro svolto. A seguito di uno studio preventivo delle possibili architetture analitiche che ha condotto alla scelta del modello più idoneo al contesto applicativo, viene definito un quadro metodologico di valutazione basato su metriche quantitative specifiche per il tipo di algoritmo adottato. L'analisi continua delle metriche di performance permette così di guidare il processo iterativo di perfezionamento e taratura dei parametri del modello, garantendone la massima efficacia operativa.
+L'ultima macroarea è dedicata alla verifica e all'ottimizzazione della soluzione modellata, garantendo il rigore scientifico del lavoro svolto. A seguito di uno studio preventivo delle possibili architetture analitiche che avrà condotto alla scelta del modello più idoneo al contesto applicativo, viene definito un quadro metodologico di valutazione basato su metriche quantitative specifiche per il tipo di algoritmo adottato. L'analisi continua delle metriche di performance permette così di guidare il processo iterativo di perfezionamento e taratura dei parametri del modello, garantendone la massima efficacia operativa.
 
-Al fine di acquisire le competenze verticali necessarie all'utilizzo dello stack tecnologico di progetto, la fase iniziale prevede un percorso di formazione e autoapprendimento. Tale attività si è avvalsa della piattaforma #linkfn("https://business.udemy.com/it")[Udemy], messa a disposizione dall'azienda.
+Al fine di acquisire le competenze verticali necessarie all'utilizzo dello stack tecnologico di progetto, la fase iniziale prevede un percorso di *formazione e autoapprendimento*. Tale attività si è avvalsa della piattaforma #linkfn("https://business.udemy.com/it")[Udemy], messa a disposizione dall'azienda.
 
 === Obiettivi fissati <cap:obiettivi>
 *Notazione*\
 Si farà riferimento agli obiettivi secondo le seguenti notazioni: 
 - #underline[_OO_ per gli obiettivi obbligatori], vincolanti in quanto obiettivo primario; sono presenti in @tab:obiettivi-obbligatori.
-- #underline[_OD_ per i obiettivi desiderabili], non vincolanti o strettamente necessari, ma dal riconoscibile valore aggiunto; sono presenti in @tab:obiettivi-desiderabili.
+- #underline[_OD_ per gli obiettivi desiderabili], non vincolanti o strettamente necessari, ma dal riconoscibile valore aggiunto; sono presenti in @tab:obiettivi-desiderabili.
 Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi del requisito.
 
 #[
@@ -89,7 +89,7 @@ Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi 
 == Pianificazione
 Lo stage è stato strutturato con una durata complessiva di quaranta giotrnate lavorative; per un totale di 320 ore. \
 
-Il lavoro è stato svolto a stretto contatto con il referente aziendale e con i colleghi del team di soluzione presso la sede di Blue BI di Vicenza.
+Il lavoro è stato svolto a stretto contatto con il referente aziendale e con i colleghi del team di soluzione presso la sede Blue BI di Vicenza.
 
 === Pianificazione iniziale <cap:piano-iniziale>
 
@@ -103,9 +103,9 @@ Il lavoro è stato svolto a stretto contatto con il referente aziendale e con i 
     columns: 4,
     table.header([N°\ attività], [*Giorno*], [*Durata\ (giorni)*], [*Descrizione*]),
     [*1*],[18 maggio - \ 25 maggio],[sei], [#underline[Formazione e contestualizzazione]. Introduzione al contesto omnicanale e al comportamento digitale degli utenti. Analisi dei dataset disponibili.],
-    [*2*],[26 maggio - \ 9 giugno],[dieci], [#underline[Analisi esplorativa] dei dati. Studio delle variabili comportamentali e costruzione della Digital Attitude. Identificazione delle feature rilevanti],
+    [*2*],[26 maggio - \ 9 giugno],[dieci], [#underline[Analisi esplorativa dei dati]. Studio delle variabili comportamentali e costruzione della _Digital Attitude_. Identificazione delle feature rilevanti],
     [*3*],[10 giugno - \ 29 giugno], [quattordici], [#underline[Sviluppo modelli]. Implementazione di modelli di classificazione e regressione per segmentazione e propensione ai canali],
-    [*4*],[30 giugno - \ 8 luglio],[sette], [#underline[Validazione] modelli. #underline[Valutazione] performance, confronto approcci e interpretazione risultati in ottica business],
+    [*4*],[30 giugno - \ 8 luglio],[sette], [#underline[Validazione modelli e valutazione performance], confronto approcci e interpretazione risultati in ottica business],
     [*5*],[9 luglio - \ 13 luglio], [tre], [#underline[Documentazione e presentazione finale]. Redazione della documentazione tecnica e funzionale. Sintesi dei risultati ottenuti. Preparazione della presentazione finale del lavoro svolto.]
   )
 )<fig:pianificazione-iniziale>
@@ -113,8 +113,8 @@ Il lavoro è stato svolto a stretto contatto con il referente aziendale e con i 
 === Discostamenti dalla pianificazione
 #v(1em)
 Nella @fig:pianificazione-effettiva, l'utilizzo dell'asterisco ($*$) in apice specifica le modifiche riorganizzative apportate rispetto al piano iniziale:
-- In corrispondenza del *N° attività*, indica una variazione sostanziale nella natura o nella struttura dell'attività;
-- In corrispondenza della *Durata (giorni)*, evidenzia una revisione della tempistica preventivata a monte.
+- In corrispondenza di "*N° attività*", indica una variazione sostanziale nella natura o nella struttura dell'attività;
+- In corrispondenza di "*Durata (giorni)*", evidenzia una revisione della tempistica preventivata a monte.
 #set table(
   align: (center+horizon, center+horizon, center+horizon), 
 )
@@ -125,8 +125,8 @@ Nella @fig:pianificazione-effettiva, l'utilizzo dell'asterisco ($*$) in apice sp
     table.header([N°\ attività], [*Giorno*], [*Durata\ (giorni)*], [*Descrizione*]),
     [*1*],[18 maggio - \ 25 maggio],[sei], [#underline[Formazione e contestualizzazione]. Introduzione al contesto omnicanale e al comportamento digitale degli utenti. Analisi dei dataset.],
     [*2*],[26 maggio - \ 28 maggio],[tre\*], [#underline[Analisi esplorativa] dei dati. Studio delle variabili comportamentali. Identificazione delle feature rilevanti],
-    [*3.1*\*],[29 maggio - \ 12 giugno], [undici\*], [#underline[Costruzione della Digital Attitude]. Sviluppo modello di clustering. Confronto e studio dei vari approcci con validazione finale. Valutazione delle performance e intepretazione dei risultati in ottica business.],
-    [*3.2*\*],[15 giugno - \ 30 gugno],[dodici\*], [#underline[Sviluppo modelli per Next Best Action]. Confronto e studio dei vari approcci con valiazione finale. Valutazione delle performance e intepretazione di risultati in ottica business],
+    [*3.1*\*],[29 maggio - \ 12 giugno], [undici\*], [#underline[Costruzione della _Digital Attitude_]. Sviluppo modello di _clustering_. Confronto e studio dei vari approcci con validazione finale. Valutazione delle performance e intepretazione dei risultati in ottica business.],
+    [*3.2*\*],[15 giugno - \ 30 gugno],[dodici\*], [#underline[Sviluppo modelli per _Next Best Action_]. Confronto e studio dei vari approcci con valiazione finale. Valutazione delle performance e intepretazione di risultati in ottica business],
     [*4*\*], [1 luglio - 3 luglio], [tre\*], [#underline[Preparazione della dashboard di esposizione dei risultati.]],
     [*5*],[6 luglio - \ 13 luglio], [sei\*], [#underline[Documentazione e presentazione finale].  Redazione della documentazione tecnica e funzionale.],
   )

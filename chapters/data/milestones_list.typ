@@ -12,7 +12,7 @@
   
   mandatory+=1
   OO.push((
-    (m + str(mandatory)), [Sviluppo di un modello di Digital Attitude],[#fonte]
+    (m + str(mandatory)), [Sviluppo di un modello di _Digital Attitude_],[#fonte]
   ))
 
   mandatory+=1
