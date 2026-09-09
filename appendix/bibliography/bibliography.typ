@@ -27,6 +27,7 @@ Quello di default è IEEE ma alla fine è preferenza tua o del relatore
 #cite(form: none, <lightgbm-explained-medium>)
 #cite(form: none, <markov-chains-medium>)
 #cite(form: none, <ai4business-markov>)
+#cite(form: none, <adesuwa-ml-101>)
 
 // Risorse su Clustering e Catene di Markov
 #cite(form: none, <ibm-think-clustering>)

@@ -156,4 +156,60 @@
     Metrica di valutazione generale che misura la percentuale di predizioni corrette effettuate dal modello rispetto al totale delle osservazioni analizzate. Corrisponde al rapporto tra la somma di veri positivi e veri negativi e il numero totale di casi. Pur essendo immediata da interpretare, può risultare ingannevole in presenza di dataset fortemente sbilanciati, dove tende a sovrastimare le performance del modello se questo favorisce la classe maggioritaria.
   ]
 ),
+(
+  key: "HCP",
+  short: [HCP],
+  long: [Healtcare Professional],
+  description: [
+    Operatore sanitario qualificato a cui sono rivolte le attività di informazione scientifica e le comunicazioni di marketing farmaceutico.
+  ]
+),
+(
+  key: "REP",
+  short: [REP],
+  long: [Sales Representatives],
+  description: [
+    Informatore scientifico del farmaco/agente di vendita che gestisce la relazione diretta e la comunicazione informale o commerciale con i professionisti della salute.
+  ]
+),
+(
+  key: "DEM",
+  short: [DEM],
+  long: [Direct-Email Marketing],
+  description: [
+    Strategia di comunicazione digitale basata sull'invio di e-mail promozionali o informative mirate a un target di utenti specifico.
+  ]
+),
+(
+  key: "RTE",
+  short: [RTE],
+  long: [Real-Time Engagement],
+  description: [
+    Interazione in tempo reale tra operatore e utente tramite mail per offrire assistenza o informazioni immediate.
+  ]
+),
+(
+  key: "F2F",
+  short: [F2F],
+  long: [Face to Face],
+  description: [
+  Modalità di interazione diretta e di persona tra l'informatore scientifico e il professionista sanitario, in contrapposizione ai canali di contatto digitali o remoti.
+  ]
+),
+(
+  key: "CLM",
+  short: [CLM],
+  long: [Closed Loop Marketing],
+  description: [
+    Approccio di marketing interattivo basato sulla raccolta di feedback e dati di utilizzo durante le presentazioni digitali per affinare costantemente le strategie e i contenuti.
+  ]
+),
+(
+  key: "NBA",
+  short: [NBA],
+  long: [Next Best Action],
+  description: [
+    Modello analitico guidato dai dati che suggerisce l'azione o la strategia di comunicazione più efficace da intraprendere con un cliente specifico nel momento migliore.
+  ]
+),
 )

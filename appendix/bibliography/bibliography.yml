@@ -143,3 +143,13 @@ gemini-ai:
   urldate: 2026-09-06
   parent:
     title: "Large Language Model"
+
+adesuwa-ml-101:
+  type: web
+  title: "Machine Learning 101"
+  author: "Adesuwa Okosun"
+  date: 2024
+  url: "https://medium.com/@adesuwaokosun/machine-learning-101-4c3309a0af09"
+  urldate: 2026-09-09
+  parent:
+    title: "Medium"
