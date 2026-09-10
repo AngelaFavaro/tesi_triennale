@@ -430,7 +430,7 @@ Per interpretare la rilevanza delle singole variabili nelle decisioni di partizi
 L'analisi quantitativa condotta sul campione totale di 702 HCP (comprendente gli 8 cluster dinamici da K-Means e le categorie statiche) evidenzia una struttura di popolazione estremamente bilanciata e coerente con la realtà di mercato, si può leggere in @fig:distrib-cluster.
 
 #figure(
-  caption: [Distribuzione dei cluster sul dataset],
+  caption: [Distribuzione dei cluster sul dataset.],
   image(distrib-cluster)
 )<fig:distrib-cluster>
 
@@ -705,7 +705,7 @@ L'osservazione della matrice di confusione (@fig:confusion-matr-m2) evidenzia un
 Nello specifico della NBA Suggerita (in @fig:nba-sugg-m2), le visite presenziali (`VisitF2F`) si confermano il pilastro della relazione commerciale superando le $100.000$ raccomandazioni, affiancate da un forte contributo del canale `SendDEM` con circa $70.000$ suggerimenti. Le chiamate telefoniche (`PhoneCall`) e le e-mail di contenuto scientifico (`SendRTE`) coprono rispettivamente bacini di circa $30.000$ e $24.000$ suggerimenti, mentre `RemoteCall` si posiziona come strumento di nicchia ad altissima precisione, consigliato per meno di $10.000$ volte.
 #let nba-sugg = "../images/analisi-forecasting/NBA-suggrite.png"
 #figure(
-  caption: [Distribuzione suggerimenti del modello sull'intero dataset],
+  caption: [Distribuzione suggerimenti del modello sull'intero dataset.],
   image(nba-sugg)
 )<fig:nba-sugg-m2>
 
@@ -717,7 +717,7 @@ Coerentemente la distribuzione mediana delle probabilità, in @fig:mediana-sugg,
 
 #let mediana-sugg = "../images/analisi-forecasting/distr-mediana-sugg.png"
 #figure(
-  caption: [Distribuzione mediana delle probabilità dei modelli],
+  caption: [Distribuzione mediana delle probabilità dei modelli.],
   image(mediana-sugg)
 )<fig:mediana-sugg>
 

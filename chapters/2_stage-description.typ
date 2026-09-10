@@ -69,7 +69,7 @@ Le sigle precedentemente indicate saranno seguite da dei numeri, identificativi 
         table.header([*Codice*], [*Descrizione*], [*Origine*]),
         ..getOO().flatten()
     ),
-    caption: "Tracciamento degli Obiettivi Obbligatori",
+    caption: "Tracciamento degli Obiettivi Obbligatori.",
 )
 <tab:obiettivi-obbligatori>
 
