@@ -54,17 +54,17 @@ Al termine del progetto sono stati raggiunti la maggior parte degli obiettivi pr
   )
 )<tab:requisiti-soddisfatti>
 
-== Rischi occorsi e mitigati
-I rischi emersi durante lo stage e la rispettiva mitigazione sono riportati in @fig:rischi-occorsi.\
+== Criticità riscontrate e interventi di mitigazione
+Le problematiche emerse durante lo stage e la conseguente mitigazione sono riportati in @fig:rischi-occorsi.\
 #v(1em)
 #figure(
-  caption: [Rischi occorsi e loro mitigazione.],
+  caption: [Criticità riscontrate e interventi di mitigazione.],
   table(
     columns: 2,
     table.header([*Descrizione*],[*Mitigazione*]),
-[*R1 -- Anomalie silenti nei dati:* presenza di errori non evidenti o disallineamenti nelle tabelle di staging.], [Sessioni periodiche di revisione e controllo dei dati con i referenti aziendali.],    [*R2 -- Asimmetria nelle competenze tecniche:* gap iniziale di conoscenza sullo stack tecnologico aziendale.], [Pianificazione di una fase di _onboarding_ con l'ausilio della formazione aziendale dedicata.],
-[*R3 -- Polarizzazione del modello da sbilanciamento:* tendenza dell'algoritmo a predire quasi esclusivamente i canali storicamente dominanti.], [Adozione della strategia di pesatura dinamica in fase di addestramento per penalizzare gli errori sui canali meno frequenti e preservare l'approccio omnicanale.],
-[*R4 -- Disallineamento tra output algoritmico e logiche di ingaggio:* generazione di raccomandazioni teoricamente ottimali per il modello, ma potenzialmente inefficaci o controproducenti sul piano commerciale.], [Sviluppo di un motore di _post-processing_ basato su regole deterministiche e soglie di business per contestualizzare e guidare le predizioni.]
+[*P1 -- Anomalie silenti nei dati:* presenza di errori non evidenti o disallineamenti nelle tabelle di staging.], [Sessioni periodiche di revisione e controllo dei dati con i referenti aziendali.],    [*P2 -- Asimmetria nelle competenze tecniche:* gap iniziale di conoscenza sullo stack tecnologico aziendale.], [Pianificazione di una fase di _onboarding_ con l'ausilio della formazione aziendale dedicata.],
+[*P3 -- Polarizzazione del modello da sbilanciamento:* tendenza dell'algoritmo a predire quasi esclusivamente i canali storicamente dominanti.], [Adozione della strategia di pesatura dinamica in fase di addestramento per penalizzare gli errori sui canali meno frequenti e preservare l'approccio omnicanale.],
+[*P4 -- Disallineamento tra output algoritmico e logiche di ingaggio:* generazione di raccomandazioni teoricamente ottimali per il modello, ma potenzialmente inefficaci o controproducenti sul piano commerciale.], [Sviluppo di un motore di _post-processing_ basato su regole deterministiche e soglie di business per contestualizzare e guidare le predizioni.]
  )
 )<fig:rischi-occorsi>
 #v(1em)
