@@ -74,7 +74,7 @@
 // L'unica alternativa è al seguente link ma funziona solo se usi Glossarium con le ref ad esempio '@TERMINE' 
 // https://forum.typst.app/t/how-do-you-apply-a-style-to-glossarium-references-that-is-different-to-other-reference-types/2089?u=ogre
 #let glossary-style(body) = {
-  text(style: "italic", rgb(155, 0 , 20), body+sub[G])
+  text(style: "italic", black, body+sub[G])
 }
 
 #let gl(key,
